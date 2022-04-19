@@ -1,0 +1,37 @@
+openapi: '3.0.0'
+servers:
+    -   url: http://localhost:8080/
+info:
+    version: 1.0.0
+    title: Execercise Generator API
+paths:
+    /test:
+        summary: Get test string
+        get:
+            tags:
+                - Test
+            summary: Get test string
+            operationId: getTest
+            responses:
+                '200':
+                    description: Expected response to a valid request
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: pong
+components:
+    schemas:
+        Book:
+            type: object
+            description: Literature work (novels, manuals, ...)
+            required:
+                - title
+                - language
+            properties:
+                title:
+                    type: string
+                subtitle:
+                    type: string
+                language:
+                    type: string
