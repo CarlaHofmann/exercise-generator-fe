@@ -20,18 +20,34 @@ paths:
                             schema:
                                 type: string
                                 example: pong
+    /login:
+        summary: Log in with credentials
+        post:
+            tags:
+                - Login
+            summary: Log in with credentials
+            operationId: logIn
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: LoginData
+                description: Data to log in
+            responses:
+                '200':
+                    description: Response if login was successful
+                '400':
+                    description: Response if login was not successful
 components:
     schemas:
-        Book:
+        LoginData:
             type: object
-            description: Literature work (novels, manuals, ...)
+            description: Data from Login-Form
             required:
-                - title
-                - language
+                - name
+                - password
             properties:
-                title:
+                name:
                     type: string
-                subtitle:
-                    type: string
-                language:
+                password:
                     type: string

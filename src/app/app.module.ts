@@ -6,17 +6,25 @@ import {AppComponent} from './app.component';
 import {HttpClientModule} from "@angular/common/http";
 import {ApiModule} from "../../build/openapi";
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { LoginComponent } from './components/login/login.component';
+import {ReactiveFormsModule} from "@angular/forms";
+import { DashboardProfessorComponent } from './components/dashboard-professor/dashboard-professor.component';
+import { DashboardStudentComponent } from './components/dashboard-student/dashboard-student.component';
 
 @NgModule({
     declarations: [
-        AppComponent
+        AppComponent,
+        LoginComponent,
+        DashboardProfessorComponent,
+        DashboardStudentComponent
     ],
     imports: [
         BrowserModule,
         AppRoutingModule,
         HttpClientModule,
         ApiModule,
-        NgbModule
+        NgbModule,
+        ReactiveFormsModule
     ],
     providers: [],
     bootstrap: [AppComponent]
