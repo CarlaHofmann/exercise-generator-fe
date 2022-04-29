@@ -5,11 +5,13 @@ import {DashboardProfessorComponent} from "./components/dashboard-professor/dash
 import {AuthGuardProfessorService} from "./services/auth-guard-professor.service";
 import {DashboardStudentComponent} from "./components/dashboard-student/dashboard-student.component";
 import {AuthGuardStudentService} from "./services/auth-guard-student.service";
+import { AddExerciseComponent } from './components/add-exercise/add-exercise.component';
 
 const routes: Routes = [
     {path: "professor/dashboard", component: DashboardProfessorComponent, canActivate: [AuthGuardProfessorService]},
     {path: "student/dashboard", component: DashboardStudentComponent, canActivate: [AuthGuardStudentService]},
-    {path: "", component: LoginComponent}
+    {path: "", component: LoginComponent},
+    {path: "professor/add-exercise", component: AddExerciseComponent, canActivate: []}
 ];
 
 @NgModule({
