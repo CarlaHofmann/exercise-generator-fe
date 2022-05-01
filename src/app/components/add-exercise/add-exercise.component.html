@@ -20,26 +20,60 @@
 
     </div>
   </nav>
-
-<!-- Default dropright button -->
-<div class="btn-group dropright">
-    <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      Dropright
-    </button>
-    <div class="dropdown-menu">
-      <!-- Dropdown menu links -->
-    </div>
+<!--
+  <div ngbDropdown class="dropdown">
+    <button ngbDropdownToggle class="btn btn-default dropdown-toggle botn-todos" type="button" id="dropdownMenuButton1" aria-expanded="false">
+  Dropdown button
+  </button>
+    <ul ngbDropdownMenu aria-labelledby="dropdownMenuButton1">
+      <li><a ngbDropdownItem href="#">Action</a></li>
+      <li><a ngbDropdownItem href="#">Another action</a></li>
+      <li><a ngbDropdownItem href="#">Something else here</a></li>
+    </ul>
   </div>
+  <div ngbDropdown class="btn-group dropdown todos" id="todos">
+    <button ngbDropdownToggle class="btn btn-default dropdown-toggle botn-todos" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Todos
+    <span class="caret caret-posicion"></span>
+    </button>
+    <ul ngbDropdownMenu class="dropdown-menu ancho-todos" aria-labelledby="dropdownMenu1">
+      <li><input value="1" name="busqueda1" type="radio" class="todoss"><span> Todos</span></li>
+      <li><input value="1" name="busqueda1" type="radio" class="enc"> En camino</li>
 
-  <!-- Split dropright button -->
-  <div class="btn-group dropright">
-    <button type="button" class="btn btn-secondary">
-      Split dropright
-    </button>
-    <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      <span class="sr-only">Toggle Dropright</span>
-    </button>
-    <div class="dropdown-menu">
-      <!-- Dropdown menu links -->
-    </div>
+    </ul>
   </div>
+-->
+<form class=" border border-light p-5" [formGroup] = "uploadForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+    <label for="title">Title</label>
+    <input type="text" class="form-control" id="title" formControlName="title" aria-describedby="titleHelp" placeholder="Title">
+    <div *ngIf="uploadForm.controls['title'].touched && uploadForm.controls['title'].invalid" class="alert alert-danger">
+        <div *ngIf="uploadForm.controls['title'].errors?.['required']">Title is mandatory.</div>
+        <div *ngIf="uploadForm.controls['title'].errors?.['minlength']">Title should be at least 1 character long.</div>
+    </div>
+    </div>
+
+    <div class="form-group">
+    <ng-select [items]="items" [addTag]="true" appendTo="body" formControlName="topic_name" bindLabel="topic_name" placeholder="Choose the topic: "  class="form-control input-sm">
+    </ng-select>
+    </div>
+
+    <div class="form-group">
+    <label for="exercise">Exercise</label>
+    <textarea class="form-control" id="exercise" formControlName="exercise" rows="3"></textarea>
+    </div>
+
+
+    <div class="form-group">
+    <label for="solution">Solution</label>
+    <textarea class="form-control" id="solution" formControlName="solution" rows="3"></textarea>
+    </div>
+
+    <div class="form-group">
+    <label  for="customFile">Upload additional image files</label>
+    <input type="file" class="form-control" formControlName="customFile" id="customFile" (change)="onFileChange($event)" multiple/>
+    </div>
+
+    <div class="text-center form-group">
+      <button type="submit" class="text-center btn btn-primary">Add exercise</button>
+    </div>
+</form>
