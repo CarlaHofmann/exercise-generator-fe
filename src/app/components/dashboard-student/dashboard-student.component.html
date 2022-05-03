@@ -1,6 +1,8 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
 
-    <a class="navbar-brand" href="#">ExGen</a>
+    <a class="navbar-brand" href="#">
+        <img src="../assets/img/fra-uas-logo.png" alt="Logo" height="36">
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -22,16 +24,13 @@
   </nav>
 
 
-<div class = "week">
-    <h2>Woche 1</h2>
-    <h3>Themen: </h3>
-    <h3>Übungsblatt</h3>
-</div>
-
-
-
-<div class = "week">
-    <h2>Woche 2</h2>
-    <h3>Themen: </h3>
-    <h3>Übungsblatt</h3>
-</div>
+  <div ngbDropdown class="dropdown">
+    <button ngbDropdownToggle class="btn btn-secondary" type="button" id="dropdownMenuButton1" aria-expanded="false">
+  Dropdown button
+  </button>
+    <ul ngbDropdownMenu aria-labelledby="dropdownMenuButton1">
+      <li><a ngbDropdownItem href="#">Action</a></li>
+      <li><a ngbDropdownItem href="#">Another action</a></li>
+      <li><a ngbDropdownItem href="#">Something else here</a></li>
+    </ul>
+  </div>

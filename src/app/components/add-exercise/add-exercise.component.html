@@ -1,6 +1,8 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">ExGen</a>
+    <a class="navbar-brand" href="#">
+        <img src="../assets/img/fra-uas-logo.png" alt="Logo" height="36">
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -9,10 +11,10 @@
       <ul class="navbar-nav mr-auto">
 
         <li class="nav-item">
-          <a class="nav-link" href="/student/dashboard">Wochenansicht</a>
+          <a class="nav-link" href="/student/dashboard">Generate Exercise Sheet</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">Themenansicht</a>
+            <a class="nav-link" href="#">Add New Exercise</a>
           </li>
 
 
@@ -45,7 +47,7 @@
 <form class=" border border-light p-5" [formGroup] = "uploadForm" (ngSubmit)="onSubmit()">
     <div class="form-group">
     <label for="title">Title</label>
-    <input type="text" class="form-control" id="title" formControlName="title" aria-describedby="titleHelp" placeholder="Title">
+    <input type="text" class="form-control" id="title" formControlName="title" aria-describedby="titleHelp" placeholder="Exercise title">
     <div *ngIf="uploadForm.controls['title'].touched && uploadForm.controls['title'].invalid" class="alert alert-danger">
         <div *ngIf="uploadForm.controls['title'].errors?.['required']">Title is mandatory.</div>
         <div *ngIf="uploadForm.controls['title'].errors?.['minlength']">Title should be at least 1 character long.</div>
@@ -53,27 +55,42 @@
     </div>
 
     <div class="form-group">
-    <ng-select [items]="items" [addTag]="true" appendTo="body" formControlName="topic_name" bindLabel="topic_name" placeholder="Choose the topic: "  class="form-control input-sm">
+    <label for="topic">Topic</label>
+    <ng-select [items]="items" [addTag]="true" appendTo="body" formControlName="topic_name" bindLabel="topic_name" placeholder="Choose or add a topic: "  class="form-control input-sm" required="true">
     </ng-select>
+    <div *ngIf="uploadForm.controls['topic_name'].touched && uploadForm.controls['topic_name'].invalid" class="alert alert-danger">
+        <div *ngIf="uploadForm.controls['topic_name'].errors?.['required']">Topic is mandatory.</div>
+        <div *ngIf="uploadForm.controls['topic_name'].errors?.['minlength']">Topic should be at least 1 character long.</div>
+    </div>
     </div>
 
     <div class="form-group">
-    <label for="exercise">Exercise</label>
+    <label for="exercise">Latex code for exercise</label>
     <textarea class="form-control" id="exercise" formControlName="exercise" rows="3"></textarea>
+    <div *ngIf="uploadForm.controls['exercise'].touched && uploadForm.controls['exercise'].invalid" class="alert alert-danger">
+        <div *ngIf="uploadForm.controls['exercise'].errors?.['required']">Exercise is mandatory.</div>
+        <div *ngIf="uploadForm.controls['exercise'].errors?.['minlength']">The exercise should be at least 1 character long.</div>
+    </div>
     </div>
 
 
     <div class="form-group">
-    <label for="solution">Solution</label>
+    <label for="solution">Latex code for solution</label>
     <textarea class="form-control" id="solution" formControlName="solution" rows="3"></textarea>
+    <div *ngIf="uploadForm.controls['solution'].touched && uploadForm.controls['solution'].invalid" class="alert alert-danger">
+        <div *ngIf="uploadForm.controls['solution'].errors?.['required']">The solution is mandatory.</div>
+        <div *ngIf="uploadForm.controls['solution'].errors?.['minlength']">The solution should be at least 1 character long.</div>
+    </div>
     </div>
 
-    <div class="form-group">
-    <label  for="customFile">Upload additional image files</label>
+    <div class="form-group files color">
+    <label for="customFile">Upload additional image files</label>
     <input type="file" class="form-control" formControlName="customFile" id="customFile" (change)="onFileChange($event)" multiple/>
     </div>
 
     <div class="text-center form-group">
-      <button type="submit" class="text-center btn btn-primary">Add exercise</button>
-    </div>
+        <button type="submit" class="text-center btn btn-primary">Add exercise</button>  &nbsp;&nbsp;
+        <button type="submit" class="text-center btn btn-primary">Preview ????</button>
+      </div>
+
 </form>
