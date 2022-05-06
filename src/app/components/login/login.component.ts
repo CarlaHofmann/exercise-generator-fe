@@ -33,12 +33,12 @@ export class LoginComponent implements OnInit {
         this.loginService.logIn(loginData).subscribe({
             next: () => {
                 this.authService.authenticate(RoleEnum.PROFESSOR);
-                this.router.navigate(["professor/dashboard"], {relativeTo: this.activatedRoute});
+                this.router.navigate([""], {relativeTo: this.activatedRoute});
                 this.isFailedLoginAttempt = false;
             },
             error: () => {
                 this.authService.authenticate(RoleEnum.PROFESSOR);
-                this.router.navigate(["professor/dashboard"], {relativeTo: this.activatedRoute});
+                this.router.navigate([""], {relativeTo: this.activatedRoute});
                 this.isFailedLoginAttempt = false;
                 //this.authService.authenticate(RoleEnum.INVALID);
                 //this.isFailedLoginAttempt = true;
@@ -48,6 +48,6 @@ export class LoginComponent implements OnInit {
 
     public logInAsStudent(): void {
         this.authService.authenticate(RoleEnum.STUDENT);
-        this.router.navigate(["student/dashboard"], {relativeTo: this.activatedRoute});
+        this.router.navigate([""], {relativeTo: this.activatedRoute});
     }
 }

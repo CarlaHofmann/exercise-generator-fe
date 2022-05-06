@@ -1,5 +1,6 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" routerLink="">
+    <a class="navbar-brand" routerLink="#">
         <img src="../assets/img/fra-uas-logo.png" alt="Logo" height="35">
         ExGen
     </a>
@@ -9,25 +10,23 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item"><a class="nav-link" routerLink="exercise-sheets">Exercise Sheets</a></li>
-        <li class="nav-item"><a class="nav-link" routerLink="exercise-db">Exercise Database</a></li>
-        <li class="nav-item"><a class="nav-link" routerLink="add-exercise">Add Exercise</a></li> 
-      </ul>
-    </div>
 
+        <li class="nav-item"><a class="nav-link" (click)="route()">Exercise Sheets</a></li>
+        <li class="nav-item"><a class="nav-link" (click)="route()">Exercise Database</a></li>
+        <li class="nav-item"><a class="nav-link" (click)="route()">Add Exercise</a></li>
+      </ul>
+
+    </div>
     <div style="text-align: right" class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" routerLink="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" routerLink="/login">Log In</a>
+          <a class="dropdown-item" routerLink="/Login">Log In</a>
         </div>
       </li>
     </ul>
     </div>
   </nav>
-
-
-<router-outlet></router-outlet>
