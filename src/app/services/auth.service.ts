@@ -30,7 +30,7 @@ export class AuthService {
                 this._isProfessor = true;
                 break;
             default:
-                this._isStudent = false;
+                this._isStudent = true;
                 this._isProfessor = false;
                 break;
         }

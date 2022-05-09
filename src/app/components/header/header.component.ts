@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
+import { RoleEnum } from 'src/app/enums/RoleEnum';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -9,13 +11,18 @@ import {ActivatedRoute, Router} from "@angular/router";
 export class HeaderComponent implements OnInit {
 
   constructor(private router: Router,
-              private activatedRoute: ActivatedRoute) { }
+              private activatedRoute: ActivatedRoute,
+              private authService: AuthService) { }
 
   ngOnInit(): void {
   }
 
-  public route(): void {
-    this.router.navigate(["dashboard"], {relativeTo: this.activatedRoute});
-}
+  get isProfessor(): boolean {
+    return this.authService.isProfessor;
+  }
 
+  public logOutAsProfessor(): void {
+    this.authService.authenticate(RoleEnum.STUDENT);
+    this.router.navigate([""], {relativeTo: this.activatedRoute});
+  }
 }

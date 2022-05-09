@@ -30,24 +30,25 @@ export class LoginComponent implements OnInit {
     public logInAsProfessor(): void {
         const loginData: LoginData = this.loginForm.value;
 
-        this.loginService.logIn(loginData).subscribe({
-            next: () => {
-                this.authService.authenticate(RoleEnum.PROFESSOR);
-                this.router.navigate([""], {relativeTo: this.activatedRoute});
-                this.isFailedLoginAttempt = false;
-            },
-            error: () => {
-                this.authService.authenticate(RoleEnum.PROFESSOR);
-                this.router.navigate([""], {relativeTo: this.activatedRoute});
-                this.isFailedLoginAttempt = false;
-                //this.authService.authenticate(RoleEnum.INVALID);
-                //this.isFailedLoginAttempt = true;
-            }
-        });
+        this.authService.authenticate(RoleEnum.PROFESSOR);
+        this.router.navigate([""], {relativeTo: this.activatedRoute});
+        this.isFailedLoginAttempt = false;
+
+        // this.loginService.logIn(loginData).subscribe({
+        //     next: () => {
+        //         this.authService.authenticate(RoleEnum.PROFESSOR);
+        //         this.router.navigate([""], {relativeTo: this.activatedRoute});
+        //         this.isFailedLoginAttempt = false;
+        //     },
+        //     error: () => {
+        //         this.authService.authenticate(RoleEnum.PROFESSOR);
+        //         this.router.navigate([""], {relativeTo: this.activatedRoute});
+        //         this.isFailedLoginAttempt = false;
+        //         //this.authService.authenticate(RoleEnum.STUDENT);
+        //         //this.isFailedLoginAttempt = true;
+        //     }
+        // });
     }
 
-    public logInAsStudent(): void {
-        this.authService.authenticate(RoleEnum.STUDENT);
-        this.router.navigate([""], {relativeTo: this.activatedRoute});
-    }
+    
 }
