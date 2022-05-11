@@ -16,6 +16,7 @@ export class AuthService {
     }
 
     get isProfessor(): boolean{
+        // return true;
         return this._isProfessor
     }
 
