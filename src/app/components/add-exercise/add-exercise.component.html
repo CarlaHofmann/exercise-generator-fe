@@ -35,13 +35,23 @@
 
     <div class="form-group">
     <label for="topic">Topic</label>
-    <ng-select [items]="items" [addTag]="true" appendTo="body" formControlName="topic_name" bindLabel="topic_name" placeholder="Choose or add a topic: "  class="form-control input-sm" required="true">
+    <ng-select [items]="items" [addTag]="true" [multiple]="false" class="form-control input-sm" appendTo="body" formControlName="topic_name" bindLabel="topic_name" placeholder="Choose or add a topic: "   required="true">
     </ng-select>
     <div *ngIf="uploadForm.controls['topic_name'].touched && uploadForm.controls['topic_name'].invalid" class="alert alert-danger">
         <div *ngIf="uploadForm.controls['topic_name'].errors?.['required']">Topic is mandatory.</div>
         <div *ngIf="uploadForm.controls['topic_name'].errors?.['minlength']">Topic should be at least 1 character long.</div>
     </div>
     </div>
+    
+
+    <div class="form-group">
+        <label for="exercise">Short Desciption</label>
+        <textarea class="form-control" id="shortDescription" formControlName="shortDescription" rows="3"></textarea>
+        <div *ngIf="uploadForm.controls['shortDescription'].touched && uploadForm.controls['exercise'].invalid" class="alert alert-danger">
+            <div *ngIf="uploadForm.controls['shortDescription'].errors?.['required']">Short description is mandatory.</div>
+            <div *ngIf="uploadForm.controls['shortDescription'].errors?.['minlength']">The short description should be at least 1 character long.</div>
+        </div>
+        </div>
 
     <div class="form-group">
     <label for="exercise">Latex code for exercise</label>
@@ -66,10 +76,10 @@
     <label for="customFile">Upload additional image files</label>
     <input type="file" class="form-control" formControlName="customFile" id="customFile" (change)="onFileChange($event)" multiple/>
     </div>
-
-    <div class="text-center form-group">
-        <button type="submit" class="text-center btn btn-secondary">Add exercise</button>  &nbsp;&nbsp;
-        <button type="submit" class="text-center btn btn-secondary">Preview ????</button>
+    <div class="text-center">
+    <div class="form-group btn-group text-center " >
+        <button type="submit" class="text-center btn btn-success">Add exercise</button> 
+        <button class="text-center btn btn-primary">Compile and preview</button>
       </div>
-
+      </div>
 </form>
