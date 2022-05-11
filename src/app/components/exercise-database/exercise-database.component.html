@@ -44,19 +44,19 @@
   </form>
 -->
 
-  
+
+
   <div class="mat-elevation-z8">
     <ng-select 
-    [clearSearchOnAdd]="true"
-    (change)="filterTopics($event)"
-    [clearable]="false"
-    [items]="topics"
-    [multiple] = "true"
-    bindLabel="topics"
-    placeholder = "Filter by topic"
-    style="margin-right: 100px;margin-left: 100px;">
+[clearSearchOnAdd]="true"
+(change)="filterTopics($event)"
+[clearable]="false"
+[items]="topics"
+[multiple] = "true"
+bindLabel="topics"
+placeholder = "Filter by topic"
+style="margin-right: 100px;margin-left: 100px;">
 </ng-select>
-
     <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)" class="mat-elevation-z8">
 
       <!-- Position Column -->
