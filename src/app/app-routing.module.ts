@@ -11,7 +11,7 @@ import { ExerciseDatabaseComponent } from './components/exercise-database/exerci
 const routes: Routes = [
     {path: "login", component: LoginComponent},
     {path: "exercise-sheets", component: ExerciseSheetsComponent, canActivate: []},
-    {path: "add-exercise", component: AddExerciseComponent, canActivate: [AuthGuardProfessorService]},
+    {path: "add-exercise", component: AddExerciseComponent, canActivate: []},
     {path: "exercise-db", component: ExerciseDatabaseComponent, canActivate: []},
     {path: "**", component: DashboardComponent},
 ];

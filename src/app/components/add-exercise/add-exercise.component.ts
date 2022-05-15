@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable,throwError  } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
-import {Topic, GetTopicsResponse} from './topic_def';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+
+
+import {  FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-add-exercise',
@@ -23,6 +22,7 @@ export class AddExerciseComponent implements OnInit {
       uploadForm = new FormGroup({
         title: new FormControl('', [Validators.required, Validators.minLength(1)]),
         topic_name: new FormControl('', [Validators.required, Validators.minLength(1)]),
+        shortDescription: new FormControl('', [Validators.required, Validators.minLength(1)]),
         exercise: new FormControl('', [Validators.required, Validators.minLength(1)]),
         solution: new FormControl('', [Validators.required, Validators.minLength(1)]),
         customFile: new FormControl('', [])
@@ -30,6 +30,14 @@ export class AddExerciseComponent implements OnInit {
 
     // file names
       myFiles:string [] = [];
+
+      showAlert = false;
+      typeAlert = '';
+      alertMessage = '';
+
+      closeAlert():void{
+        this.showAlert = false;
+      }
 
       constructor(private formBuilder: FormBuilder, private http: HttpClient) { }
 
@@ -63,6 +71,7 @@ export class AddExerciseComponent implements OnInit {
 
             formData.append('title', this.uploadForm.get('title')!.value);
             formData.append('topic', this.uploadForm.get('topic_name')!.value.topic_name);
+            formData.append('shortDescription', this.uploadForm.get('exercise')!.value);
             formData.append('exercise', this.uploadForm.get('exercise')!.value);
             formData.append('solution', this.uploadForm.get('solution')!.value);
             //formData.append('file', this.uploadForm.get('customFile')!.value);
@@ -71,8 +80,18 @@ export class AddExerciseComponent implements OnInit {
               }
               // send the content to the server
             this.http.post<any>(this.post_url, formData).subscribe(
-              (res) => console.log(res),
-              (err) => console.log(err)
+              (res) => {console.log('Success' + res)
+              this.alertMessage = "Exercise added successfully";
+              this.typeAlert = "success";
+              this.showAlert = true;
+              this.uploadForm.reset();
+            },
+              (err) => {console.log(err)
+                this.alertMessage = "Error while adding exercise: "+err;
+                this.typeAlert = "danger";
+                this.showAlert = true;
+              
+              }
             );
           }
 
@@ -83,3 +102,13 @@ export class AddExerciseComponent implements OnInit {
         }
 
 }
+
+
+export interface Topic  {
+  id: number;
+  topic_name: string;
+};
+
+export interface GetTopicsResponse {
+  data: Topic[];
+};

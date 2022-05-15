@@ -21,7 +21,12 @@
   </div>
 -->
 
-<h1>Add Exercise</h1>
+<h1 style="text-align:center;">Add Exercise</h1>
+
+<p *ngIf="showAlert">
+  <ngb-alert [type]="typeAlert" (closed)="closeAlert()">{{alertMessage}}</ngb-alert>
+</p>
+  <div class="mat-elevation-z8">
 
 <form class=" border border-light p-5" [formGroup] = "uploadForm" (ngSubmit)="onSubmit()">
     <div class="form-group">
@@ -34,23 +39,23 @@
     </div>
 
     <div class="form-group">
-    <label for="topic">Topic</label>
-    <ng-select [items]="items" [addTag]="true" [multiple]="false" class="form-control input-sm" appendTo="body" formControlName="topic_name" bindLabel="topic_name" placeholder="Choose or add a topic: "   required="true">
+    <label for="topic_name">Topic</label>
+    <ng-select [items]="items" [addTag]="true" [multiple]="false" class=" input-sm" id="topic_name" appendTo="body" formControlName="topic_name" bindLabel="topic_name" placeholder="Choose or add a topic: "   required="true">
     </ng-select>
     <div *ngIf="uploadForm.controls['topic_name'].touched && uploadForm.controls['topic_name'].invalid" class="alert alert-danger">
-        <div *ngIf="uploadForm.controls['topic_name'].errors?.['required']">Topic is mandatory.</div>
-        <div *ngIf="uploadForm.controls['topic_name'].errors?.['minlength']">Topic should be at least 1 character long.</div>
-    </div>
+      <div *ngIf="uploadForm.controls['topic_name'].errors?.['required']">Topic is mandatory.</div>
+      <div *ngIf="uploadForm.controls['topic_name'].errors?.['minlength']">Topic should be at least 1 character long.</div>
+  </div> 
     </div>
     
 
     <div class="form-group">
-        <label for="exercise">Short Desciption</label>
+        <label for="shortDescription">Short Desciption</label>
         <textarea class="form-control" id="shortDescription" formControlName="shortDescription" rows="3"></textarea>
-        <div *ngIf="uploadForm.controls['shortDescription'].touched && uploadForm.controls['exercise'].invalid" class="alert alert-danger">
+        <div *ngIf="uploadForm.controls['shortDescription'].touched && uploadForm.controls['shortDescription'].invalid" class="alert alert-danger">
             <div *ngIf="uploadForm.controls['shortDescription'].errors?.['required']">Short description is mandatory.</div>
             <div *ngIf="uploadForm.controls['shortDescription'].errors?.['minlength']">The short description should be at least 1 character long.</div>
-        </div>
+        </div> 
         </div>
 
     <div class="form-group">
@@ -59,7 +64,7 @@
     <div *ngIf="uploadForm.controls['exercise'].touched && uploadForm.controls['exercise'].invalid" class="alert alert-danger">
         <div *ngIf="uploadForm.controls['exercise'].errors?.['required']">Exercise is mandatory.</div>
         <div *ngIf="uploadForm.controls['exercise'].errors?.['minlength']">The exercise should be at least 1 character long.</div>
-    </div>
+    </div> 
     </div>
 
 
@@ -69,7 +74,7 @@
     <div *ngIf="uploadForm.controls['solution'].touched && uploadForm.controls['solution'].invalid" class="alert alert-danger">
         <div *ngIf="uploadForm.controls['solution'].errors?.['required']">The solution is mandatory.</div>
         <div *ngIf="uploadForm.controls['solution'].errors?.['minlength']">The solution should be at least 1 character long.</div>
-    </div>
+    </div> 
     </div>
 
     <div class="form-group files color">
@@ -80,6 +85,6 @@
     <div class="form-group btn-group text-center " >
         <button type="submit" class="text-center btn btn-success">Add exercise</button> 
         <button class="text-center btn btn-primary">Compile and preview</button>
-      </div>
+      </div> 
       </div>
 </form>

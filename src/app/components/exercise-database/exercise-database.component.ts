@@ -5,6 +5,8 @@ import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 import { MatSort, Sort} from '@angular/material/sort';
 import {LiveAnnouncer} from '@angular/cdk/a11y';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {AuthService} from "../../services/auth.service";
 
 @Component({
   selector: 'app-exercise-database',
@@ -13,7 +15,7 @@ import {LiveAnnouncer} from '@angular/cdk/a11y';
 })
 export class ExerciseDatabaseComponent implements OnInit,AfterViewInit {
 
-  constructor(private http: HttpClient, private _liveAnnouncer: LiveAnnouncer) { }
+  constructor(private http: HttpClient, private _liveAnnouncer: LiveAnnouncer, private authService: AuthService) { }
 
   ngOnInit(): void {
     this.loadExercises();
@@ -30,6 +32,9 @@ export class ExerciseDatabaseComponent implements OnInit,AfterViewInit {
   displayedColumns: string[] = ['title', 'topic', 'shortDescription', 'action'];
   dataSource = new MatTableDataSource<exerciseEntry>([]);
 
+  showAlert = false;
+  alertMessage = "dsadasdas";
+
   searchString: string;
   topics : string [] = ['dasdas','1111'];
   
@@ -43,19 +48,30 @@ export class ExerciseDatabaseComponent implements OnInit,AfterViewInit {
   ngAfterViewInit() {
     //this.dataSource.paginator = this.paginator;
     //this.dataSource.sort = this.sort;
+    
   }
 
+  get isProfessor(): boolean {
+    return this.authService.isProfessor;
+  }
+
+  closeAlert(): void{
+  
+    this.showAlert = false;
+  }
   removeExercise(id: string){
 
     this.http.delete(this.url_delete+id).subscribe({
             next: data => {
               // TODO: dialog
-                alert('Delete successful');
+                //alert('Delete successful');
                 this.loadExercises();
                 //refresh list
             },
             error: error => {
-                alert('There was an error: ' + error.message);
+                // alert('There was an error: ' + error.message);
+                this.alertMessage = 'Error while trying to delete an exercise: '+error.message;
+                this.showAlert = true;
             }
         });
   }
@@ -70,7 +86,9 @@ export class ExerciseDatabaseComponent implements OnInit,AfterViewInit {
           this.topics = Array.from((new Set(data.map(element=> element.topic))).values());
       },
       error: error => {
-         alert('There was an error: ' + error.message);
+         // alert('There was an error: ' + error.message);
+         this.alertMessage = 'Error loading the database: '+error.message;
+         this.showAlert = true;
       }
   });
   }
