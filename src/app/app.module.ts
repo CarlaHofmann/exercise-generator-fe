@@ -12,10 +12,8 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { AddExerciseComponent } from './components/add-exercise/add-exercise.component';
 import { ExerciseSheetsComponent } from './components/exercise-sheets/exercise-sheets.component';
-import { ExerciseDBComponent } from './components/exercise-db/exercise-db.component';
 import { HeaderComponent } from './components/header/header.component';
 
-import { ExercisesComponent } from './components/exercises/exercises.component';
 import { MatTableModule } from '@angular/material/table';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ExerciseDatabaseComponent } from './components/exercise-database/exercise-database.component';
@@ -29,9 +27,7 @@ import {MatSort} from '@angular/material/sort';
         DashboardComponent,
         AddExerciseComponent,
         ExerciseSheetsComponent,
-        ExerciseDBComponent,
         HeaderComponent,
-        ExercisesComponent,
         ExerciseDatabaseComponent
     ],
     imports: [
