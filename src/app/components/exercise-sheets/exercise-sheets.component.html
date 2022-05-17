@@ -1,1 +1,47 @@
-<h1>Exercise Sheets</h1>
+<div style="margin-top: 10px;margin-bottom: 10px;margin-left: 10px;">
+    <h1>Exercise Sheets</h1>
+</div>
+
+<nav class="navbar navbar-expand-lg sticky-top navbar-white bg-white">
+
+    <div class="collapse navbar-collapse">
+        <select class="form-select" aria-label="Default select example" style="margin-right: 1000px;margin-left: 20px;">
+            <option selected>Select a professor</option>
+            <option value="#">bremm@fb2.fra-uas.de</option>
+        </select>
+    </div>
+    <div class="justify-content-end">
+        <button type="button" class="btn btn-secondary" routerLink="create-exercise-sheet"
+            style="margin-right: 20px;">Create Exercise
+            Sheet</button>
+    </div>
+</nav>
+
+<div style="margin-left: 10px; margin-right: 10px;">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Category</th>
+                <th scope="col">Professor</th>
+                <th scope="col">Publish Date</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{Name}}</td>
+                <td>{{Categories}}</td>
+                <td>{{Professor}}</td>
+                <td>{{PublishDate}}</td>
+                <td><button type="button" class="btn btn-success btn-sm"><svg xmlns="http://www.w3.org/2000/svg"
+                            width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+                            <path
+                                d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+                            <path
+                                d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
+                        </svg></button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
