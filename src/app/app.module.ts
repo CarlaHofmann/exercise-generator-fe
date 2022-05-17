@@ -18,7 +18,8 @@ import { MatTableModule } from '@angular/material/table';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ExerciseDatabaseComponent } from './components/exercise-database/exercise-database.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import {MatSort} from '@angular/material/sort';
+import {MatSort, MatSortModule} from '@angular/material/sort';
+import {ExerciseFormComponent} from "./components/exercise-form/exercise-form.component";
 
 @NgModule({
     declarations: [
@@ -28,6 +29,8 @@ import {MatSort} from '@angular/material/sort';
         AddExerciseComponent,
         ExerciseSheetsComponent,
         HeaderComponent,
+        ExerciseDatabaseComponent,
+        ExerciseFormComponent,
         ExerciseDatabaseComponent
     ],
     imports: [
@@ -43,6 +46,7 @@ import {MatSort} from '@angular/material/sort';
         MatTableModule,
         BrowserAnimationsModule,
         MatTooltipModule,
+        MatSortModule,
         //MatSort
     ],
     providers: [],

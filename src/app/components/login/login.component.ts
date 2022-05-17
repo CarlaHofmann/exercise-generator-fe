@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder} from "@angular/forms";
+import {FormControl, FormGroup} from "@angular/forms";
 import {LoginData, LoginService} from "../../../../build/openapi";
 import {AuthService} from "../../services/auth.service";
 import {RoleEnum} from "../../enums/RoleEnum";
@@ -11,14 +11,13 @@ import {ActivatedRoute, Router} from "@angular/router";
     styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-    public loginForm = this.loginFormBuilder.group({
-        name: "",
-        password: ""
+    public loginForm = new FormGroup({
+        name: new FormControl(""),
+        password: new FormControl("")
     });
     public isFailedLoginAttempt = false;
 
-    constructor(private loginFormBuilder: FormBuilder,
-                private loginService: LoginService,
+    constructor(private loginService: LoginService,
                 private authService: AuthService,
                 private router: Router,
                 private activatedRoute: ActivatedRoute) {
@@ -29,6 +28,7 @@ export class LoginComponent implements OnInit {
 
     public logInAsProfessor(): void {
         const loginData: LoginData = this.loginForm.value;
+        console.log(loginData)
 
         this.authService.authenticate(RoleEnum.PROFESSOR);
         this.router.navigate([""], {relativeTo: this.activatedRoute});
@@ -50,5 +50,5 @@ export class LoginComponent implements OnInit {
         // });
     }
 
-    
+
 }

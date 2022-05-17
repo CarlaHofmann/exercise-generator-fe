@@ -5,21 +5,6 @@ info:
     version: 1.0.0
     title: Execercise Generator API
 paths:
-    /test:
-        summary: Get test string
-        get:
-            tags:
-                - Test
-            summary: Get test string
-            operationId: getTest
-            responses:
-                '200':
-                    description: Expected response to a valid request
-                    content:
-                        text/plain:
-                            schema:
-                                type: string
-                                example: pong
     /login:
         summary: Log in with credentials
         post:
@@ -31,18 +16,121 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: LoginData
+                            $ref: '#/components/schemas/LoginData'
                 description: Data to log in
             responses:
                 '200':
                     description: Response if login was successful
                 '400':
                     description: Response if login was not successful
+
+    /exercise:
+        summary: manipulate and get exercises from the BE
+        get:
+            tags:
+                - Exercise
+            summary: get all exercises from BE
+            operationId: getAllExercises
+            responses:
+                '200':
+                    description: returns all exercises
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Exercise'
+        post:
+            tags:
+                - Exercise
+            summary: create a new exercise
+            operationId: createExercise
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Exercise'
+            responses:
+                '200':
+                    description: new exercise was successfully created
+
+    /exercise/{id}:
+        get:
+            summary: gets exercise with a specific id
+            tags:
+                - Exercise
+            operationId: getExerciseById
+            parameters:
+                -   in: path
+                    name: id
+                    schema:
+                        type: string
+                    required: true
+                    description: ID of the exercise
+            responses:
+                '200':
+                    description: returns exercise with a specific id
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Exercise'
+
+    /categories:
+        summary: manipulate and get categories from the BE
+        get:
+            tags:
+                - Category
+            summary: get all categories from BE
+            operationId: getAllCategories
+            responses:
+                '200':
+                    description: returns all categories
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Category'
+        post:
+            tags:
+                - Category
+            summary: create a new category
+            operationId: createCategory
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Category'
+            responses:
+                '200':
+                    description: new category was successfully created
+
+    /categories/{id}:
+        get:
+            summary: gets category with a specific id
+            tags:
+                - Category
+            operationId: getCategoryById
+            parameters:
+                -   in: path
+                    name: id
+                    schema:
+                        type: string
+                    required: true
+                    description: ID of the category
+            responses:
+                '200':
+                    description: returns category with a specific id
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Category'
+
 components:
     schemas:
         LoginData:
             type: object
-            description: Data from Login-Form
+            description: the login data sent to the BE
             required:
                 - name
                 - password
@@ -50,4 +138,103 @@ components:
                 name:
                     type: string
                 password:
+                    type: string
+
+        ExerciseAbstract:
+            type: object
+            description: the abstract exercise object
+            required:
+                - title
+                - text
+                - categories
+                - solutions
+            properties:
+                title:
+                    type: string
+                text:
+                    type: string
+                shortText:
+                    type: string
+                images:
+                    type: array
+                    items:
+                        type: string
+                solutions:
+                    type: array
+                    items:
+                        oneOf:
+                            -   $ref: '#/components/schemas/TextSolution'
+                            -   $ref: '#/components/schemas/ImageSolution'
+
+        Exercise:
+            description: the exercise object
+            allOf:
+                -   $ref: '#/components/schemas/ExerciseAbstract'
+                -   type: object
+                    properties:
+                        id:
+                            type: string
+                        author:
+                            $ref: '#/components/schemas/Author'
+                        categories:
+                            type: array
+                            items:
+                                $ref: '#/components/schemas/Category'
+                        subExercises:
+                            type: array
+                            items:
+                                $ref: '#/components/schemas/SubExercise'
+
+        SubExercise:
+            description: the subexercise object
+            allOf:
+                -   $ref: '#/components/schemas/ExerciseAbstract'
+                -   type: object
+
+        Author:
+            type: object
+            description: the author object
+            properties:
+                name:
+                    type: string
+
+        Category:
+            type: object
+            description: the category object
+            required:
+                - name
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+
+        SolutionType:
+            type: string
+            enum:
+                - TEXT
+                - IMAGE
+
+        TextSolution:
+            type: object
+            description: the text solution object
+            required:
+                - type
+                - text
+            properties:
+                type:
+                    type: string
+                text:
+                    type: string
+
+        ImageSolution:
+            type: object
+            description: the image solution object
+            required:
+                - type
+                - image
+            properties:
+                type:
+                    type: string
+                image:
                     type: string
