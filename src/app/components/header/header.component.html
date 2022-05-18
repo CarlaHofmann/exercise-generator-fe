@@ -28,7 +28,6 @@
         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
           <a *ngIf="!isProfessor" class="dropdown-item" routerLink="/login">Log In</a>
           <a *ngIf="isProfessor" class="dropdown-item" routerLink="/my-data">My Data</a>
-          <a *ngIf="isProfessor" class="dropdown-item" routerLink="/exercise-sheets">My Exercise Sheets</a>
           <div *ngIf="isProfessor" class="dropdown-divider"></div>
           <a *ngIf="isProfessor" class="dropdown-item" (click)="logOutAsProfessor()">Log Out</a>
         </div>

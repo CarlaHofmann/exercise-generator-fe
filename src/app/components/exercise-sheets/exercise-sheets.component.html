@@ -1,14 +1,24 @@
 <div style="margin-top: 10px;margin-bottom: 10px;margin-left: 10px;">
     <h1>Exercise Sheets</h1>
 </div>
-
 <nav class="navbar navbar-expand-lg sticky-top navbar-white bg-white">
-
+    <!-- [(ngModel)]="filterText" (input)="filter()" -->
     <div class="collapse navbar-collapse">
-        <select class="form-select" aria-label="Default select example" style="margin-right: 1000px;margin-left: 20px;">
-            <option selected>Select a professor</option>
-            <option value="#">bremm@fb2.fra-uas.de</option>
-        </select>
+        <div class="justify-content-start" style="margin-right: 20px;margin-left: 20px;"><select class="form-select"
+                id="professor-select" (change)="selectProfessorChangeHandler($event)">
+                <option value="All professors">All professors</option>
+                <option value="andersson@fb2.fra-uas.de">andersson@fb2.fra-uas.de</option>
+                <option value="bremm@fb2.fra-uas.de">bremm@fb2.fra-uas.de</option>
+                <option value="godehardt@fb2.fra-uas.de">godehardt@fb2.fra-uas.de</option>
+            </select></div>
+        <div style="margin-right: 20px;margin-left: 20px;"><select class="form-select" id="category-select"
+                (change)="selectCategoryChangeHandler($event)">
+                <option value="All categories">All categories</option>
+                <option value="Probability Calculation">Probability Calculation</option>
+                <option value="R">R</option>
+                <option value="Statistics">Statistics</option>
+                <option value="SWT">SWT</option>
+            </select></div>
     </div>
     <div class="justify-content-end">
         <button type="button" class="btn btn-secondary" routerLink="create-exercise-sheet"
@@ -16,7 +26,6 @@
             Sheet</button>
     </div>
 </nav>
-
 <div style="margin-left: 10px; margin-right: 10px;">
     <table class="table">
         <thead>
@@ -29,13 +38,90 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>{{Name}}</td>
-                <td>{{Categories}}</td>
-                <td>{{Professor}}</td>
-                <td>{{PublishDate}}</td>
-                <td><button type="button" class="btn btn-success btn-sm"><svg xmlns="http://www.w3.org/2000/svg"
-                            width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+            <tr *ngIf="selectedProfessor == 'All professors' && selectedCategory == 'All categories'|| 
+                selectedProfessor == 'bremm@fb2.fra-uas.de' && selectedCategory == 'All categories' || 
+                selectedProfessor == 'All professors' && selectedCategory == 'Statistics'|| 
+                selectedProfessor == 'bremm@fb2.fra-uas.de' && selectedCategory == 'Statistics' ">
+                <td>Exercise Sheet Nr. 5</td>
+                <td>Statistics</td>
+                <td>bremm@fb2.fra-uas.de</td>
+                <td>17.05.2022 16:03:22</td>
+                <td><button type="submit" class="btn btn-success btn-sm"
+                        onclick="window.open('http://www.africau.edu/images/default/sample.pdf')"><svg
+                            xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-download" viewBox="0 0 16 16">
+                            <path
+                                d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+                            <path
+                                d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
+                        </svg></button></td>
+            </tr>
+            <tr *ngIf="selectedProfessor == 'All professors' && selectedCategory == 'All categories'|| 
+                selectedProfessor == 'andersson@fb2.fra-uas.de' && selectedCategory == 'All categories' || 
+                selectedProfessor == 'All professors' && selectedCategory == 'R'|| 
+                selectedProfessor == 'andersson@fb2.fra-uas.de' && selectedCategory == 'R' ">
+                <td>Exercise Sheet Sprint 3</td>
+                <td>R</td>
+                <td>andersson@fb2.fra-uas.de</td>
+                <td>16.05.2022 14:13:47</td>
+                <td><button type="submit" class="btn btn-success btn-sm"
+                        onclick="window.open('http://www.africau.edu/images/default/sample.pdf')"><svg
+                            xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-download" viewBox="0 0 16 16">
+                            <path
+                                d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+                            <path
+                                d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
+                        </svg></button></td>
+            </tr>
+            <tr *ngIf="selectedProfessor == 'All professors' && selectedCategory == 'All categories'|| 
+                selectedProfessor == 'bremm@fb2.fra-uas.de' && selectedCategory == 'All categories' || 
+                selectedProfessor == 'All professors' && selectedCategory == 'Statistics'|| 
+                selectedProfessor == 'bremm@fb2.fra-uas.de' && selectedCategory == 'Statistics' ">
+                <td>Exercise Sheet Nr. 4</td>
+                <td>Statistics</td>
+                <td>bremm@fb2.fra-uas.de</td>
+                <td>10.05.2022 11:05:43</td>
+                <td><button type="submit" class="btn btn-success btn-sm"
+                        onclick="window.open('http://www.africau.edu/images/default/sample.pdf')"><svg
+                            xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-download" viewBox="0 0 16 16">
+                            <path
+                                d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+                            <path
+                                d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
+                        </svg></button></td>
+            </tr>
+            <tr *ngIf="selectedProfessor == 'All professors' && selectedCategory == 'All categories'|| 
+                selectedProfessor == 'godehardt@fb2.fra-uas.de' && selectedCategory == 'All categories' || 
+                selectedProfessor == 'All professors' && selectedCategory == 'SWT'|| 
+                selectedProfessor == 'godehardt@fb2.fra-uas.de' && selectedCategory == 'SWT' ">
+                <td>Exercise Sheet Week 3</td>
+                <td>SWT</td>
+                <td>godehardt@fb2.fra-uas.de</td>
+                <td>09.05.2022 18:48:26</td>
+                <td><button type="submit" class="btn btn-success btn-sm"
+                        onclick="window.open('http://www.africau.edu/images/default/sample.pdf')"><svg
+                            xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-download" viewBox="0 0 16 16">
+                            <path
+                                d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+                            <path
+                                d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
+                        </svg></button></td>
+            </tr>
+            <tr *ngIf="selectedProfessor == 'All professors' && selectedCategory == 'All categories'|| 
+                selectedProfessor == 'bremm@fb2.fra-uas.de' && selectedCategory == 'All categories' || 
+                selectedProfessor == 'All professors' && selectedCategory == 'Probability Calculation'|| 
+                selectedProfessor == 'bremm@fb2.fra-uas.de' && selectedCategory == 'Probability Calculation' ">
+                <td>Exercise Sheet Nr. 3</td>
+                <td>Probability Calculation</td>
+                <td>bremm@fb2.fra-uas.de</td>
+                <td>03.05.2022 12:59:39</td>
+                <td><button type="submit" class="btn btn-success btn-sm"
+                        onclick="window.open('http://www.africau.edu/images/default/sample.pdf')"><svg
+                            xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-download" viewBox="0 0 16 16">
                             <path
                                 d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
                             <path
