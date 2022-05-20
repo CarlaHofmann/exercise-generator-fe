@@ -11,9 +11,6 @@ export class AuthService {
     constructor() {
     }
 
-    get isStudent(): boolean{
-        return this._isStudent;
-    }
 
     get isProfessor(): boolean{
         // return true;

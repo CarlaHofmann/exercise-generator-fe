@@ -5,30 +5,11 @@ info:
     version: 1.0.0
     title: Execercise Generator API
 paths:
-    /login:
-        summary: Log in with credentials
-        post:
-            tags:
-                - Login
-            summary: Log in with credentials
-            operationId: logIn
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/LoginData'
-                description: Data to log in
-            responses:
-                '200':
-                    description: Response if login was successful
-                '400':
-                    description: Response if login was not successful
-
     /exercise:
         summary: manipulate and get exercises from the BE
         get:
             tags:
-                - Exercise
+                - ExerciseApi
             summary: get all exercises from BE
             operationId: getAllExercises
             responses:
@@ -42,7 +23,7 @@ paths:
                                     $ref: '#/components/schemas/Exercise'
         post:
             tags:
-                - Exercise
+                - ExerciseApi
             summary: create a new exercise
             operationId: createExercise
             requestBody:
@@ -58,7 +39,7 @@ paths:
         get:
             summary: gets exercise with a specific id
             tags:
-                - Exercise
+                - ExerciseApi
             operationId: getExerciseById
             parameters:
                 -   in: path
@@ -79,7 +60,7 @@ paths:
         summary: manipulate and get categories from the BE
         get:
             tags:
-                - Category
+                - CategoryApi
             summary: get all categories from BE
             operationId: getAllCategories
             responses:
@@ -93,7 +74,7 @@ paths:
                                     $ref: '#/components/schemas/Category'
         post:
             tags:
-                - Category
+                - CategoryApi
             summary: create a new category
             operationId: createCategory
             requestBody:
@@ -109,7 +90,7 @@ paths:
         get:
             summary: gets category with a specific id
             tags:
-                - Category
+                - CategoryApi
             operationId: getCategoryById
             parameters:
                 -   in: path
@@ -140,21 +121,37 @@ components:
                 password:
                     type: string
 
-        ExerciseAbstract:
+        Exercise:
             type: object
-            description: the abstract exercise object
+            description: the exercise object
             required:
                 - title
                 - text
                 - categories
                 - solutions
             properties:
+                id:
+                    type: string
+                author:
+                    $ref: '#/components/schemas/Author'
                 title:
                     type: string
-                text:
+                categories:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Category'
+                hiddenCategories:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Category'
+                shortDescription:
                     type: string
-                shortText:
+                note:
                     type: string
+                texts:
+                    type: array
+                    items:
+                        type: string
                 images:
                     type: array
                     items:
@@ -162,34 +159,7 @@ components:
                 solutions:
                     type: array
                     items:
-                        oneOf:
-                            -   $ref: '#/components/schemas/TextSolution'
-                            -   $ref: '#/components/schemas/ImageSolution'
-
-        Exercise:
-            description: the exercise object
-            allOf:
-                -   $ref: '#/components/schemas/ExerciseAbstract'
-                -   type: object
-                    properties:
-                        id:
-                            type: string
-                        author:
-                            $ref: '#/components/schemas/Author'
-                        categories:
-                            type: array
-                            items:
-                                $ref: '#/components/schemas/Category'
-                        subExercises:
-                            type: array
-                            items:
-                                $ref: '#/components/schemas/SubExercise'
-
-        SubExercise:
-            description: the subexercise object
-            allOf:
-                -   $ref: '#/components/schemas/ExerciseAbstract'
-                -   type: object
+                        $ref: string
 
         Author:
             type: object
@@ -203,38 +173,59 @@ components:
             description: the category object
             required:
                 - name
+                - isHidden
             properties:
                 id:
                     type: string
                 name:
                     type: string
+                isHidden:
+                    type: boolean
 
-        SolutionType:
-            type: string
-            enum:
-                - TEXT
-                - IMAGE
-
-        TextSolution:
-            type: object
-            description: the text solution object
+        CreateExerciseDto:
             required:
-                - type
-                - text
-            properties:
-                type:
-                    type: string
-                text:
-                    type: string
-
-        ImageSolution:
+                - title
+                - categories
+                - texts
+                - solutions
             type: object
-            description: the image solution object
-            required:
-                - type
-                - image
             properties:
-                type:
+                title:
                     type: string
-                image:
+                shortDescription:
                     type: string
+                note:
+                    type: string
+                texts:
+                    type: array
+                    items:
+                        type: string
+                images:
+                    type: array
+                    items:
+                        type: string
+                solutions:
+                    type: array
+                    items:
+                        type: string
+                categories:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/CreateCategoryDto'
+                hiddenCategories:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/CreateCategoryDto'
+
+        CreateCategoryDto:
+            type: object
+            required:
+                - name
+                - isHidden
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                isHidden:
+                    type: boolean
