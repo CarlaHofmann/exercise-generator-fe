@@ -12,6 +12,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { AddExerciseComponent } from './components/add-exercise/add-exercise.component';
 import { ExerciseSheetsComponent } from './components/exercise-sheets/exercise-sheets.component';
+import { CreateExerciseSheetComponent } from './components/create-exercise-sheet/create-exercise-sheet.component';
 import { HeaderComponent } from './components/header/header.component';
 
 import { MatTableModule } from '@angular/material/table';
@@ -27,6 +28,7 @@ import {MatSort, MatSortModule} from '@angular/material/sort';
         DashboardComponent,
         AddExerciseComponent,
         ExerciseSheetsComponent,
+        CreateExerciseSheetComponent,
         HeaderComponent,
         ExerciseDatabaseComponent,
         ExerciseDatabaseComponent
