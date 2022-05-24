@@ -19,29 +19,36 @@ export class ExerciseDatabaseComponent implements OnInit,AfterViewInit {
   }
 
   url_delete = 'http://127.0.0.1:5000/professor/database/';
-  url_exercises = 'http://127.0.0.1:5000/api/database/list'
+  url_exercises = 'http://127.0.0.1:5000/api/database/list';
+  url_notes = 'http://127.0.0.1:5000/api/exercises/notes';
+
   EXERCISES_HARDCODED : exerciseEntry[] = [
-    {id: 1, title: "Ex1", category: "Calculus",shortDescription:"differential equations"},
-    {id: 2, title: "Ex2", category: "Calculus",shortDescription:"surface integrals"},
-    {id: 3, title: "Ex3", category: "Trigonometry",shortDescription:"sinus"},
-    {id: 4, title: "Ex4", category: "Algebra",shortDescription:"matrices and vectors"},
-    {id: 5, title: "Ex5", category: "Algebra",shortDescription:"linear systems"},
-    {id: 6, title: "Ex6", category: "Calculus",shortDescription:"more integrals"},
-    {id: 7, title: "Ex7", category: "Algebra",shortDescription:"eigenvalues and eigenvectors"},
-    {id: 8, title: "Ex8", category: "Calculus",shortDescription:"volume integrals"},
-    {id: 9, title: "Ex9", category: "Calculus",shortDescription:"more volume integrals"},
-    {id: 10,title: "Ex10",category: "Calculus",shortDescription:"even more volume integrals"},
-    {id: 11,title: "Ex11",category: "Calculus",shortDescription:"all the volume integrals"}
+    {id: 1, title: "Ex1", category: "Calculus",shortDescription:"differential equations",notes: "nothing",isUsed:true},
+    {id: 2, title: "Ex2", category: "Calculus",shortDescription:"surface integrals",notes: "nothing",isUsed:true},
+    {id: 3, title: "Ex3", category: "Trigonometry",shortDescription:"sinus",notes: "nothing",isUsed:true},
+    {id: 4, title: "Ex4", category: "Algebra",shortDescription:"matrices and vectors",notes: "nothing",isUsed:false},
+    {id: 5, title: "Ex5", category: "Algebra",shortDescription:"linear systems",notes: "nothing",isUsed:true},
+    {id: 6, title: "Ex6", category: "Calculus",shortDescription:"more integrals",notes: "nothing",isUsed:true},
+    {id: 7, title: "Ex7", category: "Algebra",shortDescription:"eigenvalues and eigenvectors",notes: "nothing",isUsed:true},
+    {id: 8, title: "Ex8", category: "Calculus",shortDescription:"volume integrals",notes: "nothing",isUsed:true},
+    {id: 9, title: "Ex9", category: "Calculus",shortDescription:"more volume integrals",notes: "nothing",isUsed:true},
+    {id: 10,title: "Ex10",category: "Calculus",shortDescription:"even more volume integrals",notes: "nothing",isUsed:true},
+    {id: 11,title: "Ex11",category: "Calculus",shortDescription:"all the volume integrals",notes: "nothing",isUsed:false}
     ];
 
   displayedColumns: string[] = ['title', 'category', 'shortDescription', 'action'];
   dataSource: exerciseEntry[] = [];
   displayExercises : exerciseEntry[] = [];
+ 
 
   searchString: string;
   categories : string [] = [];
   categoriesFilter : string [] = [];
 
+  func(event : any){
+
+    alert('pula');
+  }
  page : number = 1;
  pageSize: number = 10;
 
@@ -123,6 +130,37 @@ export class ExerciseDatabaseComponent implements OnInit,AfterViewInit {
     alert(JSON.stringify(event))
     
   }
+
+  saveNotes(id: number, value: string) {
+    for(var el of this.dataSource){
+      if(el.id==id)
+        el.notes = value;
+    }
+    for(var el of this.displayExercises){
+      if(el.id==id)
+        el.notes = value;
+    }
+    const headers = { 'content-type': 'text/plain'}  
+    const body={id:id, note: value};
+ 
+    this.http.post<any>(this.url_notes, body,{'headers':headers , observe: 'response'}).subscribe({
+      next: data => {
+        // TODO: dialog
+         // alert('success');
+          //refresh list
+      },
+      error: error => {
+          // alert('There was an error: ' + error.message);
+          this.alertMessage = 'Error while trying to edit a note: '+error.message;
+          this.showAlert = true;
+      }
+  });
+
+ 
+
+
+
+  }
 }
 
 
@@ -131,5 +169,7 @@ export interface exerciseEntry {
     title: string;
     category: string;
     shortDescription:string;
+    notes: string;
+    isUsed:boolean;
   }
 

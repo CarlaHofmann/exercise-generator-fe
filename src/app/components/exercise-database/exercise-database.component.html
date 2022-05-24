@@ -2,74 +2,125 @@
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>-->
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 
+<script>
+    $(document).ready(function () {
+        // Initialize popover
 
+
+        // Show alert when the popover has finished being hidden 
+        $("#myPopover").on("hidden.bs.popover", function () {
+            alert("Popover has been completely closed.");
+        });
+    });
+</script>
 
 <div style="margin-top: 10px;margin-bottom: 40px;margin-left: 10px;">
     <h1>Exercise Database</h1>
 </div>
 
-<div >
+<div>
     <p *ngIf="showAlert">
         <ngb-alert type="danger" (closed)="closeAlert()">{{alertMessage}}</ngb-alert>
-      </p>
-    <ng-select
-        [clearSearchOnAdd]="true"
-        (change)="filterCategories($event)"
-        [clearable]="false"
-        [items]="categories"
-        [multiple]="true"
-        bindLabel="categories"
-        placeholder="Filter by category"
+    </p>
+    <ng-select [clearSearchOnAdd]="true" (change)="filterCategories($event)" [clearable]="false" [items]="categories"
+        [multiple]="true" bindLabel="categories" placeholder="Filter by category"
         style="margin-right: 100px;margin-left: 100px;">
     </ng-select>
-    <table  class="table table-striped">
-      <thead>
-      <tr >
-        <th  scope="col" class="col-2" sortable="title" (sort)="onSort($event)"> Title 
-        </th>
-        <th  scope="col" class="col-2" (sort)="onSort($event)"> Category
-        </th>
-        <th  scope="col" class="col-4" > Short Description
-        </th>
-        <th  scope="col" class="col-1"> 
-            <div class="input-group" *ngIf="isProfessor">
-                <a class=" btn btn-primary "  routerLink="professor/add-exercise">
-                    <svg class="svg-icon" width="16" height="16" fill="white" class="bi bi-download" viewBox="2 2 16 16">
-                        <path d="M14.613,10c0,0.23-0.188,0.419-0.419,0.419H10.42v3.774c0,0.23-0.189,0.42-0.42,0.42s-0.419-0.189-0.419-0.42v-3.774H5.806c-0.23,0-0.419-0.189-0.419-0.419s0.189-0.419,0.419-0.419h3.775V5.806c0-0.23,0.189-0.419,0.419-0.419s0.42,0.189,0.42,0.419v3.775h3.774C14.425,9.581,14.613,9.77,14.613,10 M17.969,10c0,4.401-3.567,7.969-7.969,7.969c-4.402,0-7.969-3.567-7.969-7.969c0-4.402,3.567-7.969,7.969-7.969C14.401,2.031,17.969,5.598,17.969,10 M17.13,10c0-3.932-3.198-7.13-7.13-7.13S2.87,6.068,2.87,10c0,3.933,3.198,7.13,7.13,7.13S17.13,13.933,17.13,10"></path>                    </svg> Add exercise</a>
-            </div>
-        </th>
-      </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let element of displayExercises | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col" class="col-2" sortable="title" (sort)="onSort($event)"> Title
+                </th>
+                <th scope="col" class="col-2" (sort)="onSort($event)"> Category
+                </th>
+                <th scope="col" class="col-2"> Short Description
+                </th>
 
-     
-        <td scope="row">{{ element.title }}</td>
-        <td scope="row">{{ element.category }}</td>
-        <td scope="row">{{ element.shortDescription }}</td>
-        <td scope="row" class="text-right;">
-            <div class="btn-group" role="group" aria-label="group">
-                <button type="button" class="btn btn-primary" title="View the exercise as pdf">
-                    <svg class="svg-icon" width="16" height="16" fill="white" class="bi bi-download" viewBox="2 2 16 16">
-                        <path d="M10,6.978c-1.666,0-3.022,1.356-3.022,3.022S8.334,13.022,10,13.022s3.022-1.356,3.022-3.022S11.666,6.978,10,6.978M10,12.267c-1.25,0-2.267-1.017-2.267-2.267c0-1.25,1.016-2.267,2.267-2.267c1.251,0,2.267,1.016,2.267,2.267C12.267,11.25,11.251,12.267,10,12.267 M18.391,9.733l-1.624-1.639C14.966,6.279,12.563,5.278,10,5.278S5.034,6.279,3.234,8.094L1.609,9.733c-0.146,0.147-0.146,0.386,0,0.533l1.625,1.639c1.8,1.815,4.203,2.816,6.766,2.816s4.966-1.001,6.767-2.816l1.624-1.639C18.536,10.119,18.536,9.881,18.391,9.733 M16.229,11.373c-1.656,1.672-3.868,2.594-6.229,2.594s-4.573-0.922-6.23-2.594L2.41,10l1.36-1.374C5.427,6.955,7.639,6.033,10,6.033s4.573,0.922,6.229,2.593L17.59,10L16.229,11.373z"></path>
-                    </svg>
-                </button>
-                <button *ngIf="isProfessor" type="button" class="btn btn-warning" title="Edit the exercise">
-                    <svg class="svg-icon" width="16" height="16" fill="white" class="bi bi-download" viewBox="2 2 16 16">
-                        <path d="M18.303,4.742l-1.454-1.455c-0.171-0.171-0.475-0.171-0.646,0l-3.061,3.064H2.019c-0.251,0-0.457,0.205-0.457,0.456v9.578c0,0.251,0.206,0.456,0.457,0.456h13.683c0.252,0,0.457-0.205,0.457-0.456V7.533l2.144-2.146C18.481,5.208,18.483,4.917,18.303,4.742 M15.258,15.929H2.476V7.263h9.754L9.695,9.792c-0.057,0.057-0.101,0.13-0.119,0.212L9.18,11.36h-3.98c-0.251,0-0.457,0.205-0.457,0.456c0,0.253,0.205,0.456,0.457,0.456h4.336c0.023,0,0.899,0.02,1.498-0.127c0.312-0.077,0.55-0.137,0.55-0.137c0.08-0.018,0.155-0.059,0.212-0.118l3.463-3.443V15.929z M11.241,11.156l-1.078,0.267l0.267-1.076l6.097-6.091l0.808,0.808L11.241,11.156z"></path>
-                    </svg>
-                </button>
-                <button *ngIf="isProfessor" type="button" class="btn btn-danger" title="Delete the exercise from the database"
-                        (click)="removeExercise(element.id);">
-                        <svg class="svg-icon" width="16" height="16" fill="white" class="bi bi-download" viewBox="2 2 16 16">
-                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"></path>
-                        </svg>
-                </button>
-            </div>
-        </td>
-      </tr>
-      </tbody>
-      
+                <th scope="col" class="col-2" *ngIf="isProfessor"> Notes
+
+                </th>
+
+                <th scope="col" class="col-1" *ngIf="isProfessor"> Is used
+                </th>
+                <th scope="col" class="col-1">
+                    <div class="input-group" *ngIf="isProfessor">
+                        <a class=" btn btn-primary " routerLink="professor/add-exercise">
+                            <svg class="svg-icon" width="16" height="16" fill="white" class="bi bi-download"
+                                viewBox="2 2 16 16">
+                                <path
+                                    d="M14.613,10c0,0.23-0.188,0.419-0.419,0.419H10.42v3.774c0,0.23-0.189,0.42-0.42,0.42s-0.419-0.189-0.419-0.42v-3.774H5.806c-0.23,0-0.419-0.189-0.419-0.419s0.189-0.419,0.419-0.419h3.775V5.806c0-0.23,0.189-0.419,0.419-0.419s0.42,0.189,0.42,0.419v3.775h3.774C14.425,9.581,14.613,9.77,14.613,10 M17.969,10c0,4.401-3.567,7.969-7.969,7.969c-4.402,0-7.969-3.567-7.969-7.969c0-4.402,3.567-7.969,7.969-7.969C14.401,2.031,17.969,5.598,17.969,10 M17.13,10c0-3.932-3.198-7.13-7.13-7.13S2.87,6.068,2.87,10c0,3.933,3.198,7.13,7.13,7.13S17.13,13.933,17.13,10">
+                                </path>
+                            </svg> Add exercise</a>
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let element of displayExercises | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize;">
+
+
+                <td scope="row">{{ element.title }}</td>
+                <td scope="row">{{ element.category }} </td>
+                <td scope="row">{{ element.shortDescription }}
+                </td>
+                <td scope="row" *ngIf="isProfessor">
+
+                    <ng-template #popContent>
+
+                        <textarea class="form-control" rows="3" #input> {{ element.notes }} </textarea>
+                        <button type="button" class="btn btn-success" (click)="saveNotes(element.id,input.value)"
+                            style="text-align:center;width:100%;">
+                            Save<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-save" viewBox="0 0 16 16">
+                                <path
+                                    d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z" />
+                            </svg></button>
+
+                    </ng-template>
+                    <ng-template #popTitle>Notes </ng-template>
+
+                    <a type="button" id="myPopover" data-toggle="popover"
+                        class="btn btn-popover btn-block btn-outline-secondary"
+                        style="width:100%;height:100%;white-space: normal;word-wrap: break-word;"
+                        [ngbPopover]="popContent" autoClose="outside" [popoverTitle]="popTitle">
+                        {{ element.notes }}
+                    </a>
+                </td>
+                <td scope="row" *ngIf="isProfessor"><input class="form-check-input" type="checkbox"
+                        [(ngModel)]="element.isUsed" onclick="return false;" /></td>
+
+                <td scope="row" class="text-right;">
+                    <div class="btn-group" role="group" aria-label="group">
+                        <button type="button" class="btn btn-primary" title="View the exercise as pdf">
+                            <svg class="svg-icon" width="16" height="16" fill="white" class="bi bi-download"
+                                viewBox="2 2 16 16">
+                                <path
+                                    d="M10,6.978c-1.666,0-3.022,1.356-3.022,3.022S8.334,13.022,10,13.022s3.022-1.356,3.022-3.022S11.666,6.978,10,6.978M10,12.267c-1.25,0-2.267-1.017-2.267-2.267c0-1.25,1.016-2.267,2.267-2.267c1.251,0,2.267,1.016,2.267,2.267C12.267,11.25,11.251,12.267,10,12.267 M18.391,9.733l-1.624-1.639C14.966,6.279,12.563,5.278,10,5.278S5.034,6.279,3.234,8.094L1.609,9.733c-0.146,0.147-0.146,0.386,0,0.533l1.625,1.639c1.8,1.815,4.203,2.816,6.766,2.816s4.966-1.001,6.767-2.816l1.624-1.639C18.536,10.119,18.536,9.881,18.391,9.733 M16.229,11.373c-1.656,1.672-3.868,2.594-6.229,2.594s-4.573-0.922-6.23-2.594L2.41,10l1.36-1.374C5.427,6.955,7.639,6.033,10,6.033s4.573,0.922,6.229,2.593L17.59,10L16.229,11.373z">
+                                </path>
+                            </svg>
+                        </button>
+                        <button *ngIf="isProfessor" type="button" class="btn btn-warning" title="Edit the exercise">
+                            <svg class="svg-icon" width="16" height="16" fill="white" class="bi bi-download"
+                                viewBox="2 2 16 16">
+                                <path
+                                    d="M18.303,4.742l-1.454-1.455c-0.171-0.171-0.475-0.171-0.646,0l-3.061,3.064H2.019c-0.251,0-0.457,0.205-0.457,0.456v9.578c0,0.251,0.206,0.456,0.457,0.456h13.683c0.252,0,0.457-0.205,0.457-0.456V7.533l2.144-2.146C18.481,5.208,18.483,4.917,18.303,4.742 M15.258,15.929H2.476V7.263h9.754L9.695,9.792c-0.057,0.057-0.101,0.13-0.119,0.212L9.18,11.36h-3.98c-0.251,0-0.457,0.205-0.457,0.456c0,0.253,0.205,0.456,0.457,0.456h4.336c0.023,0,0.899,0.02,1.498-0.127c0.312-0.077,0.55-0.137,0.55-0.137c0.08-0.018,0.155-0.059,0.212-0.118l3.463-3.443V15.929z M11.241,11.156l-1.078,0.267l0.267-1.076l6.097-6.091l0.808,0.808L11.241,11.156z">
+                                </path>
+                            </svg>
+                        </button>
+                        <button *ngIf="isProfessor" type="button" class="btn btn-danger"
+                            title="Delete the exercise from the database" (click)="removeExercise(element.id);">
+                            <svg class="svg-icon" width="16" height="16" fill="white" class="bi bi-download"
+                                viewBox="2 2 16 16">
+                                <path
+                                    d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+
 
     </table>
     <div class="row ">
@@ -80,15 +131,19 @@
                 <option [ngValue]="10">10 items per page</option>
                 <option [ngValue]="25">25 items per page</option>
                 <option [ngValue]="50">50 items per page</option>
-              </select> </div>
-        <div class="col-4  d-flex justify-content-around" >
-            <ngb-pagination [collectionSize]="displayExercises.length" [(page)]="page" 
-            [pageSize]="pageSize" class="" (pageChange)="refreshExercises()" [boundaryLinks]="true"></ngb-pagination></div>
+            </select>
+        </div>
+        <div class="col-4  d-flex justify-content-around">
+            <ngb-pagination [collectionSize]="displayExercises.length" [(page)]="page" [pageSize]="pageSize" class=""
+                (pageChange)="refreshExercises()" [boundaryLinks]="true"></ngb-pagination>
+        </div>
         <div class="col-4 ">
-            </div>
-      </div>
-  </div>
-  <!--
+        </div>
+    </div>
+</div>
+
+
+<!--
 <div class="container">
     <ng-select
         [clearSearchOnAdd]="true"
