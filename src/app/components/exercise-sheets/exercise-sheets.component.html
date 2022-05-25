@@ -1,6 +1,6 @@
 <h1 class="p-4">Exercise Sheets</h1>
 
-<nav class="navbar navbar-expand-lg sticky-top navbar-white bg-white">
+<!-- <nav class="navbar navbar-expand-lg sticky-top navbar-white bg-white">
     <div class="collapse navbar-collapse">
         <div class="justify-content-start" style="margin-right: 20px;margin-left: 20px;">
             <ng-select [clearSearchOnAdd]="true" (change)="filterAuthors($event)" [clearable]="false" [items]="authors"
@@ -18,7 +18,7 @@
             style="margin-right: 20px;">Create Exercise
             Sheet</button>
     </div>
-</nav>
+</nav> -->
 
 <div style="margin-left: 10px; margin-right: 10px;">
     <table class="table table-striped">
@@ -36,13 +36,13 @@
         </thead>
         <tbody>
             <tr
-                *ngFor="let element of displayExerciseSheets | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
+                *ngFor="let sheet of sheets | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
 
 
-                <td scope="row">{{ element.title }}</td>
-                <td scope="row">{{ element.category }}</td>
-                <td scope="row">{{ element.author }}</td>
-                <td scope="row">{{ element.updatedAt }}</td>
+                <td scope="row">{{ sheet.title }}</td>
+                <td scope="row">{{ sheet.categories }}</td>
+                <td scope="row">{{ sheet.author }}</td>
+                <td scope="row">{{ sheet.updatedAt }}</td>
                 <td scope="row"><button type="submit" class="btn btn-success btn-sm"
                         onclick="window.open(element.download)"><svg xmlns="http://www.w3.org/2000/svg" width="16"
                             height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
@@ -56,7 +56,7 @@
         </tbody>
     </table>
 
-    <div class="row ">
+    <!-- <div class="row ">
         <div class="col-1 "></div>
         <div class="col-3 ">
             <select class="form-select" style="width:200px" [(ngModel)]="pageSize"
@@ -73,4 +73,4 @@
         </div>
         <div class="col-4 ">
         </div>
-    </div>
+    </div> -->
