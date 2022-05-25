@@ -1,69 +1,80 @@
 import { Component, OnInit } from '@angular/core';
 import { Author, Category, Sheet, SheetApiService } from 'build/openapi';
 import { AuthService } from 'src/app/services/auth.service';
+
 @Component({
     selector: 'app-exercise-sheets',
     templateUrl: './exercise-sheets.component.html',
     styleUrls: ['./exercise-sheets.component.css']
 })
+
+
 export class ExerciseSheetsComponent implements OnInit {
-    selectedProfessor: string = 'All professors';
-    selectedCategory: string = 'All categories'
+    public sheets: Sheet[] = [];
+
+    public authors: Author[] = [];
+    public categories: Category[] = [];
+    public commentArray: Category[] = []
+
+    public page: number = 1;
+    public pageSize: number = 10;
+
 
     constructor(private authService: AuthService,
-                private sheetApiService: SheetApiService) { }
-
-    ngOnInit(): void {
-        this.loadExerciseSheets();
-
+                private sheetApiService: SheetApiService) {
     }
 
-    sheets: Sheet[] = [];
-
-    authors: Author[] = [];
-    authorsFilter: string[] = [];
-    categories: Category[] = [];
-    categoriesFilter: string[] = [];
-
-    page: number = 1;
-    pageSize: number = 10;
+    public ngOnInit(): void {
+        this.loadExerciseSheets();
+    }
 
     get isProfessor(): boolean {
         return this.authService.isProfessor;
     }
 
-    private loadExerciseSheets(): void { 
+    private loadExerciseSheets(): void {
         this.sheetApiService.getAllSheets().subscribe({
             next: response => {
-                this.authors = Array.from(new Set(response.map(sheet => sheet.author)).values())
-                this.categories = Array.from(new Set(response.flatMap(sheet => sheet.categories)).values());
+                console.log(response);
+                this.authors = Array.from(new Set(response.map(sheet => sheet.author)).values());
+//                 console.log(this.authors);
+                console.log(response.flatMap(sheet => sheet.categories));
+                this.categories = Array.from(new Set(response.flatMap(sheet => sheet.categories)));
+                console.log(this.categories);
                 this.sheets = response;
+                console.log(this.sheets);
             },
             error: error => console.log(error)
         });
     }
 
-    // filterAuthors(values: any): void {
-    //     if (values.length > 0)
-    //         this.authorsFilter = values;
-    //     else
-    //         this.authorsFilter = [];
-    //     this.refreshExerciseSheets()
-    // }
+    public filterAuthors(values: any): void {
+         if (values.length > 0)
+             this.authors = values;
+         else
+             this.authors = [];
+     }
 
-    // filterCategories(values: any): void {
-    //     if (values.length > 0)
-    //         this.categoriesFilter = values;
-    //     else
-    //         this.categoriesFilter = [];
-    //     this.refreshExerciseSheets()
-    // }
+    public filterCategories(values: any): void {
+         if (values.length > 0)
+             this.categories = values;
+         else
+             this.categories = [];
+    }
 
-    // refreshExerciseSheets() {
-    //     this.displayExerciseSheets = this.dataSource
-    //         .filter(exerciseSheets => this.authorsFilter.length == 0 || this.authorsFilter.some(x => x === exerciseSheets.author))
-    //         .filter(exerciseSheets => this.categoriesFilter.length == 0 || this.categoriesFilter.some(x => x === exerciseSheets.category))
-    //     // .slice((this.page - 1) * this.pageSize, (this.page - 1) * this.pageSize + this.pageSize);
+    public getSheetCategories(categories: Category[]): string {
+        let categoriesString = "";
 
-    // }
+        for (let i=0; i < categories.length; i++){
+            this.categoriesString += categories[i].name
+        }
+    }
+
+//     refreshExerciseSheets() {
+//         this.displayExerciseSheets = this.dataSource
+//             .filter(exerciseSheets => this.authorsFilter.length == 0 || this.authorsFilter.some(x => x === exerciseSheets.author))
+//             .filter(exerciseSheets => this.categoriesFilter.length == 0 || this.categoriesFilter.some(x => x === exerciseSheets.category))
+//         // .slice((this.page - 1) * this.pageSize, (this.page - 1) * this.pageSize + this.pageSize);
+//
+//     }
 }
