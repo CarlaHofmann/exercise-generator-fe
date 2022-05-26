@@ -11,10 +11,11 @@ import { AuthService } from 'src/app/services/auth.service';
 
 export class ExerciseSheetsComponent implements OnInit {
     public sheets: Sheet[] = [];
-
     public authors: Author[] = [];
     public categories: Category[] = [];
-    public commentArray: Category[] = []
+
+    public filteredAuthorNames: String[] = [];
+    public filteredCategoryNames: String[] = [];
 
     public page: number = 1;
     public pageSize: number = 10;
@@ -28,53 +29,62 @@ export class ExerciseSheetsComponent implements OnInit {
         this.loadExerciseSheets();
     }
 
-    get isProfessor(): boolean {
-        return this.authService.isProfessor;
-    }
 
     private loadExerciseSheets(): void {
         this.sheetApiService.getAllSheets().subscribe({
             next: response => {
-                console.log(response);
-                this.authors = Array.from(new Set(response.map(sheet => sheet.author)).values());
-//                 console.log(this.authors);
-                console.log(response.flatMap(sheet => sheet.categories));
-                this.categories = Array.from(new Set(response.flatMap(sheet => sheet.categories)));
-                console.log(this.categories);
+                const uniqueAuthors: Author[] = [];
+                response.map(sheet => sheet.author).filter((author: Author) => {
+                    let i = uniqueAuthors.findIndex(a => a.name === author.name);
+                    if(i < 0){
+                        uniqueAuthors.push(author);
+                    }
+                    return null;
+                })
+                this.authors = uniqueAuthors;
+
+                const uniqueCategories: Category[] = [];
+                response.flatMap(sheet => sheet.categories).filter((category: Category) => {
+                    let i = uniqueCategories.findIndex(c => c.name === category.name);
+                    if(i < 0){
+                        uniqueCategories.push(category);
+                    }
+                    return null;
+                })
+                this.categories = uniqueCategories;
+
                 this.sheets = response;
-                console.log(this.sheets);
             },
             error: error => console.log(error)
         });
     }
 
-    public filterAuthors(values: any): void {
-         if (values.length > 0)
-             this.authors = values;
-         else
-             this.authors = [];
-     }
+    get filteredSheets(): Sheet[] {
+        return this.sheets.filter((sheet: Sheet) => {
+                                        if (this.filteredAuthorNames.length){
+                                            return this.filteredAuthorNames.includes(sheet.author.name)
+                                        }
+                                        return true;
+                                  })
+                          .filter((sheet: Sheet) => {
+                                        if (this.filteredCategoryNames.length){
+                                            return sheet.categories.map((category: Category) => category.name)
+                                                                   .some((categoryName: String) => this.filteredCategoryNames
+                                                                        .includes(categoryName));
+                                        }
+                                        return true;
+                                  });
+    }
 
-    public filterCategories(values: any): void {
-         if (values.length > 0)
-             this.categories = values;
-         else
-             this.categories = [];
+    public filterAuthorsChange(authors: any): void {
+        this.filteredAuthorNames = authors.map((author: Author) => author.name);
+    }
+
+    public filterCategoriesChange(categories: any): void {
+        this.filteredCategoryNames = categories.map((category: Category) => category.name);
     }
 
     public getSheetCategories(categories: Category[]): string {
-        let categoriesString = "";
-
-        for (let i=0; i < categories.length; i++){
-            this.categoriesString += categories[i].name
-        }
+        return categories.map(category => category.name).join(", ");
     }
-
-//     refreshExerciseSheets() {
-//         this.displayExerciseSheets = this.dataSource
-//             .filter(exerciseSheets => this.authorsFilter.length == 0 || this.authorsFilter.some(x => x === exerciseSheets.author))
-//             .filter(exerciseSheets => this.categoriesFilter.length == 0 || this.categoriesFilter.some(x => x === exerciseSheets.category))
-//         // .slice((this.page - 1) * this.pageSize, (this.page - 1) * this.pageSize + this.pageSize);
-//
-//     }
 }

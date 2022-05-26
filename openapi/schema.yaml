@@ -196,6 +196,8 @@ components:
         Author:
             type: object
             description: the author object
+            required:
+                - name
             properties:
                 name:
                     type: string
