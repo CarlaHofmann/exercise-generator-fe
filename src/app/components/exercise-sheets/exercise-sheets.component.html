@@ -56,7 +56,7 @@
     <div class="row ">
         <div class="col-1 "></div>
         <div class="col-3 ">
-            <select class="form-select" style="width:200px" [(ngModel)]="pageSize">
+            <select class="form-select" style="width:200px" [(ngModel)]="pageSize" (ngModelChange)="filteredSheets">
                 <option [ngValue]="5">5 items per page</option>
                 <option [ngValue]="10">10 items per page</option>
                 <option [ngValue]="25">25 items per page</option>
@@ -64,8 +64,8 @@
             </select>
         </div>
         <div class="col-4  d-flex justify-content-around">
-            <ngb-pagination [(page)]="page" [pageSize]="pageSize"
-                class=""[boundaryLinks]="true"></ngb-pagination>
+            <ngb-pagination [collectionSize]="sheets.length" [(page)]="page" [pageSize]="pageSize"
+                class="" (pageChange)="filteredSheets" [boundaryLinks]="true"></ngb-pagination>
         </div>
         <div class="col-4 ">
         </div>
