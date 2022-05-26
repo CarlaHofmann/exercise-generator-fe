@@ -1,6 +1,6 @@
-openapi: '3.0.0'
+openapi: "3.0.0"
 servers:
-    -   url: http://localhost:8080/
+    - url: http://localhost:8080/
 info:
     version: 1.0.0
     title: Execercise Generator API
@@ -13,14 +13,14 @@ paths:
             summary: get all exercises from BE
             operationId: getAllExercises
             responses:
-                '200':
+                "200":
                     description: returns all exercises
                     content:
                         application/json:
                             schema:
                                 type: array
                                 items:
-                                    $ref: '#/components/schemas/Exercise'
+                                    $ref: "#/components/schemas/Exercise"
         post:
             tags:
                 - ExerciseApi
@@ -30,9 +30,9 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/Exercise'
+                            $ref: "#/components/schemas/Exercise"
             responses:
-                '200':
+                "200":
                     description: new exercise was successfully created
 
     /exercise/{id}:
@@ -42,19 +42,19 @@ paths:
                 - ExerciseApi
             operationId: getExerciseById
             parameters:
-                -   in: path
-                    name: id
-                    schema:
-                        type: string
-                    required: true
-                    description: ID of the exercise
+                - in: path
+                  name: id
+                  schema:
+                      type: string
+                  required: true
+                  description: ID of the exercise
             responses:
-                '200':
+                "200":
                     description: returns exercise with a specific id
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Exercise'
+                                $ref: "#/components/schemas/Exercise"
 
     /categories:
         summary: manipulate and get categories from the BE
@@ -64,14 +64,14 @@ paths:
             summary: get all categories from BE
             operationId: getAllCategories
             responses:
-                '200':
+                "200":
                     description: returns all categories
                     content:
                         application/json:
                             schema:
                                 type: array
                                 items:
-                                    $ref: '#/components/schemas/Category'
+                                    $ref: "#/components/schemas/Category"
         post:
             tags:
                 - CategoryApi
@@ -81,9 +81,9 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/Category'
+                            $ref: "#/components/schemas/Category"
             responses:
-                '200':
+                "200":
                     description: new category was successfully created
 
     /categories/{id}:
@@ -93,19 +93,51 @@ paths:
                 - CategoryApi
             operationId: getCategoryById
             parameters:
-                -   in: path
-                    name: id
-                    schema:
-                        type: string
-                    required: true
-                    description: ID of the category
+                - in: path
+                  name: id
+                  schema:
+                      type: string
+                  required: true
+                  description: ID of the category
             responses:
-                '200':
+                "200":
                     description: returns category with a specific id
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Category'
+                                $ref: "#/components/schemas/Category"
+
+    /sheet:
+        get:
+            tags:
+                - SheetApi
+            operationId: getAllSheets
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/Sheet"
+        post:
+            tags:
+                - SheetApi
+            operationId: createSheet
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/CreateSheetDto"
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Sheet"
 
 components:
     schemas:
@@ -133,17 +165,17 @@ components:
                 id:
                     type: string
                 author:
-                    $ref: '#/components/schemas/Author'
+                    $ref: "#/components/schemas/Author"
                 title:
                     type: string
                 categories:
                     type: array
                     items:
-                        $ref: '#/components/schemas/Category'
+                        $ref: "#/components/schemas/Category"
                 hiddenCategories:
                     type: array
                     items:
-                        $ref: '#/components/schemas/Category'
+                        $ref: "#/components/schemas/Category"
                 shortDescription:
                     type: string
                 note:
@@ -164,6 +196,8 @@ components:
         Author:
             type: object
             description: the author object
+            required:
+                - name
             properties:
                 name:
                     type: string
@@ -181,6 +215,38 @@ components:
                     type: string
                 isHidden:
                     type: boolean
+
+        Sheet:
+            type: object
+            required:
+                - title
+                - author
+                - categories
+                - exercises
+            properties:
+                id:
+                    type: string
+                createdAt:
+                    type: string
+                    format: date-time
+                updatedAt:
+                    type: string
+                    format: date-time
+                title:
+                    type: string
+                publishedAt:
+                    type: string
+                    format: date-time
+                author:
+                    $ref: "#/components/schemas/Author"
+                categories:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/Category"
+                exercises:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/Exercise"
 
         CreateExerciseDto:
             required:
@@ -211,11 +277,11 @@ components:
                 categories:
                     type: array
                     items:
-                        $ref: '#/components/schemas/CreateCategoryDto'
+                        $ref: "#/components/schemas/CreateCategoryDto"
                 hiddenCategories:
                     type: array
                     items:
-                        $ref: '#/components/schemas/CreateCategoryDto'
+                        $ref: "#/components/schemas/CreateCategoryDto"
 
         CreateCategoryDto:
             type: object
@@ -229,3 +295,23 @@ components:
                     type: string
                 isHidden:
                     type: boolean
+
+        CreateSheetDto:
+            required:
+                - exercises
+                - title
+            type: object
+            properties:
+                title:
+                    type: string
+                publishedAt:
+                    type: string
+                    format: date-time
+                exercises:
+                    type: array
+                    items:
+                        type: string
+                categories:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/CreateCategoryDto'
