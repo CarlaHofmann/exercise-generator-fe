@@ -89,7 +89,7 @@
                                 </path>
                             </svg>
                         </button>
-                        <button *ngIf="isProfessor" type="button" class="btn btn-warning" title="Edit the exercise">
+                        <button *ngIf="isProfessor" type="button" class="btn btn-warning" title="Edit the exercise" routerLink="/exercise/62922a572979ca7c17a8fa3d/edit">
                             <svg class="svg-icon" width="16" height="16" fill="white" class="bi bi-download"
                                 viewBox="2 2 16 16">
                                 <path
@@ -153,19 +153,19 @@
             <td mat-cell *matCellDef="let element"> {{element.title}} </td>
         </ng-container>
 
-      
+
         <ng-container matColumnDef="topic">
             <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by topic"> Topic</th>
             <td mat-cell *matCellDef="let element"> {{element.topic}} </td>
         </ng-container>
 
-       
+
         <ng-container matColumnDef="shortDescription">
             <th mat-header-cell *matHeaderCellDef> Short Description</th>
             <td mat-cell *matCellDef="let element"> {{element.shortDescription}} </td>
         </ng-container>
 
-        
+
         <ng-container matColumnDef="action">
             <th mat-header-cell *matHeaderCellDef style=" text-align:right">
                 <div class="input-group">
