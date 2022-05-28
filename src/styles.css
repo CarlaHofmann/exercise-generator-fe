@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-
+@import "~bootstrap-icons/font/bootstrap-icons.css";
 @import "~@ng-select/ng-select/themes/material.theme.css";
 @import "../node_modules/@angular/material/prebuilt-themes/indigo-pink.css";
 
@@ -8,6 +8,16 @@
     --secondary-colour: #3587fd;
     --secondary-disabled-colour: #679ff1;
     --secondary-hover-colour: #196cee;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    height: calc(100vh - 15rem);
+}
+
+.center *{
+    align-self: center;
 }
 
 .btn-secondary{
@@ -136,4 +146,8 @@
 
 .ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value{
     background-color: var(--bs-primary);
+}
+
+.bi-info-circle {
+    color: #b8b8b8;
 }
