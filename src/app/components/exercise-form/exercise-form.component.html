@@ -1,11 +1,9 @@
-<form class="border border-secondary px-5 pt-2" [formGroup]="exerciseForm">
+<form class="px-5 pt-2" [formGroup]="exerciseForm">
     <div class="form-group">
-        <label for="titleExercise" *ngIf="isExercise">Title</label>
-        <label for="titleSub" *ngIf="!isExercise">Title</label>
-        <input type="text" class="form-control" id="titleExercise" [formControlName]="'title'" aria-describedby="titleHelp"
-               placeholder="Exercise title" *ngIf="isExercise" (change)="onFormChange()">
-        <input type="text" class="form-control" id="titleSub" [formControlName]="'title'" aria-describedby="titleHelp"
-               placeholder="Sub-exercise title" *ngIf="!isExercise" (change)="onFormChange()">
+        <label for="exercise">Title</label>
+        <i class="bi bi-info-circle mx-4" title="This is the title of the exercise."></i>
+        <input type="text" class="form-control" id="exercise" [formControlName]="'title'"
+               placeholder="Exercise title" (change)="onFormChange()">
         <div *ngIf="exerciseForm.controls['title'].touched && exerciseForm.controls['title'].invalid"
              class="alert alert-danger">
             <div *ngIf="exerciseForm.controls['title'].hasError('required')">Title is mandatory.</div>
@@ -15,31 +13,19 @@
     </div>
 
 
-    <div class="form-group" *ngIf="isExercise">
-        <label for="categories">Category</label>
-        <ng-select [items]="categories" [addTag]="true" [multiple]="true" class="form-control input-sm" appendTo="body"
-                   formControlName="categories" id="categories" placeholder="Choose or add a category: "
-                   required="true" (change)="onFormChange()">
-        </ng-select>
-        <div *ngIf="exerciseForm.controls['categories'].touched && exerciseForm.controls['categories'].invalid"
-             class="alert alert-danger">
-            <div *ngIf="exerciseForm.controls['categories'].hasError('required')">Category is mandatory.</div>
-            <div *ngIf="exerciseForm.controls['categories'].hasError('minlength')">Category should be at least 1
-                character
-                long.
-            </div>
-        </div>
-    </div>
-
-
     <div class="form-group">
-        <label for="text" *ngIf="isExercise">LaTeX code for exercise</label>
-        <label for="text" *ngIf="!isExercise">LaTeX code for sub-exercise</label>
-        <textarea class="form-control" id="text" formControlName="text" rows="3" (change)="onFormChange()"></textarea>
-        <div *ngIf="exerciseForm.controls['text'].touched && exerciseForm.controls['text'].invalid"
+        <label for="courses">Courses</label>
+        <i class="bi bi-info-circle mx-4" title="These are the course names that the exercise correspond to."></i>
+        <ng-select [items]="courses" [bindLabel]="'name'" [addTag]="true" [multiple]="true"
+                   class="form-control input-sm"
+                   appendTo="body"
+                   formControlName="courses" id="courses" placeholder="Choose or add a course:"
+                   (change)="onFormChange()">
+        </ng-select>
+        <div *ngIf="exerciseForm.controls['courses'].touched && exerciseForm.controls['courses'].invalid"
              class="alert alert-danger">
-            <div *ngIf="exerciseForm.controls['text'].hasError('required') && isExercise">Exercise is mandatory.</div>
-            <div *ngIf="exerciseForm.controls['text'].hasError('minlength') && isExercise">The exercise should be at least 1
+            <div *ngIf="exerciseForm.controls['courses'].hasError('required')">Course is mandatory.</div>
+            <div *ngIf="exerciseForm.controls['courses'].hasError('minlength')">Course should be at least 1
                 character long.
             </div>
         </div>
@@ -47,14 +33,34 @@
 
 
     <div class="form-group">
-        <label for="shortText">LaTeX code for short description</label>
-        <textarea class="form-control" id="shortText" formControlName="shortText" rows="3" (change)="onFormChange()"></textarea>
-        <div
-            *ngIf="exerciseForm.controls['shortText'].touched && exerciseForm.controls['shortText'].invalid"
-            class="alert alert-danger">
-            <div *ngIf="exerciseForm.controls['shortText'].hasError('required')">Short description is mandatory.
+        <label for="categories">Categories</label>
+        <i class="bi bi-info-circle mx-4" title="These are the category names that the exercise correspond to."></i>
+        <ng-select [items]="categories" [bindLabel]="'name'" [addTag]="true" [multiple]="true"
+                   class="form-control input-sm" appendTo="body"
+                   formControlName="categories" id="categories" placeholder="Choose or add a category:"
+                   required="true" (change)="onFormChange()">
+        </ng-select>
+        <div *ngIf="exerciseForm.controls['categories'].touched && exerciseForm.controls['categories'].invalid"
+             class="alert alert-danger">
+            <div *ngIf="exerciseForm.controls['categories'].hasError('required')">Category is mandatory.</div>
+            <div *ngIf="exerciseForm.controls['categories'].hasError('minlength')">Category should be at least 1
+                character long.
             </div>
-            <div *ngIf="exerciseForm.controls['shortText'].hasError('minlength')">The short description should be
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <label for="shortDescription">Short description</label>
+        <i class="bi bi-info-circle mx-4" title="This is the short description, which will be used as a preview later. Enter text and not LaTeX."></i>
+        <textarea class="form-control" id="shortDescription" formControlName="shortDescription" rows="3"
+                  (change)="onFormChange()"></textarea>
+        <div
+            *ngIf="exerciseForm.controls['shortDescription'].touched && exerciseForm.controls['shortDescription'].invalid"
+            class="alert alert-danger">
+            <div *ngIf="exerciseForm.controls['shortDescription'].hasError('required')">Short description is mandatory.
+            </div>
+            <div *ngIf="exerciseForm.controls['shortDescription'].hasError('minlength')">The short description should be
                 at least 1 character long.
             </div>
         </div>
@@ -62,23 +68,79 @@
 
 
     <div class="form-group">
-        <div class="dropzone w-25">
-            <input type="file" multiple id="exerciseImages" (change)="onImageChange($event)">
-            <h3>Drag and drop image here</h3>
-            <h3>or</h3>
-            <label for="exerciseImages">Browse for image</label>
+        <label for="note">Notes for professor</label>
+        <i class="bi bi-info-circle mx-4" title="The notes will not be public, only the author can see them."></i>
+        <textarea class="form-control" id="note" formControlName="note" rows="3" (change)="onFormChange()"></textarea>
+    </div>
+
+
+    <div class="form-group">
+        <div class="d-flex row col-2">
+            <div class="col-auto">LaTeX code for exercise</div>
+            <i class="bi bi-info-circle col-auto" title="Here the LaTeX code for the exercise is entered. Every input box corresponds to a page in the PDF."></i>
         </div>
-        <div class="files-list w-25">
-            <div class="single-file" *ngFor="let imageData of exerciseImages; let imageIndex = index">
+        <div *ngFor="let text of texts.controls; let textIndex = index">
+            <div class="mt-1">
+                <label *ngIf="texts.length > 1">Page {{textIndex + 1}}</label>
+                <i class="bi bi-trash3 mx-4" (click)="deleteText(textIndex)" *ngIf="textIndex !== 0"></i>
+                <textarea class="form-control" [formControl]="$any(text)" rows="3"
+                          (change)="onFormChange()"></textarea>
+            </div>
+            <div *ngIf="text.touched && text.invalid"
+                 class="alert alert-danger">
+                <div *ngIf="text.hasError('required')">The text is mandatory.</div>
+                <div *ngIf="text.hasError('minlength')">The text should be at least 1 character long.
+                </div>
+            </div>
+        </div>
+        <button class="btn btn-secondary mt-2" (click)="addText()">Add page</button>
+    </div>
+
+
+    <div class="form-group">
+        <div class="d-flex row col-2">
+            <div class="col-auto">LaTeX code for solution</div>
+            <i class="bi bi-info-circle col-auto" title="Here the LaTeX code for the solution is entered. Every input box corresponds to a page in the PDF."></i>
+        </div>
+        <div *ngFor="let solution of solutions.controls; let solutionIndex = index">
+            <div class="mt-1">
+                <label *ngIf="solutions.length > 1">Page {{solutionIndex + 1}}</label>
+                <i class="bi bi-trash3 mx-4" (click)="deleteSolution(solutionIndex)" *ngIf="solutionIndex !== 0"></i>
+                <textarea class="form-control" [formControl]="$any(solution)" rows="3"
+                          (change)="onFormChange()"></textarea>
+            </div>
+            <div *ngIf="solution.touched && solution.invalid"
+                 class="alert alert-danger">
+                <div *ngIf="solution.hasError('required')">The solution is mandatory.</div>
+                <div *ngIf="solution.hasError('minlength')">The solution should be at least 1 character long.
+                </div>
+            </div>
+        </div>
+        <button class="btn btn-secondary mt-2" (click)="addSolution()">Add page</button>
+    </div>
+
+
+    <div class="form-group">
+        <div class="dropzone col-6 d-flex justify-content-center align-items-center">
+            <div>
+                <input type="file" multiple id="exerciseImages" (change)="onImageChange($event)">
+                <h3>Drag and drop image here</h3>
+                <h3>or</h3>
+                <label for="exerciseImages">Browse for image</label>
+            </div>
+        </div>
+
+        <div class="files-list">
+            <div class="single-file" *ngFor="let imageData of images; let imageIndex = index">
                 <div class="info">
                     <div class="row">
-                        <h4 class="name col-5">{{imageData.image.name}}</h4>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                             class="bi bi-trash3 col-sm-1" viewBox="0 0 16 16" (click)="deleteImage(imageIndex)">
-                            <path
-                                d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
-                        </svg>
+                        <div class="col"></div>
+                        <h4 class="name col-auto">{{imageData.image.name}}</h4>
+                        <div class="col text-end">
+                            <i class="bi bi-trash3" (click)="deleteImage(imageIndex)"></i>
+                        </div>
                     </div>
+                    <h5 class="name">Reference to use in LaTeX code above: ##{{imageIndex}}</h5>
                     <p class="size">{{formatBytes(imageData.image.size)}}</p>
                     <img class="preview" src="{{imageData.url}}">
                 </div>
@@ -87,53 +149,12 @@
     </div>
 
 
-    <div class="form-group">
-        <p *ngIf="solutions.length === 1">LaTeX code for solution</p>
-        <p *ngIf="solutions.length > 1">LaTeX code for solutions</p>
-        <div *ngFor="let solution of solutions.controls; let solutionIndex = index">
-            <div class="mt-1">
-                <label *ngIf="solutions.length === 1">Solution</label>
-                <label *ngIf="solutions.length > 1">Solution {{solutionIndex + 1}}</label>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                     class="bi bi-trash3 col-sm-1" viewBox="0 0 16 16" (click)="deleteSolution(solutionIndex)" *ngIf="solutionIndex !== 0">
-                    <path
-                        d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
-                </svg>
-                <textarea class="form-control" [formControl]="$any(solution)" rows="3" (change)="onFormChange()"></textarea>
-            </div>
-            <div *ngIf="solution.touched && solution.invalid && solutionIndex === 0"
-                 class="alert alert-danger">
-                <div *ngIf="solution.hasError('required')">The solution is mandatory.</div>
-                <div *ngIf="solution.hasError('minlength')">The solution should be at least 1
-                    character long.
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="dropzone w-25">
-                    <input type="file" multiple id="solutionImages" (change)="onImageChange($event)">
-                    <h3>Drag and drop image here</h3>
-                    <h3>or</h3>
-                    <label for="solutionImages">Browse for image</label>
-                </div>
-                <div class="files-list w-25">
-                    <div class="single-file" *ngFor="let imageData of solutionsImages[solutionIndex]; let imageIndex = index">
-                        <div class="info">
-                            <div class="row">
-                                <h4 class="name col-5">{{imageData.image.name}}</h4>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                     class="bi bi-trash3 col-sm-1" viewBox="0 0 16 16" (click)="deleteImage(imageIndex)">
-                                    <path
-                                        d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
-                                </svg>
-                            </div>
-                            <p class="size">{{formatBytes(imageData.image.size)}}</p>
-                            <img class="preview" src="{{imageData.url}}">
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="text-center pt-4">
+        <div class="form-group text-center">
+            <button type="submit" class="btn btn-primary mx-3" (click)="onSubmit()" [disabled]="exerciseForm.invalid">
+                Add exercise
+            </button>
+            <button class="btn btn-secondary" [disabled]="exerciseForm.invalid">Compile and preview</button>
         </div>
-        <button class="btn btn-primary mt-2" (click)="addSolution()">Add solution</button>
     </div>
 </form>

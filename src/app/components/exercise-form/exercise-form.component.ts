@@ -1,15 +1,17 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
 import {
     Category,
-    CategoryService,
+    CategoryApiService,
+    Course,
+    CourseApiService,
+    CreateCategoryDto,
+    CreateCourseDto,
+    CreateExerciseDto,
     Exercise,
-    ExerciseService,
-    TextSolution,
-    SubExercise,
-    SolutionType
+    ExerciseApiService
 } from "../../../../build/openapi";
-import {AddExerciseService} from "../../services/add-exercise.service";
+import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
     selector: 'app-exercise-form',
@@ -18,157 +20,177 @@ import {AddExerciseService} from "../../services/add-exercise.service";
 })
 export class ExerciseFormComponent implements OnInit {
     @Input()
-    public isExercise: boolean = true;  //if false isSubexercise
+    public isAddExercise: boolean = true;
 
-    @Input()
-    public subExerciseIndex: number;
+    private exercise: Exercise;
+    private createExerciseDto: CreateExerciseDto;
 
-    public exercise: Exercise;
-
-    public subExercise: SubExercise;
-
-    public exerciseImages: { image: File, url: string }[] = [];
-
-    public solutionsImages: { image: File, url: string }[][] = [];
+    public images: { image: File, url: string }[] = [];
 
     public exerciseForm: FormGroup;
+    public texts: FormArray = new FormArray([]);
+    public solutions: FormArray = new FormArray([]);
 
-    public solutions = new FormArray([new FormControl("", [Validators.required, Validators.minLength(1)])]);
-
+    public courses: Course[] = [];
     public categories: Category[] = [];
 
-
-    constructor(private exerciseService: ExerciseService,
-                private categoryService: CategoryService,
-                private addExerciseService: AddExerciseService) {
+    constructor(private route: ActivatedRoute,
+                private router: Router,
+                private exerciseApiService: ExerciseApiService,
+                private courseApiService: CourseApiService,
+                private categoryApiService: CategoryApiService) {
     }
 
-    public ngOnInit(): void {
+    ngOnInit(): void {
         this.resetForm();
 
         this.exerciseForm = new FormGroup({
             title: new FormControl("", [Validators.required, Validators.minLength(1)]),
-            text: new FormControl("", [Validators.required, Validators.minLength(1)]),
-            shortText: new FormControl(""),
-            solutions: this.solutions,
+            courses: new FormControl("", [Validators.required, Validators.minLength(1)]),
+            categories: new FormControl("", [Validators.required, Validators.minLength(1)]),
+            note: new FormControl(""),
+            shortDescription: new FormControl("", [Validators.required, Validators.minLength(1)]),
+            texts: this.texts,
+            solutions: this.solutions
         });
 
-        if (this.isExercise) {
-            this.getCategories();
-            this.exerciseForm.addControl("categories", new FormControl([], [Validators.required, Validators.minLength(1)]));
+        if (this.isAddExercise) {
+            this.texts.push(new FormControl("", [Validators.required, Validators.minLength(1)]));
+            this.solutions.push(new FormControl("", [Validators.required, Validators.minLength(1)]));
+        } else {
+            this.route.params.subscribe(params => this.loadExercise(params["id"]));
+        }
+
+        this.loadCourses();
+        this.loadCategories();
+    }
+
+    private loadExercise(id: string): void {
+        this.exerciseApiService.getExerciseById(id).subscribe({
+            next: response => {
+                this.exercise = response;
+
+                this.exerciseForm = new FormGroup({
+                    title: new FormControl(this.exercise.title, [Validators.required, Validators.minLength(1)]),
+                    courses: new FormControl(this.exercise.courses, [Validators.required, Validators.minLength(1)]),
+                    categories: new FormControl(this.exercise.categories, [Validators.required, Validators.minLength(1)]),
+                    note: new FormControl(this.exercise.note),
+                    shortDescription: new FormControl(this.exercise.shortDescription, [Validators.required, Validators.minLength(1)]),
+                    texts: this.texts,
+                    solutions: this.solutions
+                });
+
+                this.exercise.texts.forEach(text => this.texts.push(new FormControl(text, [Validators.required, Validators.minLength(1)])));
+                this.exercise.solutions.forEach(solution => this.solutions.push(new FormControl(solution, [Validators.required, Validators.minLength(1)])));
+            },
+            error: err => {
+                console.log(err);
+                this.router.navigate(["/"]);
+            }
+        });
+    }
+
+    private loadCourses(): void {
+        this.courseApiService.getAllCourses().subscribe({
+            next: response => this.courses = response,
+            error: error => console.log(error)
+        });
+    }
+
+    private loadCategories(): void {
+        this.categoryApiService.getAllCategories().subscribe({
+            next: response => this.categories = response,
+            error: error => console.log(error)
+        });
+    }
+
+    public onFormChange(): void {
+        let courses: CreateCourseDto[] = [];
+        if (this.exerciseForm.controls["courses"].value!.length !== 0) {
+            courses = this.exerciseForm.controls["courses"].value.map((course: any) => {
+                const newCourse: CreateCourseDto = {name: course.name};
+                return newCourse;
+            });
+        }
+
+        let categories: CreateCategoryDto[] = [];
+        if (this.exerciseForm.controls["categories"].value!.length !== 0) {
+            categories = this.exerciseForm.controls["categories"].value.map((category: any) => {
+                const newCategory: CreateCategoryDto = {name: category.name};
+                return newCategory;
+            });
+        }
+
+        this.createExerciseDto = {
+            title: this.exerciseForm.controls["title"].value,
+            categories: categories,
+            courses: courses,
+            note: this.exerciseForm.controls["note"].value,
+            shortDescription: this.exerciseForm.controls["shortDescription"].value,
+            texts: this.exerciseForm.controls["texts"].value,
+            solutions: this.exerciseForm.controls["solutions"].value
         }
     }
 
+    public addText(): void {
+        this.texts.push(new FormControl("", [Validators.required, Validators.minLength(1)]));
+    }
 
-    private getCategories(): void {
-        // this.categoryService.getAllCategories().subscribe({
-        //     next: response => this.categories = response,
-        //     error: error => console.log(error)
-        // });
+    public deleteText(textIndex: number): void {
+        this.texts.removeAt(textIndex);
     }
 
     public addSolution(): void {
         this.solutions.push(new FormControl("", [Validators.required, Validators.minLength(1)]));
     }
 
-    public deleteSolution(index: number): void {
-        this.solutions.removeAt(index);
-        this.solutionsImages.splice(index, 1);
-    }
-
-    public onFormChange(): void {
-        if (this.isExercise) {
-            let categories: Category[] = [];
-            if (this.exerciseForm.controls["categories"].value!.length !== 0) {
-                categories = this.exerciseForm.controls["categories"].value.map((category: string) => {
-                    const newCategory: Category = {name: category};
-                    return newCategory;
-                });
-            }
-
-            let solutions: TextSolution[] = [];
-            if (this.exerciseForm.controls["solutions"].value!.length !== 0) {
-                solutions = this.exerciseForm.controls["solutions"].value.map((solution: string[]) => {
-                    return {type: SolutionType.Text, text: solution};
-                });
-            }
-
-            this.exercise = {
-                title: this.exerciseForm.controls["title"].value,
-                categories: categories,
-                text: this.exerciseForm.controls["text"].value,
-                shortText: this.exerciseForm.controls["shortText"].value,
-                solutions: solutions
-            }
-            this.addExerciseService.setExercise(this.exercise);
-        }else{
-            let solutions: TextSolution[] = [];
-            if (this.exerciseForm.controls["solutions"].value!.length !== 0) {
-                solutions = this.exerciseForm.controls["solutions"].value.map((solution: string[]) => {
-                    return {type: SolutionType.Text, text: solution};
-                });
-            }
-
-            this.subExercise = {
-                title: this.exerciseForm.controls["title"].value,
-                text: this.exerciseForm.controls["text"].value,
-                shortText: this.exerciseForm.controls["shortText"].value,
-                solutions: solutions
-            }
-
-            this.addExerciseService.setSubExercise(this.subExercise, this.subExerciseIndex);
-        }
-
-        // console.log(this.exercise)
-        // console.log(this.subExercise)
-        // console.log(this.exerciseImages)
-        // console.log(this.solutionImages)
+    public deleteSolution(solutionIndex: number): void {
+        this.solutions.removeAt(solutionIndex);
     }
 
     public onImageChange(event: any): void {
-    // public onFileChange(event: any, type: Type, typeIndex: number): void {
-        // const reader = new FileReader();
-        //
-        // for (var i = 0; i < event.target.files.length; i++) {
-        //     const image = event.target.files[i];
-        //
-        //     this.images.push({image: image, url: ""}); // add filenames when a new file is uploaded
-        //     const imageData = this.images[this.images.length-1];
-        //
-        //     reader.readAsDataURL(imageData.image);
-        //     reader.onload = () => {
-        //         if (typeof reader.result === "string") {
-        //             imageData.url = reader.result;
-        //         }
-        //     }
+        const reader = new FileReader();
 
-            // switch (type) {
-            //     case Type.EXERCISE:
-            //         this.addImageServise.addExerciseImage(image);
-            //         break;
-            //     case Type.SUB_EXERCISE:
-            //         this.addImageServise.addSubExerciseImage(typeIndex, image);
-            //         break;
-            //     case Type.SOLUTION:
-            //         this.addImageServise.addSolutionImage(typeIndex, image);
-            //         break;
-            // }
-        // }
+        for (let i = 0; i < event.target.files.length; i++) {
+            const image = event.target.files[i];
+
+            this.images.push({image: image, url: ""}); // add filenames when a new file is uploaded
+            const imageData = this.images[this.images.length - 1];
+
+            reader.readAsDataURL(imageData.image);
+            reader.onload = () => {
+                if (typeof reader.result === "string") {
+                    imageData.url = reader.result;
+                }
+            }
+        }
+
         event.target.value = null;
     }
 
-    public deleteImage(typeIndex: number): void {
-    // public deleteImage(typeIndex: number, imageIndex: number): void {
-        // this.images.splice(imageIndex, 1);
+    public deleteImage(imageIndex: number): void {
+        this.images.splice(imageIndex, 1);
     }
 
     private resetForm(): void {
+        this.texts.clear();
+        this.solutions.clear();
         this.exerciseForm?.reset();
+    }
 
-        let solutionsLength = this.solutions.length;
-        for (let i = 1; i < solutionsLength; i++) {
-            this.solutions.removeAt(1);
+    onSubmit() {
+        if (this.isAddExercise) {
+            this.exerciseApiService.createExercise(this.createExerciseDto).subscribe({
+                error: err => console.log(err)
+            });
+        } else {
+            //T0D0: update exercise
+            this.exerciseApiService.createExercise(this.createExerciseDto);
         }
+
+        this.resetForm();
+        this.texts.push(new FormControl("", [Validators.required, Validators.minLength(1)]));
+        this.solutions.push(new FormControl("", [Validators.required, Validators.minLength(1)]));
     }
 
     public formatBytes(bytes: number, decimals = 2): string {

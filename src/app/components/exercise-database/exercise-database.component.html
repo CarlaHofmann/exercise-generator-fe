@@ -103,6 +103,7 @@
                         {{ element.notes }}
                     </a>
                 </td>
+
                 <td scope="col" *ngIf="isProfessor">
                     <div class="d-flex justify-content-center">
                         <div><input class="form-check-input" type="checkbox" [(ngModel)]="element.isUsed"
@@ -122,8 +123,7 @@
                                         </path>
                                     </svg>
                                 </button>
-                                <button *ngIf="isProfessor" type="button" class="btn btn-warning"
-                                    title="Edit the exercise">
+                               <button *ngIf="isProfessor" type="button" class="btn btn-warning" title="Edit the exercise" routerLink="/exercise/62922a572979ca7c17a8fa3d/edit">
                                     <svg class="svg-icon" width="16" height="16" fill="white" class="bi bi-download"
                                         viewBox="2 2 16 16">
                                         <path
@@ -142,6 +142,7 @@
                                 </button>
                             </div>
                         </div>
+
                     </div>
 
                 </td>
@@ -168,4 +169,73 @@
         <div class="col-4 ">
         </div>
     </div>
+
+
+
+<!--
+<div class="container">
+    <ng-select
+        [clearSearchOnAdd]="true"
+        (change)="filterCategories($event)"
+        [clearable]="false"
+        [items]="topics"
+        [multiple]="true"
+        bindLabel="topics"
+        placeholder="Filter by topic"
+        style="margin-right: 100px;margin-left: 100px;">
+    </ng-select>
+    <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)"
+           class="mat-elevation-z8">
+
+        <ng-container matColumnDef="title">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by title">Title</th>
+            <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="topic">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by topic"> Topic</th>
+            <td mat-cell *matCellDef="let element"> {{element.topic}} </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="shortDescription">
+            <th mat-header-cell *matHeaderCellDef> Short Description</th>
+            <td mat-cell *matCellDef="let element"> {{element.shortDescription}} </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef style=" text-align:right">
+                <div class="input-group">
+                    <a class=" btn btn-success " mat-raised-button routerLink="professor/add-exercise">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add exercise</a>
+                </div>
+            </th>
+            <td mat-cell *matCellDef="let element" style=" text-align:right">
+                <div class="btn-group" role="group" aria-label="group">
+                    <button type="button" class="btn btn-primary" matTooltip="View the exercise as pdf">
+                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                    </button>
+                    <button type="button" class="btn btn-warning" matTooltip="Edit the exercise">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                    </button>
+                    <button type="button" class="btn btn-danger" matTooltip="Delete the exercise from the database"
+                            (click)="removeExercise(element.id)">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[ 10, 20, 50, 100]"
+                   showFirstLastButtons
+                   aria-label="Select page of periodic elements">
+    </mat-paginator>
 </div>
+-->
+

@@ -11,13 +11,10 @@ export class AuthService {
     constructor() {
     }
 
-    get isStudent(): boolean{
-        return this._isStudent;
-    }
 
     get isProfessor(): boolean{
-        // return true;
-        return this._isProfessor
+        return true;
+        // return this._isProfessor
     }
 
     public authenticate(role: RoleEnum){
