@@ -13,8 +13,7 @@ export class AuthService {
 
 
     get isProfessor(): boolean{
-        return true;
-        // return this._isProfessor
+        return this._isProfessor
     }
 
     public authenticate(role: RoleEnum){
