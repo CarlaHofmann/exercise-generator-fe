@@ -1,1 +1,96 @@
 <h1 class="p-4">Create Exercise Sheet</h1>
+
+<div class="d-flex row px-4">
+    <div class="justify-content-start col">
+        <div class="toggle-switch" style="border:1px solid #999999;">
+            <label class="switch6-light" onclick="">
+                <input type="checkbox">
+                <span>
+                    <span>Randomized Sheet</span>
+                    <span>Customized Sheet</span>
+                </span>
+                <a class="btn btn-secondary"></a>
+            </label>
+        </div>
+    </div>
+</div>
+
+<!--<div class="container">-->
+
+<!--    <form class="toggle">-->
+<!--        <input type="radio" id="choice1" name="choice" value="productive" checked>-->
+<!--            <label for="choice1">Randomized Sheet</label>-->
+<!--        <input type="radio" id="choice2" name="choice" value="productive">-->
+<!--            <label for="choice2">Customized Sheet</label>-->
+<!--    </form>-->
+<!--</div>-->
+
+<div *ngIf="randomizedSheet">
+    <form class="px-4 pt-2" [formGroup]="exerciseSheetForm">
+        <div class="form-group">
+            <label for="exercise">Title</label>
+            <i class="bi bi-info-circle mx-4" title="This is the title of the exercise."></i>
+            <input type="text" class="form-control" id="exercise" [formControlName]="'title'"
+                   placeholder="Exercise title" (change)="onFormChange()">
+            <div *ngIf="exerciseSheetForm.controls['title'].touched && exerciseSheetForm.controls['title'].invalid"
+                 class="alert alert-danger">
+                <div *ngIf="exerciseSheetForm.controls['title'].hasError('required')">Title is mandatory.</div>
+                <div *ngIf="exerciseSheetForm.controls['title'].hasError('minlength')">Title should be at least 1 character long.
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="courses">Courses</label>
+            <i class="bi bi-info-circle mx-4" title="These are the course names that the exercise correspond to."></i>
+            <ng-select [items]="courses" [bindLabel]="'name'" [addTag]="true" [multiple]="true"
+                       class="form-control input-sm"
+                       appendTo="body"
+                       formControlName="courses" id="courses" placeholder="Choose or add a course:"
+                       (change)="onFormChange()">
+            </ng-select>
+            <div *ngIf="exerciseSheetForm.controls['courses'].touched && exerciseSheetForm.controls['courses'].invalid"
+                 class="alert alert-danger">
+                <div *ngIf="exerciseSheetForm.controls['courses'].hasError('required')">Course is mandatory.</div>
+                <div *ngIf="exerciseSheetForm.controls['courses'].hasError('minlength')">Course should be at least 1
+                    character long.
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="categories">Categories</label>
+            <ng-select [items]="categories" [bindLabel]="'name'" [addTag]="true" [multiple]="true"
+                       class="form-control input-sm" appendTo="body"
+                       formControlName="categories" id="categories" placeholder="Choose a category:"
+                       required="true" (change)="onFormChange()">
+            </ng-select>
+            <div *ngIf="exerciseSheetForm.controls['categories'].touched && exerciseSheetForm.controls['categories'].invalid"
+                 class="alert alert-danger">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="exerciseNumber">Number of Exercises</label>
+            <input type="text" class="form-control" id="exerciseNumber" [formControlName]="'exerciseNumber'"
+                   placeholder="Number of exercises" (change)="onFormChange()">
+            <div *ngIf="exerciseSheetForm.controls['exerciseNumber'].touched && exerciseSheetForm.controls['exerciseNumber'].invalid"
+                 class="alert alert-danger">
+                <div *ngIf="exerciseSheetForm.controls['exerciseNumber'].hasError('required')">Number of exercises is mandatory.</div>
+                <div *ngIf="exerciseSheetForm.controls['exerciseNumber'].hasError('minlength')">Number of exercises should be at least 1 character long.
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="text-center pt-4">
+        <div class="form-group text-center">
+            <button class="btn btn-secondary" [disabled]="exerciseSheetForm.invalid">Compile and download</button>
+        </div>
+    </div>
+
+</div>
+
+<div *ngIf="customizedSheet">
+    Hi
+</div>

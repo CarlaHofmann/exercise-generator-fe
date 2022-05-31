@@ -346,6 +346,7 @@ components:
                 - author
                 - categories
                 - exercises
+                - createdAt
             properties:
                 id:
                     type: string
