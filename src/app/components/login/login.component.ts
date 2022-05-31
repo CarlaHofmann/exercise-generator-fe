@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
-import {LoginData, LoginService} from "../../../../build/openapi";
 import {AuthService} from "../../services/auth.service";
 import {RoleEnum} from "../../enums/RoleEnum";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -17,8 +16,7 @@ export class LoginComponent implements OnInit {
     });
     public isFailedLoginAttempt = false;
 
-    constructor(private loginService: LoginService,
-                private authService: AuthService,
+    constructor(private authService: AuthService,
                 private router: Router,
                 private activatedRoute: ActivatedRoute) {
     }
@@ -27,14 +25,14 @@ export class LoginComponent implements OnInit {
     }
 
     public logInAsProfessor(): void {
-        const loginData: LoginData = this.loginForm.value;
-        console.log(loginData)
+        // const loginData: LoginData = this.loginForm.value;
+        // console.log(loginData)
 
         this.authService.authenticate(RoleEnum.PROFESSOR);
         this.router.navigate([""], {relativeTo: this.activatedRoute});
         this.isFailedLoginAttempt = false;
 
-        // this.loginService.logIn(loginData).subscribe({
+        // this.loginApiService.logIn(loginData).subscribe({
         //     next: () => {
         //         this.authService.authenticate(RoleEnum.PROFESSOR);
         //         this.router.navigate([""], {relativeTo: this.activatedRoute});
@@ -49,6 +47,4 @@ export class LoginComponent implements OnInit {
         //     }
         // });
     }
-
-
 }
