@@ -2,9 +2,9 @@
 
 <div class="d-flex row px-4">
     <div class="justify-content-start col">
-        <div class="toggle-switch" style="border:1px solid #999999;">
-            <label class="switch6-light" onclick="">
-                <input type="checkbox">
+        <div class="toggle-switch">
+            <label class="toggle-switch-light">
+                <input type="checkbox" (change)="selectSheet()">
                 <span>
                     <span>Randomized Sheet</span>
                     <span>Customized Sheet</span>
@@ -15,82 +15,129 @@
     </div>
 </div>
 
-<!--<div class="container">-->
+<div *ngIf="randomizedSheet" class="px-4">
+    <div style="margin-top: 15px;">
+        <label>Title</label>
+        <i class="bi bi-info-circle mx-4" title="This is the title of the exercise sheet."></i>
+        <input type="text" class="form-control" id="titleid" placeholder="Exercise sheet title">
+    </div>
 
-<!--    <form class="toggle">-->
-<!--        <input type="radio" id="choice1" name="choice" value="productive" checked>-->
-<!--            <label for="choice1">Randomized Sheet</label>-->
-<!--        <input type="radio" id="choice2" name="choice" value="productive">-->
-<!--            <label for="choice2">Customized Sheet</label>-->
-<!--    </form>-->
-<!--</div>-->
+    <div style="margin-top: 15px;">
+        <label>Course</label>
+        <i class="bi bi-info-circle mx-4" title="Choose the courses."></i>
+        <ng-select [clearSearchOnAdd]="true" (change)="filterCategoriesChange($event)" [clearable]="false" [items]="categories"
+                   [multiple]="true" bindLabel="categories" placeholder="Choose a course">
+        </ng-select>
+    </div>
 
-<div *ngIf="randomizedSheet">
-    <form class="px-4 pt-2" [formGroup]="exerciseSheetForm">
-        <div class="form-group">
-            <label for="exercise">Title</label>
-            <i class="bi bi-info-circle mx-4" title="This is the title of the exercise."></i>
-            <input type="text" class="form-control" id="exercise" [formControlName]="'title'"
-                   placeholder="Exercise title" (change)="onFormChange()">
-            <div *ngIf="exerciseSheetForm.controls['title'].touched && exerciseSheetForm.controls['title'].invalid"
-                 class="alert alert-danger">
-                <div *ngIf="exerciseSheetForm.controls['title'].hasError('required')">Title is mandatory.</div>
-                <div *ngIf="exerciseSheetForm.controls['title'].hasError('minlength')">Title should be at least 1 character long.
-                </div>
-            </div>
-        </div>
+    <div style="margin-top: 15px;">
+        <label>Category</label>
+        <i class="bi bi-info-circle mx-4" title="Choose the categories."></i>
+        <ng-select id="categoriesid" [clearSearchOnAdd]="true" (change)="filterCategoriesChange($event)" [clearable]="false" [items]="categories"
+                   [multiple]="true" bindLabel="name" placeholder="Choose a category">
+        </ng-select>
+    </div>
 
-        <div class="form-group">
-            <label for="courses">Courses</label>
-            <i class="bi bi-info-circle mx-4" title="These are the course names that the exercise correspond to."></i>
-            <ng-select [items]="courses" [bindLabel]="'name'" [addTag]="true" [multiple]="true"
-                       class="form-control input-sm"
-                       appendTo="body"
-                       formControlName="courses" id="courses" placeholder="Choose or add a course:"
-                       (change)="onFormChange()">
-            </ng-select>
-            <div *ngIf="exerciseSheetForm.controls['courses'].touched && exerciseSheetForm.controls['courses'].invalid"
-                 class="alert alert-danger">
-                <div *ngIf="exerciseSheetForm.controls['courses'].hasError('required')">Course is mandatory.</div>
-                <div *ngIf="exerciseSheetForm.controls['courses'].hasError('minlength')">Course should be at least 1
-                    character long.
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="categories">Categories</label>
-            <ng-select [items]="categories" [bindLabel]="'name'" [addTag]="true" [multiple]="true"
-                       class="form-control input-sm" appendTo="body"
-                       formControlName="categories" id="categories" placeholder="Choose a category:"
-                       required="true" (change)="onFormChange()">
-            </ng-select>
-            <div *ngIf="exerciseSheetForm.controls['categories'].touched && exerciseSheetForm.controls['categories'].invalid"
-                 class="alert alert-danger">
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="exerciseNumber">Number of Exercises</label>
-            <input type="text" class="form-control" id="exerciseNumber" [formControlName]="'exerciseNumber'"
-                   placeholder="Number of exercises" (change)="onFormChange()">
-            <div *ngIf="exerciseSheetForm.controls['exerciseNumber'].touched && exerciseSheetForm.controls['exerciseNumber'].invalid"
-                 class="alert alert-danger">
-                <div *ngIf="exerciseSheetForm.controls['exerciseNumber'].hasError('required')">Number of exercises is mandatory.</div>
-                <div *ngIf="exerciseSheetForm.controls['exerciseNumber'].hasError('minlength')">Number of exercises should be at least 1 character long.
-                </div>
-            </div>
-        </div>
-    </form>
+    <div style="margin-top: 15px;">
+        <label>Number of Exercises</label>
+        <i class="bi bi-info-circle mx-4" title="Choose the number of exercises."></i>
+        <input type="text" class="form-control" id="number" placeholder="Exercise sheet title">
+    </div>
 
     <div class="text-center pt-4">
-        <div class="form-group text-center">
-            <button class="btn btn-secondary" [disabled]="exerciseSheetForm.invalid">Compile and download</button>
-        </div>
+        <button class="btn btn-secondary" disabled>Compile and download</button>
     </div>
 
 </div>
 
-<div *ngIf="customizedSheet">
-    Hi
+<div *ngIf="!randomizedSheet" class="px-4" >
+    <div style="margin-top: 15px;">
+        <label>Title</label>
+        <i class="bi bi-info-circle mx-4" title="This is the title of the exercise sheet."></i>
+        <input type="text" class="form-control" id="title" placeholder="Exercise sheet title">
+    </div>
+
+    <div style="margin-top: 15px;">
+        <label>Category</label>
+        <i class="bi bi-info-circle mx-4" title="Choose categories to filter the listed exercises."></i>
+        <ng-select id="category" [clearSearchOnAdd]="true" (change)="filterCategoriesChange($event)" [clearable]="false" [items]="categories"
+                   [multiple]="true" bindLabel="name" placeholder="Filter by category">
+        </ng-select>
+    </div>
+
+    <div style="margin-top: 15px;">
+        <label>Select Exercises</label>
+        <i class="bi bi-info-circle mx-4" title="Choose exercises for the exercise sheet."></i>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col" class="col-1"> Select </th>
+                <th scope="col" class="col-2" sortable="title"> Title </th>
+                <th scope="col" class="col-2"> Category </th>
+                <th scope="col" class="col-2"> Short Description </th>
+                <th scope="col" class="col-2" *ngIf="isProfessor"> Notes </th>
+                <th scope="col" class="col-1" *ngIf="isProfessor"> Is used </th>
+                <th scope="col" class="col-1"> </th>
+
+            </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let exercise of filteredExercises | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize;">
+
+                    <td scope="row"><input class="form-check-input" type="checkbox"></td>
+                    <td scope="row">{{ exercise.title }}</td>
+                    <td scope="row">{{ getExerciseCategories(exercise.categories) }} </td>
+                    <td scope="row">{{ exercise.shortDescription }}
+                    </td>
+                    <td scope="row" *ngIf="isProfessor">
+
+                        <ng-template #popContent>
+
+                            <textarea class="form-control" rows="3" #input> {{ exercise.note }} </textarea>
+                            <button type="button" class="btn btn-success" (click)="saveNotes(exercise.id,input.value)"
+                                    style="text-align:center;width:100%;">
+                                Save<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                         class="bi bi-save" viewBox="0 0 16 16">
+                                <path
+                                    d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z" />
+                            </svg></button>
+
+                        </ng-template>
+                        <ng-template #popTitle>Notes </ng-template>
+
+                        <a type="button" id="myPopover" data-toggle="popover"
+                           class="btn btn-popover btn-block btn-outline-secondary"
+                           style="width:100%;height:100%;white-space: normal;word-wrap: break-word;"
+                           [ngbPopover]="popContent" autoClose="outside" [popoverTitle]="popTitle">
+                            {{ exercise.note }}
+                        </a>
+                    </td>
+                    <td scope="row" *ngIf="isProfessor"><input class="form-check-input" type="checkbox"></td>
+
+                    <td scope="row" class="text-right;">
+                        <div class="btn-group" role="group" aria-label="group">
+                            <button type="button" class="btn btn-primary" title="View the exercise as pdf">
+                                <svg class="svg-icon" width="16" height="16" fill="white" class="bi bi-download"
+                                     viewBox="2 2 16 16">
+                                    <path
+                                        d="M10,6.978c-1.666,0-3.022,1.356-3.022,3.022S8.334,13.022,10,13.022s3.022-1.356,3.022-3.022S11.666,6.978,10,6.978M10,12.267c-1.25,0-2.267-1.017-2.267-2.267c0-1.25,1.016-2.267,2.267-2.267c1.251,0,2.267,1.016,2.267,2.267C12.267,11.25,11.251,12.267,10,12.267 M18.391,9.733l-1.624-1.639C14.966,6.279,12.563,5.278,10,5.278S5.034,6.279,3.234,8.094L1.609,9.733c-0.146,0.147-0.146,0.386,0,0.533l1.625,1.639c1.8,1.815,4.203,2.816,6.766,2.816s4.966-1.001,6.767-2.816l1.624-1.639C18.536,10.119,18.536,9.881,18.391,9.733 M16.229,11.373c-1.656,1.672-3.868,2.594-6.229,2.594s-4.573-0.922-6.23-2.594L2.41,10l1.36-1.374C5.427,6.955,7.639,6.033,10,6.033s4.573,0.922,6.229,2.593L17.59,10L16.229,11.373z">
+                                    </path>
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
+
+
+                </tr>
+            </tbody>
+
+
+        </table>
+
+    </div>
+
+    <div class="text-center pt-4">
+        <button class="btn btn-secondary" disabled>Compile and download</button>
+    </div>
+
 </div>

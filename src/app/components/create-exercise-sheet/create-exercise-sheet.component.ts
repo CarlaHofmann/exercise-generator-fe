@@ -1,62 +1,150 @@
-import {Component, OnInit} from '@angular/core';
-import {ExerciseService} from "../../services/exercise.service";
-import {Category, Course, CategoryApiService, CreateCategoryDto, CreateExerciseDto} from "../../../../build/openapi";
+import {Component, Input, OnInit} from '@angular/core';
+import {
+    Category,
+    CategoryApiService,
+    Course,
+    CourseApiService,
+    Exercise,
+    Sheet,
+    ExerciseApiService
+} from "../../../../build/openapi";
 import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
+import {AuthService} from "../../services/auth.service";
 
 @Component({
   selector: 'app-create-exercise-sheet',
   templateUrl: './create-exercise-sheet.component.html',
   styleUrls: ['./create-exercise-sheet.component.css']
 })
-export class CreateExerciseSheetComponent implements OnInit {
-  public exercise: CreateExerciseDto;
-  public exerciseSheetForm: FormGroup;
 
+export class CreateExerciseSheetComponent implements OnInit {
+  public exerciseSheet: Sheet[];
+  public exerciseSheetForm: FormGroup;
+  public texts: FormArray = new FormArray([]);
+  public solutions: FormArray = new FormArray([]);
+
+  public exercises: Exercise[] = [];
   public courses: Course[] = [];
   public categories: Category[] = [];
 
+  public filteredCategoryNames: String[] = [];
+
+  public randomizedSheet: Boolean = true;
+
+  public page: number = 1;
+  public pageSize: number = 10;
+
   constructor(private categoryApiService: CategoryApiService,
-              private exerciseService: ExerciseService) { }
+              private courseApiService: CourseApiService,
+              private exerciseApiService: ExerciseApiService,
+              private authService: AuthService) { }
 
   ngOnInit(): void {
-  }
-
-  get randomizedSheet(): boolean {
-      return true;
-  }
-
-  get customizedSheet(): boolean {
-     return false;
+    this.loadExercises();
   }
 
   public onFormChange(): void {
-          let categories: CreateCategoryDto[] = [];
-          if (this.exerciseForm.controls["categories"].value!.length !== 0) {
-              categories = this.exerciseForm.controls["categories"].value.map((category: any) => {
-                  const newCategory: CreateCategoryDto = {name: category.name, isHidden: false};
-                  return newCategory;
-              });
-          }
+          this.resetForm();
 
-          this.exercise = {
-              title: this.exerciseForm.controls["title"].value,
-              courses: courses,
-              categories: categories,
-              hiddenCategories: hiddenCategories,
-              note: this.exerciseForm.controls["note"].value,
-              shortDescription: this.exerciseForm.controls["shortDescription"].value,
-              texts: this.exerciseForm.controls["texts"].value,
-              solutions: this.exerciseForm.controls["solutions"].value
-          }
+          this.exerciseSheetForm = new FormGroup({
+              title: new FormControl("", [Validators.required, Validators.minLength(1)]),
+              courses: new FormControl("", [Validators.required, Validators.minLength(1)]),
+              categories: new FormControl("", [Validators.required, Validators.minLength(1)])
+          });
 
-          this.exerciseService.setCreateExerciseDto(this.exercise);
+          this.loadCourses();
+          this.loadCategories();
       }
 
-      private loadCourses(): void {
-          this.courseApiService.getAllCourses().subscribe({
-              next: response => this.courses = response,
+  private loadExercises(): void {
+          this.exerciseApiService.getAllExercises().subscribe({
+              next: response => {
+                  const uniqueCategories: Category[] = [];
+                  response.flatMap(exercise => exercise.categories).filter((category: Category) => {
+                      let i = uniqueCategories.findIndex(c => c.name === category.name);
+                      if(i < 0){
+                          uniqueCategories.push(category);
+                      }
+                      return null;
+                  })
+                  this.categories = uniqueCategories.sort((a,b) => (a.name < b.name) ? -1 : 1);
+
+                  this.exercises = response;
+              },
               error: error => console.log(error)
           });
       }
+
+  private loadCourses(): void {
+      this.courseApiService.getAllCourses().subscribe({
+          next: response => this.courses = response,
+          error: error => console.log(error)
+      });
+  }
+
+  private loadCategories(): void {
+      this.categoryApiService.getAllCategories().subscribe({
+          next: response => this.categories = response,
+          error: error => console.log(error)
+      });
+  }
+
+  public selectSheet(): void {
+      this.randomizedSheet = !this.randomizedSheet;
+  }
+
+  get filteredExercises(): Exercise[] {
+          return this.exercises.filter((exercise: Exercise) => {
+                                          if (this.filteredCategoryNames.length){
+                                              return exercise.categories.map((category: Category) => category.name)
+                                                                     .some((categoryName: String) => this.filteredCategoryNames
+                                                                          .includes(categoryName));
+                                          }
+                                          return true;
+                                    });
+      }
+
+  get isProfessor(): boolean {
+    return this.authService.isProfessor;
+  }
+
+  public getExerciseCategories(categories: Category[]): string {
+          return categories.map(category => category.name).join(", ");
+  }
+
+  private resetForm(): void {
+      this.texts.clear();
+      this.solutions.clear();
+      this.exerciseSheetForm?.reset();
+  }
+
+  public filterCategoriesChange(categories: any): void {
+      this.filteredCategoryNames = categories.map((category: Category) => category.name);
+  }
+
+  saveNotes(id: string, value: string) {
+//       for(var el of this.dataSource){
+//         if(el.id==id)
+//           el.notes = value;
+//       }
+//       for(var el of this.displayExercises){
+//         if(el.id==id)
+//           el.notes = value;
+//       }
+//       const headers = { 'content-type': 'text/plain'}
+//       const body={id:id, note: value};
+//
+//       this.http.post<any>(this.url_notes, body,{'headers':headers , observe: 'response'}).subscribe({
+//         next: data => {
+//           // TODO: dialog
+//            // alert('success');
+//             //refresh list
+//         },
+//         error: error => {
+//             // alert('There was an error: ' + error.message);
+//             this.alertMessage = 'Error while trying to edit a note: '+error.message;
+//             this.showAlert = true;
+//         }
+    }
 
 }
