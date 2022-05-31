@@ -346,6 +346,7 @@ components:
                 - author
                 - categories
                 - exercises
+                - publishedAt
             properties:
                 id:
                     type: string
@@ -400,6 +401,7 @@ components:
         Exercise:
             type: object
             required:
+                - id
                 - title
                 - categories
                 - solutions
@@ -436,6 +438,8 @@ components:
                     type: array
                     items:
                         type: string
+                isUsed:
+                    type: boolean
 
         CreateSheetDto:
             required:

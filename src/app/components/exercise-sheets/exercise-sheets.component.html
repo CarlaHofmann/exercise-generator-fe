@@ -2,12 +2,12 @@
 
 <div class="d-flex row px-4">
     <div class="justify-content-start col">
-        <ng-select [clearSearchOnAdd]="true" (change)="filterAuthorsChange($event)" [clearable]="false" [items]="authors"
+        <ng-select [clearSearchOnAdd]="true" [searchable]="true" (change)="filterAuthorsChange($event)" [clearable]="false" [items]="authors"
                    [multiple]="true" bindLabel="name" placeholder="Filter by author">
         </ng-select>
     </div>
     <div class="col">
-        <ng-select [clearSearchOnAdd]="true" (change)="filterCategoriesChange($event)" [clearable]="false"
+        <ng-select [clearSearchOnAdd]="true" [searchable]="true" (change)="filterCategoriesChange($event)" [clearable]="false"
                    [items]="categories" [multiple]="true" bindLabel="name" placeholder="Filter by category">
         </ng-select>
     </div>
