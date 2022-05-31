@@ -19,12 +19,12 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
   }
 
   private EXERCISES_HARDCODED: exerciseEntry[] = [
-    { id: 1, title: "Ex1", category: "Calculus", shortDescription: "differential equations", notes: "nothing", isUsed: true },
-    { id: 2, title: "Ex2", category: "Calculus", shortDescription: "surface integrals", notes: "nothing", isUsed: true },
-    { id: 3, title: "Ex3", category: "Trigonometry", shortDescription: "sinus", notes: "nothing", isUsed: true },
-    { id: 4, title: "Ex4", category: "Algebra", shortDescription: "matrices and vectors", notes: "nothing", isUsed: false },
+    { id: 1, title: "Ex1", category: "Calculus", shortDescription: "differential equations", notes: "nothing1", isUsed: true },
+    { id: 2, title: "Ex2", category: "Calculus", shortDescription: "surface integrals", notes: "nothing11", isUsed: true },
+    { id: 3, title: "Ex3", category: "Trigonometry", shortDescription: "sinus", notes: "nothing1111", isUsed: true },
+    { id: 4, title: "Ex4", category: "Algebra", shortDescription: "matrices and vectors", notes: "nothing1111", isUsed: false },
     { id: 5, title: "Ex5", category: "Algebra", shortDescription: "linear systems", notes: "nothing", isUsed: true },
-    { id: 6, title: "Ex6", category: "Calculus", shortDescription: "more integrals", notes: "nothing", isUsed: true },
+    { id: 6, title: "Ex6", category: "Calculus", shortDescription: "more integrals", notes: "nothing2", isUsed: true },
     { id: 7, title: "Ex7", category: "Algebra", shortDescription: "eigenvalues and eigenvectors", notes: "nothing", isUsed: true },
     { id: 8, title: "Ex8", category: "Calculus", shortDescription: "volume integrals", notes: "nothing", isUsed: true },
     { id: 9, title: "Ex9", category: "Calculus", shortDescription: "more volume integrals", notes: "nothing", isUsed: true },
@@ -41,7 +41,7 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
   public categories: string[] = [];
   private categoriesFilter: string[] = [];
 
-  // 
+  //
   public page: number = 1;
   public pageSize: number = 10;
 
@@ -131,6 +131,15 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
   public saveNotes(id: number, value: string) {
 
     const body = { id: id, note: value };
+
+    for (var el of this.dataSource) {
+        if (el.id == id)
+          el.notes = value;
+      }
+      for (var el of this.displayExercises) {
+        if (el.id == id)
+          el.notes = value;
+      }
 
     this.exerciseService.putNotes(body).subscribe({
       next: data => {
