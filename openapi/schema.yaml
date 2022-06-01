@@ -120,6 +120,30 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/Exercise"
+        put:
+            tags:
+                - ExerciseApi
+            operationId: updateExercise
+            parameters:
+                -   name: id
+                    in: path
+                    required: true
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateExerciseDto'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Exercise'
+
         delete:
             tags:
                 - ExerciseApi
