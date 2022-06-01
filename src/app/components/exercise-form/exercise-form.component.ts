@@ -12,6 +12,7 @@ import {
 } from "../../../../build/openapi";
 import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
+import {ViewportScroller} from "@angular/common";
 
 @Component({
     selector: 'app-exercise-form',
@@ -21,6 +22,8 @@ import {ActivatedRoute, Router} from "@angular/router";
 export class ExerciseFormComponent implements OnInit {
     @Input()
     public isAddExercise: boolean = true;
+
+    private exerciseId: string = "";
 
     private exercise: Exercise;
     private createExerciseDto: CreateExerciseDto;
@@ -36,6 +39,7 @@ export class ExerciseFormComponent implements OnInit {
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
+                private viewportScroller: ViewportScroller,
                 private exerciseApiService: ExerciseApiService,
                 private courseApiService: CourseApiService,
                 private categoryApiService: CategoryApiService) {
@@ -58,7 +62,10 @@ export class ExerciseFormComponent implements OnInit {
             this.texts.push(new FormControl("", [Validators.required, Validators.minLength(1)]));
             this.solutions.push(new FormControl("", [Validators.required, Validators.minLength(1)]));
         } else {
-            this.route.params.subscribe(params => this.loadExercise(params["id"]));
+            this.route.params.subscribe(params => {
+                this.exerciseId = params["id"];
+                this.loadExercise(this.exerciseId);
+            });
         }
 
         this.loadCourses();
@@ -85,7 +92,7 @@ export class ExerciseFormComponent implements OnInit {
             },
             error: err => {
                 console.log(err);
-                this.router.navigate(["/"]);
+                this.router.navigate(["**"]);
             }
         });
     }
@@ -184,13 +191,17 @@ export class ExerciseFormComponent implements OnInit {
                 error: err => console.log(err)
             });
         } else {
-            //T0D0: update exercise
-            this.exerciseApiService.createExercise(this.createExerciseDto);
+            this.exerciseApiService.updateExercise(this.exerciseId, this.createExerciseDto).subscribe({
+                error: err => console.log(err)
+            });
         }
 
         this.resetForm();
         this.texts.push(new FormControl("", [Validators.required, Validators.minLength(1)]));
         this.solutions.push(new FormControl("", [Validators.required, Validators.minLength(1)]));
+        this.images = [];
+
+        this.viewportScroller.scrollToPosition([0, 0]);
     }
 
     public formatBytes(bytes: number, decimals = 2): string {
