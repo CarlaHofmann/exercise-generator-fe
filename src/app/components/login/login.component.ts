@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
 import {AuthService} from "../../services/auth.service";
-import {RoleEnum} from "../../enums/RoleEnum";
-import {ActivatedRoute, Router} from "@angular/router";
+import {Router} from "@angular/router";
+import {LoginApiService} from "../../../../build/openapi";
+import {DataService} from "../../services/data.service";
 
 @Component({
     selector: 'app-login',
@@ -16,9 +17,10 @@ export class LoginComponent implements OnInit {
     public showAlert = false;
     public alertMessage = "";
 
-    constructor(private authService: AuthService,
-                private router: Router,
-                private activatedRoute: ActivatedRoute) {
+    constructor(private router: Router,
+                private authService: AuthService,
+                private dataService: DataService,
+                private loginApiService: LoginApiService) {
     }
 
     ngOnInit(): void {
@@ -28,33 +30,25 @@ export class LoginComponent implements OnInit {
         });
     }
 
-    public logInAsProfessor(): void {
-        // const loginData: LoginData = this.loginForm.value;
-        // console.log(loginData)
+    public login(): void {
+        const username = this.loginForm.value.name;
+        const password = this.loginForm.value.password;
 
-        this.authService.authenticate(RoleEnum.PROFESSOR);
-        this.router.navigate([""], {relativeTo: this.activatedRoute});
-        this.isFailedLoginAttempt = false;
-
-        // this.loginApiService.logIn(loginData).subscribe({
-        //     next: () => {
-        //         this.authService.authenticate(RoleEnum.PROFESSOR);
-        //         this.router.navigate([""], {relativeTo: this.activatedRoute});
-        //         this.isFailedLoginAttempt = false;
-        //     },
-        //     error: () => {
-        //         this.authService.authenticate(RoleEnum.PROFESSOR);
-        //         this.router.navigate([""], {relativeTo: this.activatedRoute});
-        //         this.isFailedLoginAttempt = false;
-        //         //this.authService.authenticate(RoleEnum.STUDENT);
-        //         //this.isFailedLoginAttempt = true;
-        //     }
-        // });
+        this.loginApiService.login(username, password).subscribe({
+            next: response => {
+                this.authService.authenticate(response.accessToken, response.refreshToken);
+                this.router.navigate([""]);
+            },
+            error: err => {
+                this.displayAlert("Login failed. Username or Password wrong.", err);
+            }
+        });
     }
 
-    public displayAlert(message: string): void {
+    public displayAlert(message: string, error: string): void {
         this.alertMessage = message;
         this.showAlert = true;
+        console.log(error);
     }
 
     public closeAlert(): void {

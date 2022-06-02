@@ -49,7 +49,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
     private isSubmitted = false;
 
     public showAlert = false;
-    public alertMessages: string[] = [];
+    public alertMessage = "";
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
@@ -117,9 +117,8 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
                 this.isLoaded = true;
             },
             error: err => {
-                console.log(err);
+                this.displayAlert("Exercise not found.", err);
                 this.isLoaded = true;
-                this.displayAlert("Exercise not found.");
                 this.texts.push(new FormControl("", [Validators.required, Validators.minLength(1)]));
                 this.solutions.push(new FormControl("", [Validators.required, Validators.minLength(1)]));
             }
@@ -130,8 +129,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
         this.courseApiService.getAllCourses().subscribe({
             next: response => this.courses = response,
             error: error => {
-                console.log(error);
-                this.displayAlert("Error while loading courses.");
+                this.displayAlert("Error while loading courses.", error);
             }
         });
     }
@@ -140,8 +138,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
         this.categoryApiService.getAllCategories().subscribe({
             next: response => this.categories = response,
             error: error => {
-                console.log(error);
-                this.displayAlert("Error while loading categories.");
+                this.displayAlert("Error while loading categories.", error);
             }
         });
     }
@@ -266,8 +263,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
                     }
                 },
                 error: err => {
-                    console.log(err);
-                    this.displayAlert("Error while creating exercise.");
+                    this.displayAlert("Error while creating exercise.", err);
                 }
             });
         } else {
@@ -280,8 +276,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
                     }
                 },
                 error: err => {
-                    console.log(err);
-                    this.displayAlert("Error while updating exercise.");
+                    this.displayAlert("Error while updating exercise.", err);
                 }
             });
         }
@@ -303,8 +298,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
                 this.viewportScroller.scrollToPosition([0, 0]);
             },
             error: err => {
-                console.log(err);
-                this.displayAlert("Error while trying to get PDF.");
+                this.displayAlert("Error while trying to get PDF.", err);
                 this.isPdfLoaded = true;
             }
         });
@@ -314,12 +308,14 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
         return this.sanitizer.bypassSecurityTrustResourceUrl(url);
     }
 
-    public displayAlert(message: string): void {
-        this.alertMessages.push(message);
+    public displayAlert(message: string, error: string): void {
+        this.alertMessage = message;
+        this.showAlert = true;
+        console.log(error);
     }
 
-    public closeAlert(message: string): void {
-        this.alertMessages = this.alertMessages.filter(m => m !== message);
+    public closeAlert(): void {
+        this.showAlert = false;
     }
 
     public formatBytes(bytes: number, decimals = 2): string {

@@ -46,8 +46,7 @@ export class PdfViewerComponent implements OnInit {
                 this.isLoaded = true;
             },
             error: err => {
-                console.log(err);
-                this.displayAlert("Error while trying to get PDF.");
+                this.displayAlert("Error while trying to get PDF.", err);
                 this.isLoaded = true;
             }
         });
@@ -62,8 +61,7 @@ export class PdfViewerComponent implements OnInit {
                 this.isLoaded = true;
             },
             error: err => {
-                console.log(err);
-                this.displayAlert("Error while trying to get PDF.");
+                this.displayAlert("Error while trying to get PDF.", err);
                 this.isLoaded = true;
             }
         });
@@ -73,9 +71,10 @@ export class PdfViewerComponent implements OnInit {
         return this.sanitizer.bypassSecurityTrustResourceUrl(url);
     }
 
-    public displayAlert(message: string): void {
+    public displayAlert(message: string, error: string): void {
         this.alertMessage = message;
         this.showAlert = true;
+        console.log(error);
     }
 
     public closeAlert(): void {

@@ -6,11 +6,41 @@ servers:
     -   url: http://localhost:8080
         description: Generated server url
 paths:
-    /user:
+    /login:
+        post:
+            tags:
+                - LoginApi
+            operationId: login
+            parameters:
+                -   name: username
+                    in: query
+                    required: true
+                    schema:
+                        type: string
+                -   name: password
+                    in: query
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/TokenData"
+
+    /users/{username}:
         get:
             tags:
                 - UserApi
-            operationId: getCurrentUser
+            operationId: getUserByUsername
+            parameters:
+                -   name: username
+                    in: path
+                    required: true
+                    schema:
+                        type: string
             responses:
                 "200":
                     description: OK
@@ -18,13 +48,34 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/User"
+        delete:
+            tags:
+                - UserApi
+            operationId: deleteUserByUsername
+            parameters:
+                -   name: username
+                    in: path
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                "200":
+                    description: OK
+
+    /users/refreshtoken:
+        get:
+            tags:
+                - UserApi
+            operationId: refreshToken
+            responses:
+                "200":
+                    description: OK
+
     /users:
         get:
             tags:
                 - UserApi
             operationId: getAllUsers
-#            security:
-#                -   bearerAuth: []
             responses:
                 "200":
                     description: OK
@@ -467,7 +518,24 @@ paths:
                                 type: string
 
 components:
+    securitySchemes:
+        bearerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT
+
     schemas:
+        TokenData:
+            type: object
+            required:
+                - accessToken
+                - refreshToken
+            properties:
+                accessToken:
+                    type: string
+                refreshToken:
+                    type: string
+
         Sheet:
             type: object
             required:
@@ -498,7 +566,7 @@ components:
                 title:
                     type: string
                 author:
-                    $ref: "#/components/schemas/Author"
+                    $ref: "#/components/schemas/User"
                 courses:
                     type: array
                     items:
@@ -521,16 +589,8 @@ components:
                     type: string
                 username:
                     type: string
-
-        Author:
-            type: object
-            required:
-                - name
-            properties:
-                id:
-                    type: string
-                name:
-                    type: string
+                admin:
+                    type: boolean
 
         Course:
             type: object
@@ -577,7 +637,7 @@ components:
                 isUsed:
                     type: boolean
                 author:
-                    $ref: "#/components/schemas/Author"
+                    $ref: "#/components/schemas/User"
                 courses:
                     type: array
                     items:
@@ -638,11 +698,15 @@ components:
             type: object
             required:
                 - username
+                - password
+                - admin
             properties:
                 username:
                     type: string
                 password:
                     type: string
+                admin:
+                    type: boolean
 
         CreateCourseDto:
             required:

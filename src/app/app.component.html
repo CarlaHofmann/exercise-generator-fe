@@ -1,2 +1,7 @@
 <app-header></app-header>
+
+<p *ngIf="showAlert" class="pt-4 px-4">
+    <ngb-alert type="danger" (closed)="closeAlert()">{{alertMessage}}</ngb-alert>
+</p>
+
 <router-outlet></router-outlet>

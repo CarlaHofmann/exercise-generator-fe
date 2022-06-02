@@ -1,4 +1,7 @@
 import {AppComponent} from './app.component';
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import {ApiModule} from "../../build/openapi";
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {LoginComponent} from './components/login/login.component';
 import {HeaderComponent} from './components/header/header.component';
 import {DashboardComponent} from './components/dashboard/dashboard.component';
@@ -17,12 +20,9 @@ import {PageNotFoundComponent} from './components/page-not-found/page-not-found.
 import {PdfViewerComponent} from './components/pdf-viewer/pdf-viewer.component';
 
 import {AppRoutingModule} from './app-routing.module';
-import {ApiModule} from "../../build/openapi";
 import {CodemirrorModule} from "@ctrl/ngx-codemirror";
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {NgSelectModule} from '@ng-select/ng-select';
 import {NgModule} from '@angular/core';
-import {HttpClientModule} from "@angular/common/http";
 import {BrowserModule} from "@angular/platform-browser";
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -31,6 +31,7 @@ import {MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
 import {MatTooltipModule} from '@angular/material/tooltip';
 
+import {AuthInterceptor} from "./interceptors/auth-interceptor";
 
 
 @NgModule({
@@ -70,7 +71,13 @@ import {MatTooltipModule} from '@angular/material/tooltip';
         MatTableModule,
         MatTooltipModule,
     ],
-    providers: [],
+    providers: [
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthInterceptor,
+            multi: true
+        }
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule {
