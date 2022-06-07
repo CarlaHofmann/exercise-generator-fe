@@ -14,6 +14,7 @@
                 <li class="nav-item"><a class="nav-link" routerLink="exercise-sheets">Exercise Sheets</a></li>
                 <li class="nav-item"><a class="nav-link" routerLink="exercise-db">Exercise Database</a></li>
                 <li *ngIf="isProfessor" class="nav-item"><a class="nav-link" routerLink="add-exercise">Add Exercise</a></li>
+                <li *ngIf="isAdmin" class="nav-item"><a class="nav-link" routerLink="admin">Admin Console</a></li>
             </ul>
 
             <div class="nav-item dropdown">

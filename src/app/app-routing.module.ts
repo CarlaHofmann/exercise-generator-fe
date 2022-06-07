@@ -9,6 +9,8 @@ import {CreateExerciseSheetComponent} from './components/create-exercise-sheet/c
 import {ExerciseDatabaseComponent} from './components/exercise-database/exercise-database.component';
 import {EditExerciseComponent} from "./components/edit-exercise/edit-exercise.component";
 import {PageNotFoundComponent} from "./components/page-not-found/page-not-found.component";
+import {AdminConsoleComponent} from "./components/admin-console/admin-console.component";
+import {AuthGuardAdminService} from "./services/auth-guard-admin.service";
 
 
 const routes: Routes = [
@@ -18,6 +20,7 @@ const routes: Routes = [
     {path: "add-exercise", component: AddExerciseComponent, canActivate: [AuthGuardProfessorService]},
     {path: "exercise-db", component: ExerciseDatabaseComponent, canActivate: []},
     {path: "exercise/:id/edit", component: EditExerciseComponent, canActivate: [AuthGuardProfessorService]},
+    {path: "admin", component: AdminConsoleComponent, canActivate: [AuthGuardAdminService]},
     {path: "", component: DashboardComponent},
     {path: "**", component: PageNotFoundComponent},
 ];

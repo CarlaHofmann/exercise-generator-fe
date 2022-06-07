@@ -1,0 +1,62 @@
+<h1 class="p-4">Admin Console</h1>
+
+
+<h2 class="ps-5">Create new User</h2>
+
+<div class="d-flex justify-content-center">
+    <div class="mt-5 col-4">
+        <form [formGroup]="newUserForm" (ngSubmit)="addUser()">
+            <div class="form-group">
+                <div>E-Mail</div>
+                <input class="form-control" type="text" formControlName="username">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input class="form-control" type="password" formControlName="password" id="password">
+            </div>
+
+            <div class="text-center">
+                <button class="btn btn-primary p-1 mt-4 col-3" type="submit">Add User</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<h2 class="ps-5 pt-5">All Users</h2>
+
+<div class="d-flex justify-content-center">
+    <div *ngIf="!users.length">There were no users found.</div>
+    <div class="col-4" *ngIf="users.length">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col" class="col-3">Username</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let user of users | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
+                <td>{{user.username}}</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="row">
+            <div class="col">
+                <select class="form-select" style="width:200px" [(ngModel)]="pageSize" (ngModelChange)="users">
+                    <option [ngValue]="5">5 items per page</option>
+                    <option [ngValue]="10">10 items per page</option>
+                    <option [ngValue]="25">25 items per page</option>
+                    <option [ngValue]="50">50 items per page</option>
+                </select>
+            </div>
+            <div class="col"></div>
+            <div class="col">
+                <ngb-pagination [collectionSize]="users.length" [(page)]="page" [pageSize]="pageSize"
+                                class="" (pageChange)="users" [boundaryLinks]="true"></ngb-pagination>
+            </div>
+        </div>
+    </div>
+</div>
+
