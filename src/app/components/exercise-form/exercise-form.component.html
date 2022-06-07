@@ -85,14 +85,15 @@
             <div class="mt-1">
                 <label *ngIf="texts.length > 1">Page {{textIndex + 1}}</label>
                 <i class="bi bi-trash3 mx-4" (click)="deleteText(textIndex)" *ngIf="textIndex !== 0"></i>
-                <textarea class="form-control" [formControl]="$any(text)" rows="8"
-                          (change)="onFormChange()"></textarea>
+                <ngx-codemirror class="form-control" [formControl]="$any(text)"
+                                [options]="{lineNumbers: true, mode: 'text/x-stex'}"
+                                (ngModelChange)="onFormChange($event)">
+                </ngx-codemirror>
             </div>
             <div *ngIf="text.touched && text.invalid"
                  class="alert alert-danger">
                 <div *ngIf="text.hasError('required')">The text is mandatory.</div>
-                <div *ngIf="text.hasError('minlength')">The text should be at least 1 character long.
-                </div>
+                <div *ngIf="text.hasError('minlength')">The text should be at least 1 character long.</div>
             </div>
         </div>
         <button class="btn btn-secondary mt-2" (click)="addText()">Add page</button>
@@ -109,14 +110,15 @@
             <div class="mt-1">
                 <label *ngIf="solutions.length > 1">Page {{solutionIndex + 1}}</label>
                 <i class="bi bi-trash3 mx-4" (click)="deleteSolution(solutionIndex)" *ngIf="solutionIndex !== 0"></i>
-                <textarea class="form-control" [formControl]="$any(solution)" rows="8"
-                          (change)="onFormChange()"></textarea>
+                <ngx-codemirror class="form-control" [formControl]="$any(solution)"
+                                [options]="{lineNumbers: true, mode: 'text/x-stex'}"
+                                (ngModelChange)="onFormChange($event)">
+                </ngx-codemirror>
             </div>
             <div *ngIf="solution.touched && solution.invalid"
                  class="alert alert-danger">
                 <div *ngIf="solution.hasError('required')">The solution is mandatory.</div>
-                <div *ngIf="solution.hasError('minlength')">The solution should be at least 1 character long.
-                </div>
+                <div *ngIf="solution.hasError('minlength')">The solution should be at least 1 character long.</div>
             </div>
         </div>
         <button class="btn btn-secondary mt-2" (click)="addSolution()">Add page</button>
