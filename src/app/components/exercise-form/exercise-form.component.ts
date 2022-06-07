@@ -111,9 +111,9 @@ export class ExerciseFormComponent implements OnInit {
         });
     }
 
-    public onFormChange(): void {
+    public onFormChange(event?: Event): void {
         let courses: CreateCourseDto[] = [];
-        if (this.exerciseForm.controls["courses"].value!.length !== 0) {
+        if (this.exerciseForm.controls["courses"].value?.length) {
             courses = this.exerciseForm.controls["courses"].value.map((course: any) => {
                 const newCourse: CreateCourseDto = {name: course.name};
                 return newCourse;
@@ -121,7 +121,7 @@ export class ExerciseFormComponent implements OnInit {
         }
 
         let categories: CreateCategoryDto[] = [];
-        if (this.exerciseForm.controls["categories"].value!.length !== 0) {
+        if (this.exerciseForm.controls["categories"].value?.length) {
             categories = this.exerciseForm.controls["categories"].value.map((category: any) => {
                 const newCategory: CreateCategoryDto = {name: category.name};
                 return newCategory;
