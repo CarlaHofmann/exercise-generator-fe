@@ -134,6 +134,59 @@ paths:
                 "200":
                     description: OK
 
+    /exercise/notes/{id}:
+        put:
+            tags:
+                - ExerciseApi
+            operationId: updateNotesAndUsed
+            parameters:
+                -   name: id
+                    in: path
+                    required: true
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateNotesAndUsedDto'
+                required: true
+            responses:
+                "200":
+                    description: OK
+
+    /exercise/isused:
+        delete:
+            tags:
+                - ExerciseApi
+            operationId: isUsedReset
+            parameters:
+                []
+            responses:
+                "200":
+                    description: OK
+
+    /exercise/isused/{id}:
+        put:
+            tags:
+                - ExerciseApi
+            operationId: isUsedUpdate
+            parameters:
+                -   name: id
+                    in: path
+                    required: true
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: boolean
+                required: true
+            responses:
+                "200":
+                    description: OK
+
     /courses:
         get:
             tags:
@@ -511,3 +564,13 @@ components:
                     type: array
                     items:
                         type: string
+
+        UpdateNotesAndUsedDto:
+            required:
+                []
+            type: object
+            properties:
+                note:
+                    type: string
+                isUsed:
+                    type: boolean

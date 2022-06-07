@@ -44,7 +44,7 @@
                 <th scope="col" class="col-1" *ngIf="isProfessor">
                     <div class="d-flex justify-content-center">
                         <div>Is used
-                            <a title="Press to uncheck all the isUsed flags." class=" btn btn-primary "
+                            <a title="Press to uncheck all the isUsed flags." class=" btn btn-danger "
                                 (click)="uncheckAll()">
                                 <svg class="svg-icon" width="16" height="16" fill="white" class="bi bi-download"
                                     viewBox="2 2 16 16">
@@ -77,14 +77,14 @@
 
 
                 <td scope="col">{{ element.title }}</td>
-                <td scope="col">{{ element.category }} </td>
+                <td scope="col" [innerText]="categoriesToString(element.categories)" ></td>
                 <td scope="col">{{ element.shortDescription }}
                 </td>
                 <td scope="col col-2" *ngIf="isProfessor">
 
                     <ng-template #popContent>
 
-                        <textarea class="form-control" rows="3" #input> {{ element.notes }} </textarea>
+                        <textarea class="form-control" rows="3" #input> {{ element.note }} </textarea>
                         <button type="button" class="btn btn-success" (click)="saveNotes(element.id,input.value)"
                             style="text-align:center;width:100%;">
                             Save<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -100,14 +100,14 @@
                         class="btn btn-popover btn-block btn-outline-secondary"
                         style="text-align:left;width:100%;max-width:20vw;height:100%;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;"
                         [ngbPopover]="popContent" autoClose="outside" [popoverTitle]="popTitle">
-                        {{ element.notes }}
+                        {{ element.note }}
                     </a>
                 </td>
 
                 <td scope="col" *ngIf="isProfessor">
                     <div class="d-flex justify-content-center">
                         <div><input class="form-check-input" type="checkbox" [(ngModel)]="element.isUsed"
-                                onclick="return false;" /></div>
+                                (change)="toggleCheckbox(element.id, element.isUsed);" /></div>
                     </div>
                 </td>
 
@@ -123,7 +123,11 @@
                                         </path>
                                     </svg>
                                 </button>
-                               <button *ngIf="isProfessor" type="button" class="btn btn-warning" title="Edit the exercise" routerLink="/exercise/62922a572979ca7c17a8fa3d/edit">
+
+
+                               <button *ngIf="isProfessor" type="button" class="btn btn-warning" title="Edit the exercise" [routerLink]="'/exercise/'+element.id+'/edit'">
+
+
                                     <svg class="svg-icon" width="16" height="16" fill="white" class="bi bi-download"
                                         viewBox="2 2 16 16">
                                         <path
