@@ -120,6 +120,30 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/Exercise"
+        put:
+            tags:
+                - ExerciseApi
+            operationId: updateExercise
+            parameters:
+                -   name: id
+                    in: path
+                    required: true
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateExerciseDto'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Exercise'
+
         delete:
             tags:
                 - ExerciseApi
@@ -134,26 +158,6 @@ paths:
                 "200":
                     description: OK
 
-    /exercise/notes/{id}:
-        put:
-            tags:
-                - ExerciseApi
-            operationId: updateNotesAndUsed
-            parameters:
-                -   name: id
-                    in: path
-                    required: true
-                    schema:
-                        type: string
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/UpdateNotesAndUsedDto'
-                required: true
-            responses:
-                "200":
-                    description: OK
 
     /exercise/isused:
         delete:
@@ -399,6 +403,7 @@ components:
                 - author
                 - categories
                 - exercises
+                - publishedAt
             properties:
                 id:
                     type: string
@@ -453,6 +458,7 @@ components:
         Exercise:
             type: object
             required:
+                - id
                 - title
                 - categories
                 - solutions
@@ -489,6 +495,8 @@ components:
                     type: array
                     items:
                         type: string
+                isUsed:
+                    type: boolean
 
         CreateSheetDto:
             required:
@@ -565,12 +573,3 @@ components:
                     items:
                         type: string
 
-        UpdateNotesAndUsedDto:
-            required:
-                []
-            type: object
-            properties:
-                note:
-                    type: string
-                isUsed:
-                    type: boolean

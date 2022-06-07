@@ -1,10 +1,9 @@
-
 import { Component, OnInit } from '@angular/core';
 import { AfterViewInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { AuthService } from "../../services/auth.service";
-import { Exercise, UpdateNotesAndUsedDto, ExerciseApiService, Category} from 'build/openapi';
+import { Exercise, CreateExerciseDto, CreateCourseDto, CreateCategoryDto, ExerciseApiService, Category} from 'build/openapi';
 import { exerciseEntry, ExerciseDbService } from "../../services/exercise-db.service";
 
 @Component({
@@ -158,9 +157,20 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
   }
 
   public saveNotes(id: string, value: string) {
+    var ex  = this.dataSource.find(el => {return el.id==id; })
+    var update : CreateExerciseDto = {
+        title: ex?.title!,
+        note: value,
+        shortDescription : ex?.shortDescription,
+        texts : ex?.texts!,
+        solutions : ex?.solutions!,
+        images : ex?.images,
+        courses : ex?.courses?.map(el => { let e : CreateCourseDto = {name : el.name!}; return e;})!,
+        categories : ex?.courses?.map(el => { let e : CreateCategoryDto = {name : el.name!}; return e;})!,
+    };
 
-    const update:  UpdateNotesAndUsedDto = {note : value };
-    this.exerciseService.updateNotesAndUsed(id, update).subscribe({
+
+    this.exerciseService.updateExercise(id, update).subscribe({
       next: data => {
         for (var el of this.dataSource) {
           if (el.id == id)
