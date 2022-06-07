@@ -52,7 +52,8 @@
 
     <div class="form-group">
         <label for="shortDescription">Short description</label>
-        <i class="bi bi-info-circle mx-4" title="This is the short description, which will be used as a preview later. Enter text and not LaTeX."></i>
+        <i class="bi bi-info-circle mx-4"
+           title="This is the short description, which will be used as a preview later. Enter text and not LaTeX."></i>
         <textarea class="form-control" id="shortDescription" formControlName="shortDescription" rows="3"
                   (change)="onFormChange()"></textarea>
         <div
@@ -77,20 +78,22 @@
     <div class="form-group">
         <div class="d-flex row col-2">
             <div class="col-auto">LaTeX code for exercise</div>
-            <i class="bi bi-info-circle col-auto" title="Here the LaTeX code for the exercise is entered. Every input box corresponds to a page in the PDF."></i>
+            <i class="bi bi-info-circle col-auto"
+               title="Here the LaTeX code for the exercise is entered. Every input box corresponds to a page in the PDF."></i>
         </div>
         <div *ngFor="let text of texts.controls; let textIndex = index">
             <div class="mt-1">
                 <label *ngIf="texts.length > 1">Page {{textIndex + 1}}</label>
                 <i class="bi bi-trash3 mx-4" (click)="deleteText(textIndex)" *ngIf="textIndex !== 0"></i>
-                <textarea class="form-control" [formControl]="$any(text)" rows="3"
-                          (change)="onFormChange()"></textarea>
+                <ngx-codemirror class="form-control" [formControl]="$any(text)"
+                                [options]="{lineNumbers: true, mode: 'text/x-stex'}"
+                                (ngModelChange)="onFormChange($event)">
+                </ngx-codemirror>
             </div>
             <div *ngIf="text.touched && text.invalid"
                  class="alert alert-danger">
                 <div *ngIf="text.hasError('required')">The text is mandatory.</div>
-                <div *ngIf="text.hasError('minlength')">The text should be at least 1 character long.
-                </div>
+                <div *ngIf="text.hasError('minlength')">The text should be at least 1 character long.</div>
             </div>
         </div>
         <button class="btn btn-secondary mt-2" (click)="addText()">Add page</button>
@@ -100,20 +103,22 @@
     <div class="form-group">
         <div class="d-flex row col-2">
             <div class="col-auto">LaTeX code for solution</div>
-            <i class="bi bi-info-circle col-auto" title="Here the LaTeX code for the solution is entered. Every input box corresponds to a page in the PDF."></i>
+            <i class="bi bi-info-circle col-auto"
+               title="Here the LaTeX code for the solution is entered. Every input box corresponds to a page in the PDF."></i>
         </div>
         <div *ngFor="let solution of solutions.controls; let solutionIndex = index">
             <div class="mt-1">
                 <label *ngIf="solutions.length > 1">Page {{solutionIndex + 1}}</label>
                 <i class="bi bi-trash3 mx-4" (click)="deleteSolution(solutionIndex)" *ngIf="solutionIndex !== 0"></i>
-                <textarea class="form-control" [formControl]="$any(solution)" rows="3"
-                          (change)="onFormChange()"></textarea>
+                <ngx-codemirror class="form-control" [formControl]="$any(solution)"
+                                [options]="{lineNumbers: true, mode: 'text/x-stex'}"
+                                (ngModelChange)="onFormChange($event)">
+                </ngx-codemirror>
             </div>
             <div *ngIf="solution.touched && solution.invalid"
                  class="alert alert-danger">
                 <div *ngIf="solution.hasError('required')">The solution is mandatory.</div>
-                <div *ngIf="solution.hasError('minlength')">The solution should be at least 1 character long.
-                </div>
+                <div *ngIf="solution.hasError('minlength')">The solution should be at least 1 character long.</div>
             </div>
         </div>
         <button class="btn btn-secondary mt-2" (click)="addSolution()">Add page</button>
@@ -151,8 +156,13 @@
 
     <div class="text-center pt-4">
         <div class="form-group text-center">
-            <button type="submit" class="btn btn-primary mx-3" (click)="onSubmit()" [disabled]="exerciseForm.invalid">
-                Add exercise
+            <button type="submit" class="btn btn-primary me-3" (click)="onSubmit()" [disabled]="exerciseForm.invalid"
+                    routerLink="/">
+                Save
+            </button>
+            <button type="submit" class="btn btn-primary me-3" (click)="onSubmit()" [disabled]="exerciseForm.invalid"
+                    *ngIf="isAddExercise">
+                Save and add new exercise
             </button>
             <button class="btn btn-secondary" [disabled]="exerciseForm.invalid">Compile and preview</button>
         </div>

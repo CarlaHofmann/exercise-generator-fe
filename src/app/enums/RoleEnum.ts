@@ -1,4 +1,5 @@
 export enum RoleEnum {
     STUDENT,
-    PROFESSOR
+    PROFESSOR,
+    ADMIN
 }

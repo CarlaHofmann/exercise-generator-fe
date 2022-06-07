@@ -41,7 +41,7 @@ export class ExerciseSheetsComponent implements OnInit {
                     }
                     return null;
                 })
-                this.authors = uniqueAuthors;
+                this.authors = uniqueAuthors.sort((a,b) => (a.name < b.name) ? -1 : 1);
 
                 const uniqueCategories: Category[] = [];
                 response.flatMap(sheet => sheet.categories).filter((category: Category) => {
@@ -51,9 +51,9 @@ export class ExerciseSheetsComponent implements OnInit {
                     }
                     return null;
                 })
-                this.categories = uniqueCategories;
+                this.categories = uniqueCategories.sort((a,b) => (a.name < b.name) ? -1 : 1);
 
-                this.sheets = response;
+                this.sheets = response.sort((a,b) => (a.publishedAt > b.publishedAt) ? -1 : 1);
             },
             error: error => console.log(error)
         });

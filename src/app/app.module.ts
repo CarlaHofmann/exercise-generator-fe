@@ -23,6 +23,8 @@ import {MatSortModule} from '@angular/material/sort';
 import {EditExerciseComponent} from './components/edit-exercise/edit-exercise.component';
 import {PageNotFoundComponent} from './components/page-not-found/page-not-found.component';
 import {ExerciseFormComponent} from './components/exercise-form/exercise-form.component';
+import {CodemirrorModule} from "@ctrl/ngx-codemirror";
+import {AdminConsoleComponent} from './components/admin-console/admin-console.component';
 
 @NgModule({
     declarations: [
@@ -37,7 +39,8 @@ import {ExerciseFormComponent} from './components/exercise-form/exercise-form.co
         ExerciseDatabaseComponent,
         EditExerciseComponent,
         PageNotFoundComponent,
-        ExerciseFormComponent
+        ExerciseFormComponent,
+        AdminConsoleComponent
     ],
     imports: [
         BrowserModule,
@@ -47,6 +50,7 @@ import {ExerciseFormComponent} from './components/exercise-form/exercise-form.co
         NgbModule,
         FormsModule,
         ReactiveFormsModule,
+        CodemirrorModule,
         NgSelectModule,
         MatPaginatorModule,
         MatTableModule,

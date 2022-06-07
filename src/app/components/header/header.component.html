@@ -14,6 +14,7 @@
                 <li class="nav-item"><a class="nav-link" routerLink="exercise-sheets">Exercise Sheets</a></li>
                 <li class="nav-item"><a class="nav-link" routerLink="exercise-db">Exercise Database</a></li>
                 <li *ngIf="isProfessor" class="nav-item"><a class="nav-link" routerLink="add-exercise">Add Exercise</a></li>
+                <li *ngIf="isAdmin" class="nav-item"><a class="nav-link" routerLink="admin">Admin Console</a></li>
             </ul>
 
             <div class="nav-item dropdown">
@@ -22,7 +23,7 @@
                     <i class="bi bi-person-fill text-grey" style="font-size: 1.5rem"></i>
                 </a>
 
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                     <li><a *ngIf="!isProfessor" class="dropdown-item" routerLink="/login">Log In</a></li>
                     <li><a *ngIf="isProfessor" class="dropdown-item" routerLink="/my-data">My Data</a></li>
                     <li>

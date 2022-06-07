@@ -2,13 +2,9 @@
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>-->
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 
+<h1 class="p-4">Exercise Database</h1>
 
-
-<div style="margin-top: 10px;margin-bottom: 40px;margin-left: 10px;">
-    <h1>Exercise Database</h1>
-</div>
-
-<div>
+<div class="px-4">
     <p *ngIf="showAlert">
         <ngb-alert type="danger" (closed)="closeAlert()">{{alertMessage}}</ngb-alert>
     </p>
@@ -127,6 +123,7 @@
 
 
                                <button *ngIf="isProfessor" type="button" class="btn btn-warning" title="Edit the exercise" [routerLink]="'/exercise/'+element.id+'/edit'">
+
 
 
                                     <svg class="svg-icon" width="16" height="16" fill="white" class="bi bi-download"

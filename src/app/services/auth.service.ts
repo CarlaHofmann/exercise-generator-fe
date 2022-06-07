@@ -7,14 +7,20 @@ import {RoleEnum} from "../enums/RoleEnum";
 export class AuthService {
     private _isStudent = false;
     private _isProfessor = false;
+    private _isAdmin = false;
 
     constructor() {
     }
 
 
     get isProfessor(): boolean{
-        return true;
-        // return this._isProfessor
+        // return true;
+        return this._isProfessor;
+    }
+
+    get isAdmin(): boolean{
+        // return true;
+        return this._isAdmin;
     }
 
     public authenticate(role: RoleEnum){
@@ -22,14 +28,22 @@ export class AuthService {
             case RoleEnum.STUDENT:
                 this._isStudent = true;
                 this._isProfessor = false;
+                this._isAdmin = false;
                 break;
             case RoleEnum.PROFESSOR:
                 this._isStudent = false;
                 this._isProfessor = true;
+                this._isAdmin = false;
+                break;
+            case RoleEnum.ADMIN:
+                this._isStudent = false;
+                this._isProfessor = true;
+                this._isAdmin = true;
                 break;
             default:
                 this._isStudent = true;
                 this._isProfessor = false;
+                this._isAdmin = false;
                 break;
         }
     }

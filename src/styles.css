@@ -3,6 +3,8 @@
 @import "~@ng-select/ng-select/themes/material.theme.css";
 @import "../node_modules/@angular/material/prebuilt-themes/indigo-pink.css";
 
+@import '~codemirror/lib/codemirror.css';
+
 
 :root{
     --secondary-colour: #3587fd;

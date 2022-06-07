@@ -6,6 +6,41 @@ servers:
     -   url: http://localhost:8080
         description: Generated server url
 paths:
+    /users:
+        get:
+            tags:
+                - UserApi
+            operationId: getAllUsers
+#            security:
+#                -   bearerAuth: []
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/User"
+
+        post:
+            tags:
+                - UserApi
+            operationId: createUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/CreateUserDto"
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/User"
+
     /sheet:
         get:
             tags:
@@ -427,6 +462,16 @@ components:
                     items:
                         $ref: "#/components/schemas/Exercise"
 
+        User:
+            type: object
+            required:
+                - username
+            properties:
+                id:
+                    type: string
+                username:
+                    type: string
+
         Author:
             type: object
             required:
@@ -520,6 +565,16 @@ components:
                     type: array
                     items:
                         type: string
+
+        CreateUserDto:
+            type: object
+            required:
+                - username
+            properties:
+                username:
+                    type: string
+                password:
+                    type: string
 
         CreateCourseDto:
             required:
