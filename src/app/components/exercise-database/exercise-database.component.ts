@@ -3,38 +3,29 @@ import { AfterViewInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { AuthService } from "../../services/auth.service";
+import { Exercise, CreateExerciseDto, CreateCourseDto, CreateCategoryDto, ExerciseApiService, Category} from 'build/openapi';
 import { exerciseEntry, ExerciseDbService } from "../../services/exercise-db.service";
+
 @Component({
   selector: 'app-exercise-database',
   templateUrl: './exercise-database.component.html',
   styleUrls: ['./exercise-database.component.css']
 })
+
 export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
 
-  constructor(private http: HttpClient, private authService: AuthService, private exerciseService: ExerciseDbService) { }
+  constructor(private http: HttpClient, private authService: AuthService, private exerciseService: ExerciseApiService) { }
 
   ngOnInit(): void {
     this.loadExercises();
 
   }
 
-  private EXERCISES_HARDCODED: exerciseEntry[] = [
-    { id: 1, title: "Ex1", category: "Calculus", shortDescription: "differential equations", notes: "nothing1", isUsed: true },
-    { id: 2, title: "Ex2", category: "Calculus", shortDescription: "surface integrals", notes: "nothing11", isUsed: true },
-    { id: 3, title: "Ex3", category: "Trigonometry", shortDescription: "sinus", notes: "nothing1111", isUsed: true },
-    { id: 4, title: "Ex4", category: "Algebra", shortDescription: "matrices and vectors", notes: "nothing1111", isUsed: false },
-    { id: 5, title: "Ex5", category: "Algebra", shortDescription: "linear systems", notes: "nothing", isUsed: true },
-    { id: 6, title: "Ex6", category: "Calculus", shortDescription: "more integrals", notes: "nothing2", isUsed: true },
-    { id: 7, title: "Ex7", category: "Algebra", shortDescription: "eigenvalues and eigenvectors", notes: "nothing", isUsed: true },
-    { id: 8, title: "Ex8", category: "Calculus", shortDescription: "volume integrals", notes: "nothing", isUsed: true },
-    { id: 9, title: "Ex9", category: "Calculus", shortDescription: "more volume integrals", notes: "nothing", isUsed: true },
-    { id: 10, title: "Ex10", category: "Calculus", shortDescription: "even more volume integrals", notes: "nothing", isUsed: true },
-    { id: 11, title: "Ex11", category: "Calculus", shortDescription: "all the volume integrals", notes: "nothing", isUsed: false }
-  ];
+
 
   public displayedColumns: string[] = ['title', 'category', 'shortDescription', 'action'];
-  public dataSource: exerciseEntry[] = [];
-  public displayExercises: exerciseEntry[] = [];
+  public dataSource: Exercise[] = [];
+  public displayExercises: Exercise[] = [];
 
 
   private searchString: string = '';
@@ -56,6 +47,19 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
 
   }
 
+
+  public categoriesToString(cats: Category[] ){
+
+        var s : string = "";
+        for (let i=0;i<cats.length;i++)
+        {
+            if(i==0)
+                s+= cats[i].name
+            else
+                s+= ' , ' +cats[i].name;
+        }
+        return s;
+  }
   public popAlert(message: string): void {
     this.alertMessage = message;
     this.showAlert = true;
@@ -64,9 +68,9 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
     this.showAlert = false;
   }
 
-  public removeExercise(id: number) {
+  public removeExercise(id: string) {
 
-    this.exerciseService.deleteRequest(id).subscribe({
+    this.exerciseService.deleteExercise(id).subscribe({
       next: data => {
         // TODO: dialog
         this.loadExercises();
@@ -80,17 +84,31 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
     });
   }
 
+ public toggleCheckbox(id : string, value: any) {
+
+   return this.exerciseService.isUsedUpdate(id,!value).subscribe({
+        next: data => {
+         return true;
+        },
+        error: error => {
+          this.popAlert('Error sending ckeck/unckeck to backend: ' + error.message);
+          return false;
+        }
+      });
+
+ }
+
   public loadExercises(): any {
     // >>>>>> HARDCODED VALUES (uncomment the following 4 lines)
-    this.dataSource = this.EXERCISES_HARDCODED;
+    /*this.dataSource = this.EXERCISES_HARDCODED;
     this.categories = Array.from((new Set(this.dataSource.map(element=> element.category))).values());
     this.refreshExercises()
-    return true;
+    return true;*/
 
-    this.exerciseService.getExercises().subscribe({
+    this.exerciseService.getAllExercises().subscribe({
       next: data => {
         this.dataSource = data;
-        this.categories = Array.from((new Set(data.map(element => element.category))).values());
+        this.categories = Array.from(new Set(data.reduce((previous,next) => previous.concat( next.categories.map(el => el.name)  ),new Array<string>())).values());
         this.refreshExercises()
       },
       error: error => {
@@ -113,8 +131,8 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
   public refreshExercises() {
 
     this.displayExercises = this.dataSource
-      .filter(exercise => (this.categoriesFilter.length == 0 || this.categoriesFilter.some(x => x === exercise.category)))
-      .filter(exercise => (this.searchString.length == 0 || exercise.notes.toLowerCase().includes(this.searchString)));
+      .filter(exercise => (this.categoriesFilter.length == 0 || this.categoriesFilter.some(x => exercise.categories.map(el => el.name).includes(x))))
+      .filter(exercise => (this.searchString.length == 0 || exercise.note?.toLowerCase().includes(this.searchString)));
   }
 
   public onSearchChange(event: any) {
@@ -123,33 +141,44 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
   }
 
   public uncheckAll(): void {
-    for (var el of this.dataSource) {
-      el.isUsed = false;
-    }
+      this.exerciseService.isUsedReset().subscribe({
+        next: data => {
+            for (var el of this.dataSource) {
+                el.isUsed = false;
+              }
+        },
+        error: error => {
+          // alert('There was an error: ' + error.message);
+          this.alertMessage = 'Error while trying to reset all the checkboxes: ' + error.message;
+          this.showAlert = true;
+        }
+      });
+
   }
 
-  public saveNotes(id: number, value: string) {
+  public saveNotes(id: string, value: string) {
+    var ex  = this.dataSource.find(el => {return el.id==id; })
+    var update : CreateExerciseDto = {
+        title: ex?.title!,
+        note: value,
+        shortDescription : ex?.shortDescription,
+        texts : ex?.texts!,
+        solutions : ex?.solutions!,
+        images : ex?.images,
+        courses : ex?.courses?.map(el => { let e : CreateCourseDto = {name : el.name!}; return e;})!,
+        categories : ex?.courses?.map(el => { let e : CreateCategoryDto = {name : el.name!}; return e;})!,
+    };
 
-    const body = { id: id, note: value };
 
-    for (var el of this.dataSource) {
-        if (el.id == id)
-          el.notes = value;
-      }
-      for (var el of this.displayExercises) {
-        if (el.id == id)
-          el.notes = value;
-      }
-
-    this.exerciseService.putNotes(body).subscribe({
+    this.exerciseService.updateExercise(id, update).subscribe({
       next: data => {
         for (var el of this.dataSource) {
           if (el.id == id)
-            el.notes = value;
+            el.note = value;
         }
         for (var el of this.displayExercises) {
           if (el.id == id)
-            el.notes = value;
+            el.note = value;
         }
       },
       error: error => {
