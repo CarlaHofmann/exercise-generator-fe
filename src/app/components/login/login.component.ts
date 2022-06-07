@@ -10,10 +10,7 @@ import {ActivatedRoute, Router} from "@angular/router";
     styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-    public loginForm = new FormGroup({
-        name: new FormControl(""),
-        password: new FormControl("")
-    });
+    public loginForm: FormGroup;
     public isFailedLoginAttempt = false;
 
     constructor(private authService: AuthService,
@@ -22,6 +19,10 @@ export class LoginComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.loginForm = new FormGroup({
+            name: new FormControl(""),
+            password: new FormControl("")
+        });
     }
 
     public logInAsProfessor(): void {

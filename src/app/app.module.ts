@@ -24,6 +24,7 @@ import {EditExerciseComponent} from './components/edit-exercise/edit-exercise.co
 import {PageNotFoundComponent} from './components/page-not-found/page-not-found.component';
 import {ExerciseFormComponent} from './components/exercise-form/exercise-form.component';
 import {CodemirrorModule} from "@ctrl/ngx-codemirror";
+import {AdminConsoleComponent} from './components/admin-console/admin-console.component';
 
 @NgModule({
     declarations: [
@@ -38,7 +39,8 @@ import {CodemirrorModule} from "@ctrl/ngx-codemirror";
         ExerciseDatabaseComponent,
         EditExerciseComponent,
         PageNotFoundComponent,
-        ExerciseFormComponent
+        ExerciseFormComponent,
+        AdminConsoleComponent
     ],
     imports: [
         BrowserModule,

@@ -22,6 +22,10 @@ export class HeaderComponent implements OnInit {
         return this.authService.isProfessor;
     }
 
+    get isAdmin(): boolean {
+        return this.authService.isAdmin;
+    }
+
     public logOutAsProfessor(): void {
         this.authService.authenticate(RoleEnum.STUDENT);
         this.router.navigate([""], {relativeTo: this.activatedRoute});
