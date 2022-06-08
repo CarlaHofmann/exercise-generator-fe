@@ -156,8 +156,7 @@
 
     <div class="text-center pt-4">
         <div class="form-group text-center">
-            <button type="submit" class="btn btn-primary me-3" (click)="onSubmit()" [disabled]="exerciseForm.invalid"
-                    routerLink="/">
+            <button type="submit" class="btn btn-primary me-3" (click)="onSubmitAndGoBack()" [disabled]="exerciseForm.invalid">
                 Save
             </button>
             <button type="submit" class="btn btn-primary me-3" (click)="onSubmit()" [disabled]="exerciseForm.invalid"

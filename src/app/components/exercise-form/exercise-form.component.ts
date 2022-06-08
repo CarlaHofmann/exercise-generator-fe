@@ -12,7 +12,7 @@ import {
 } from "../../../../build/openapi";
 import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
-import {ViewportScroller} from "@angular/common";
+import {Location, ViewportScroller} from "@angular/common";
 
 @Component({
     selector: 'app-exercise-form',
@@ -22,6 +22,9 @@ import {ViewportScroller} from "@angular/common";
 export class ExerciseFormComponent implements OnInit {
     @Input()
     public isAddExercise: boolean = true;
+
+    @Input()
+    public isCloneExercise: boolean = false;
 
     private exerciseId: string = "";
 
@@ -39,6 +42,7 @@ export class ExerciseFormComponent implements OnInit {
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
+                private location: Location,
                 private viewportScroller: ViewportScroller,
                 private exerciseApiService: ExerciseApiService,
                 private courseApiService: CourseApiService,
@@ -185,8 +189,13 @@ export class ExerciseFormComponent implements OnInit {
         this.exerciseForm?.reset();
     }
 
-    onSubmit() {
-        if (this.isAddExercise) {
+    public onSubmitAndGoBack(): void{
+        this.onSubmit();
+        this.location.back();
+    }
+
+    public onSubmit() {
+        if (this.isAddExercise || this.isCloneExercise) {
             this.exerciseApiService.createExercise(this.createExerciseDto).subscribe({
                 error: err => console.log(err)
             });
