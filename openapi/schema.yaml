@@ -439,6 +439,7 @@ components:
                 - categories
                 - exercises
                 - publishedAt
+                - courses
             properties:
                 id:
                     type: string
@@ -484,6 +485,8 @@ components:
 
         Course:
             type: object
+            required:
+                - name
             properties:
                 id:
                     type: string
@@ -509,6 +512,7 @@ components:
                 - solutions
                 - shortDescription
                 - texts
+                - courses
             properties:
                 id:
                     type: string

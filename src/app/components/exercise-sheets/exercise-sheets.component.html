@@ -7,13 +7,27 @@
         </ng-select>
     </div>
     <div class="col">
+        <ng-select [clearSearchOnAdd]="true" [searchable]="true" (change)="filterCoursesChange($event)" [clearable]="false"
+                   [items]="courses" [multiple]="true" bindLabel="name" placeholder="Filter by course">
+        </ng-select>
+    </div>
+    <div class="col">
         <ng-select [clearSearchOnAdd]="true" [searchable]="true" (change)="filterCategoriesChange($event)" [clearable]="false"
                    [items]="categories" [multiple]="true" bindLabel="name" placeholder="Filter by category">
         </ng-select>
     </div>
     <div class="text-end col">
-        <button type="button" class="btn btn-primary mt-3" routerLink="/create-exercise-sheet">Create Exercise Sheet</button>
+        <a class=" btn btn-primary " routerLink="/create-exercise-sheet">
+            <svg class="svg-icon" width="16" height="16" fill="white" class="bi bi-download"
+                 viewBox="2 2 18 18">
+                <path
+                    d="M14.613,10c0,0.23-0.188,0.419-0.419,0.419H10.42v3.774c0,0.23-0.189,0.42-0.42,0.42s-0.419-0.189-0.419-0.42v-3.774H5.806c-0.23,0-0.419-0.189-0.419-0.419s0.189-0.419,0.419-0.419h3.775V5.806c0-0.23,0.189-0.419,0.419-0.419s0.42,0.189,0.42,0.419v3.775h3.774C14.425,9.581,14.613,9.77,14.613,10 M17.969,10c0,4.401-3.567,7.969-7.969,7.969c-4.402,0-7.969-3.567-7.969-7.969c0-4.402,3.567-7.969,7.969-7.969C14.401,2.031,17.969,5.598,17.969,10 M17.13,10c0-3.932-3.198-7.13-7.13-7.13S2.87,6.068,2.87,10c0,3.933,3.198,7.13,7.13,7.13S17.13,13.933,17.13,10">
+                </path>
+            </svg> Create Exercise Sheet</a>
     </div>
+<!--    <div class="text-end col">-->
+<!--        <button type="button" class="btn btn-primary mt-3" routerLink="/create-exercise-sheet">Create Exercise Sheet</button>-->
+<!--    </div>-->
 </div>
 
 
@@ -21,14 +35,12 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th scope="col" class="col-3"> Title
-                </th>
-                <th scope="col" class="col-3"> Category
-                </th>
-                <th scope="col" class="col-3"> Author
-                </th>
-                <th scope="col" class="col-2"> Published At
-                </th>
+                <th scope="col" class="col-3"> Title </th>
+                <th scope="col" class="col-3"> Course </th>
+                <th scope="col" class="col-3"> Category </th>
+                <th scope="col" class="col-2"> Author </th>
+                <th scope="col" class="col-2"> Published At </th>
+                <th scope="col" class="col-2"> </th>
             </tr>
         </thead>
         <tbody>
@@ -37,6 +49,7 @@
 
 
                 <td scope="row">{{ sheet.title }}</td>
+                <td scope="row">{{ getSheetCourses(sheet.courses) }}</td>
                 <td scope="row">{{ getSheetCategories(sheet.categories) }}</td>
                 <td scope="row">{{ sheet.author.name }}</td>
                 <td scope="row">{{ sheet.publishedAt|date:'dd.MM.YYYY' }}</td>
