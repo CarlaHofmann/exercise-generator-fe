@@ -10,7 +10,6 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {LoginComponent} from './components/login/login.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {DashboardComponent} from './components/dashboard/dashboard.component';
-import {AddExerciseComponent} from './components/add-exercise/add-exercise.component';
 import {ExerciseSheetsComponent} from './components/exercise-sheets/exercise-sheets.component';
 import {CreateExerciseSheetComponent} from './components/create-exercise-sheet/create-exercise-sheet.component';
 import {HeaderComponent} from './components/header/header.component';
@@ -25,13 +24,14 @@ import {PageNotFoundComponent} from './components/page-not-found/page-not-found.
 import {ExerciseFormComponent} from './components/exercise-form/exercise-form.component';
 import {CodemirrorModule} from "@ctrl/ngx-codemirror";
 import {AdminConsoleComponent} from './components/admin-console/admin-console.component';
+import {CloneExerciseComponent} from './components/clone-exercise/clone-exercise.component';
+import {CreateExerciseComponent} from './components/create-exercise/create-exercise.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         LoginComponent,
         DashboardComponent,
-        AddExerciseComponent,
         ExerciseSheetsComponent,
         CreateExerciseSheetComponent,
         HeaderComponent,
@@ -40,7 +40,9 @@ import {AdminConsoleComponent} from './components/admin-console/admin-console.co
         EditExerciseComponent,
         PageNotFoundComponent,
         ExerciseFormComponent,
-        AdminConsoleComponent
+        AdminConsoleComponent,
+        CloneExerciseComponent,
+        CreateExerciseComponent
     ],
     imports: [
         BrowserModule,
