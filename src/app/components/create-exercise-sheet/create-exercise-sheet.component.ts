@@ -27,6 +27,7 @@ export class CreateExerciseSheetComponent implements OnInit {
   public courses: Course[] = [];
   public categories: Category[] = [];
 
+  public filteredCourseNames: String[] = [];
   public filteredCategoryNames: String[] = [];
 
   public randomizedSheet: Boolean = true;
@@ -59,6 +60,16 @@ export class CreateExerciseSheetComponent implements OnInit {
   private loadExercises(): void {
           this.exerciseApiService.getAllExercises().subscribe({
               next: response => {
+                  const uniqueCourses: Course[] = [];
+                  response.flatMap(sheet => sheet.courses).filter((course: Course) => {
+                      let i = uniqueCourses.findIndex(c => c.name === course.name);
+                      if(i < 0){
+                          uniqueCourses.push(course);
+                      }
+                      return null;
+                  })
+                  this.courses = uniqueCourses.sort((a,b) => (a.name < b.name) ? -1 : 1);
+
                   const uniqueCategories: Category[] = [];
                   response.flatMap(exercise => exercise.categories).filter((category: Category) => {
                       let i = uniqueCategories.findIndex(c => c.name === category.name);
@@ -101,11 +112,23 @@ export class CreateExerciseSheetComponent implements OnInit {
                                                                           .includes(categoryName));
                                           }
                                           return true;
+                                    })
+                                .filter((exercise: Exercise) => {
+                                          if (this.filteredCourseNames.length){
+                                              return exercise.courses.map((course: Course) => course.name)
+                                                                  .some((courseName: String) => this.filteredCourseNames
+                                                                  .includes(courseName));
+                                          }
+                                          return true;
                                     });
       }
 
   get isProfessor(): boolean {
     return this.authService.isProfessor;
+  }
+
+  public getExerciseCourses(courses: Course[]): string {
+          return courses.map(course => course.name).join(", ");
   }
 
   public getExerciseCategories(categories: Category[]): string {
@@ -116,6 +139,10 @@ export class CreateExerciseSheetComponent implements OnInit {
       this.texts.clear();
       this.solutions.clear();
       this.exerciseSheetForm?.reset();
+  }
+
+  public filterCoursesChange(courses: any): void {
+      this.filteredCourseNames = courses.map((course: Course) => course.name);
   }
 
   public filterCategoriesChange(categories: any): void {

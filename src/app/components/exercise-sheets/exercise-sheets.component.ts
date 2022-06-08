@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Author, Category, Sheet, SheetApiService } from 'build/openapi';
+import { Author, Course, Category, Sheet, SheetApiService } from 'build/openapi';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
@@ -12,9 +12,11 @@ import { AuthService } from 'src/app/services/auth.service';
 export class ExerciseSheetsComponent implements OnInit {
     public sheets: Sheet[] = [];
     public authors: Author[] = [];
+    public courses: Course[] = [];
     public categories: Category[] = [];
 
     public filteredAuthorNames: String[] = [];
+    public filteredCourseNames: String[] = [];
     public filteredCategoryNames: String[] = [];
 
     public page: number = 1;
@@ -43,6 +45,16 @@ export class ExerciseSheetsComponent implements OnInit {
                 })
                 this.authors = uniqueAuthors.sort((a,b) => (a.name < b.name) ? -1 : 1);
 
+                const uniqueCourses: Course[] = [];
+                response.flatMap(sheet => sheet.courses).filter((course: Course) => {
+                    let i = uniqueCourses.findIndex(c => c.name === course.name);
+                    if(i < 0){
+                        uniqueCourses.push(course);
+                    }
+                    return null;
+                })
+                this.courses = uniqueCourses.sort((a,b) => (a.name < b.name) ? -1 : 1);
+
                 const uniqueCategories: Category[] = [];
                 response.flatMap(sheet => sheet.categories).filter((category: Category) => {
                     let i = uniqueCategories.findIndex(c => c.name === category.name);
@@ -67,10 +79,18 @@ export class ExerciseSheetsComponent implements OnInit {
                                         return true;
                                   })
                           .filter((sheet: Sheet) => {
+                                        if (this.filteredCourseNames.length){
+                                            return sheet.courses.map((course: Course) => course.name)
+                                                                .some((courseName: String) => this.filteredCourseNames
+                                                                .includes(courseName));
+                                        }
+                                        return true;
+                                  })
+                          .filter((sheet: Sheet) => {
                                         if (this.filteredCategoryNames.length){
                                             return sheet.categories.map((category: Category) => category.name)
                                                                    .some((categoryName: String) => this.filteredCategoryNames
-                                                                        .includes(categoryName));
+                                                                   .includes(categoryName));
                                         }
                                         return true;
                                   });
@@ -80,8 +100,16 @@ export class ExerciseSheetsComponent implements OnInit {
         this.filteredAuthorNames = authors.map((author: Author) => author.name);
     }
 
+    public filterCoursesChange(courses: any): void {
+        this.filteredCourseNames = courses.map((course: Course) => course.name);
+    }
+
     public filterCategoriesChange(categories: any): void {
         this.filteredCategoryNames = categories.map((category: Category) => category.name);
+    }
+
+    public getSheetCourses(courses: Course[]): string {
+            return courses.map(course => course.name).join(", ");
     }
 
     public getSheetCategories(categories: Category[]): string {

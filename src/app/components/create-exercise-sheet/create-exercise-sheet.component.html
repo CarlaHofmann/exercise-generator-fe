@@ -45,9 +45,15 @@
     </div>
 
     <div class="text-center pt-4">
-        <button class="btn btn-secondary" disabled>Compile and download</button>
+        <div class="form-group text-center">
+            <button type="submit" class="btn btn-primary me-3" routerLink="/exercise-sheets">
+                Compile and download
+            </button>
+            <button *ngIf="isProfessor" type="submit" class="btn btn-primary me-3" routerLink="/exercise-sheets">
+                Compile and save
+            </button>
+        </div>
     </div>
-
 </div>
 
 <div *ngIf="!randomizedSheet" class="px-4" >
@@ -55,6 +61,14 @@
         <label>Title</label>
         <i class="bi bi-info-circle mx-4" title="This is the title of the exercise sheet."></i>
         <input type="text" class="form-control" id="title" placeholder="Exercise sheet title">
+    </div>
+
+    <div style="margin-top: 15px;">
+        <label>Course</label>
+        <i class="bi bi-info-circle mx-4" title="Choose courses to filter the listed exercises."></i>
+        <ng-select id="course" [clearSearchOnAdd]="true" (change)="filterCoursesChange($event)" [clearable]="false" [items]="courses"
+                   [multiple]="true" bindLabel="name" placeholder="Filter by course">
+        </ng-select>
     </div>
 
     <div style="margin-top: 15px;">
@@ -72,7 +86,8 @@
             <thead>
             <tr>
                 <th scope="col" class="col-1"> Select </th>
-                <th scope="col" class="col-2" sortable="title"> Title </th>
+                <th scope="col" class="col-2"> Title </th>
+                <th scope="col" class="col-2"> Course </th>
                 <th scope="col" class="col-2"> Category </th>
                 <th scope="col" class="col-2"> Short Description </th>
                 <th scope="col" class="col-2" *ngIf="isProfessor"> Notes </th>
@@ -86,32 +101,10 @@
 
                     <td scope="row"><input class="form-check-input" type="checkbox"></td>
                     <td scope="row">{{ exercise.title }}</td>
+                    <td scope="row">{{ getExerciseCourses(exercise.courses) }} </td>
                     <td scope="row">{{ getExerciseCategories(exercise.categories) }} </td>
-                    <td scope="row">{{ exercise.shortDescription }}
-                    </td>
-                    <td scope="row" *ngIf="isProfessor">
-
-                        <ng-template #popContent>
-
-                            <textarea class="form-control" rows="3" #input> {{ exercise.note }} </textarea>
-                            <button type="button" class="btn btn-success" (click)="saveNotes(exercise.id,input.value)"
-                                    style="text-align:center;width:100%;">
-                                Save<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                         class="bi bi-save" viewBox="0 0 16 16">
-                                <path
-                                    d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z" />
-                            </svg></button>
-
-                        </ng-template>
-                        <ng-template #popTitle>Notes </ng-template>
-
-                        <a type="button" id="myPopover" data-toggle="popover"
-                           class="btn btn-popover btn-block btn-outline-secondary"
-                           style="width:100%;height:100%;white-space: normal;word-wrap: break-word;"
-                           [ngbPopover]="popContent" autoClose="outside" [popoverTitle]="popTitle">
-                            {{ exercise.note }}
-                        </a>
-                    </td>
+                    <td scope="row">{{ exercise.shortDescription }} </td>
+                    <td scope="row" *ngIf="isProfessor"> {{ exercise.note }} </td>
                     <td scope="row" *ngIf="isProfessor"><input class="form-check-input" type="checkbox"></td>
 
                     <td scope="row" class="text-right;">
@@ -137,7 +130,14 @@
     </div>
 
     <div class="text-center pt-4">
-        <button class="btn btn-secondary" disabled>Compile and download</button>
+        <div class="form-group text-center">
+            <button type="submit" class="btn btn-primary me-3" routerLink="/exercise-sheets">
+                Compile and download
+            </button>
+            <button *ngIf="isProfessor" type="submit" class="btn btn-primary me-3" routerLink="/exercise-sheets">
+                Compile and save
+            </button>
+        </div>
     </div>
 
 </div>
