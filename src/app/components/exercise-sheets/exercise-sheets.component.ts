@@ -23,6 +23,8 @@ export class ExerciseSheetsComponent implements OnInit {
     public page: number = 1;
     public pageSize: number = this.dataService.getPageSize();
 
+    public isLoaded:boolean = false;
+
 
     constructor(private authService: AuthService,
                 private dataService: DataService,
@@ -68,6 +70,7 @@ export class ExerciseSheetsComponent implements OnInit {
                 this.categories = uniqueCategories.sort((a, b) => (a.name < b.name) ? -1 : 1);
 
                 this.sheets = response.sort((a, b) => (a.publishedAt > b.publishedAt) ? -1 : 1);
+                this.isLoaded = true;
             },
             error: error => console.log(error)
         });

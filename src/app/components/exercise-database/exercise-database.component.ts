@@ -25,13 +25,16 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
 
     private searchString: string = '';
     public categories: string[] = [];
+    public courses: string[] = [];
     private categoriesFilter: string[] = [];
+    private coursesFilter: string[] = [];
 
     public page: number = 1;
     public pageSize: number = this.dataService.getPageSize();
 
     public showAlert = false;
     public alertMessage = "";
+    public isLoaded: boolean = false;
 
 
     constructor(private authService: AuthService,
@@ -103,6 +106,12 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
 
     }
 
+
+    public refreshFilterData(): void{
+        this.categories = Array.from(new Set(this.displayExercises.reduce((previous, next) => previous.concat(next.categories.map(el => el.name)), new Array<string>())).values());
+        this.courses = Array.from(new Set(this.displayExercises.reduce((previous, next) => previous.concat(next.courses.map(el => el.name)), new Array<string>())).values());
+    }
+
     public loadExercises(): any {
         // >>>>>> HARDCODED VALUES (uncomment the following 4 lines)
         /*this.dataSource = this.EXERCISES_HARDCODED;
@@ -113,8 +122,10 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
         this.exerciseService.getAllExercises().subscribe({
             next: data => {
                 this.dataSource = data;
-                this.categories = Array.from(new Set(data.reduce((previous, next) => previous.concat(next.categories.map(el => el.name)), new Array<string>())).values());
-                this.refreshExercises()
+                this.categories = Array.from(new Set(this.dataSource.reduce((previous, next) => previous.concat(next.categories.map(el => el.name)), new Array<string>())).values());
+                this.courses = Array.from(new Set(this.dataSource.reduce((previous, next) => previous.concat(next.courses.map(el => el.name)), new Array<string>())).values());
+                this.refreshExercises();
+                this.isLoaded = true;
             },
             error: error => {
                 this.popAlert('Error loading the database: ' + error.message);
@@ -131,10 +142,22 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
         this.refreshExercises()
     }
 
+    public filterCourses(values: any): void {
+        if (values.length > 0)
+            this.coursesFilter = values;
+        else
+            this.coursesFilter = [];
+        this.refreshExercises()
+    }
+
+
+
     public refreshExercises() {
         this.displayExercises = this.dataSource
             .filter(exercise => (this.categoriesFilter.length == 0 || this.categoriesFilter.some(x => exercise.categories.map(el => el.name).includes(x))))
+            .filter(exercise => (this.coursesFilter.length == 0 || this.coursesFilter.some(x => exercise.courses.map(el => el.name).includes(x))))
             .filter(exercise => (this.searchString.length == 0 || exercise.note?.toLowerCase().includes(this.searchString)));
+        this.refreshFilterData();
     }
 
     public onSearchChange(event: any) {

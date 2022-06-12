@@ -11,11 +11,18 @@
     <nav class="navbar navbar-expand-lg sticky-top navbar-white bg-white">
         <div class="collapse navbar-collapse">
             <div class="justify-content-start" style="margin-right: 20px;margin-left: 20px;">
+                <ng-select [clearSearchOnAdd]="true" (change)="filterCourses($event)" [clearable]="false"
+                           [items]="courses" [multiple]="true" bindLabel="courses"
+                           placeholder="Filter by course">
+                </ng-select>
+            </div>
+            <div class="justify-content-start" style="margin-right: 20px;margin-left: 20px;">
                 <ng-select [clearSearchOnAdd]="true" (change)="filterCategories($event)" [clearable]="false"
                            [items]="categories" [multiple]="true" bindLabel="categories"
                            placeholder="Filter by category">
                 </ng-select>
             </div>
+
             <div style="margin-right: 20px;margin-left: 20px;">
                 <input *ngIf="isProfessor" type="text" (input)="onSearchChange($event)" class="form-control" id="search"
                        placeholder="Search in notes" mdbInput/>
@@ -28,6 +35,7 @@
         <thead>
         <tr>
             <th scope="col" class="col-2" sortable="title"> Title</th>
+            <th scope="col" class="col-2"> Course</th>
             <th scope="col" class="col-2"> Category</th>
             <th scope="col" class="col-2"> Short Description</th>
             <th scope="col" class="col-2" *ngIf="isProfessor"> Notes</th>
@@ -56,9 +64,11 @@
             </th>
         </tr>
         </thead>
-        <tbody>
+
+        <tbody *ngIf="isLoaded">
         <tr *ngFor="let element of displayExercises | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize;">
             <td scope="col">{{ element.title }}</td>
+            <td scope="col" [innerText]="categoriesToString(element.courses)"></td>
             <td scope="col" [innerText]="categoriesToString(element.categories)"></td>
             <td scope="col">{{ element.shortDescription }}</td>
             <td scope="col col-2" *ngIf="isProfessor">{{ element.note }}</td>
@@ -99,9 +109,14 @@
         </tr>
         </tbody>
     </table>
+    <div *ngIf = "!isLoaded" class="d-flex justify-content-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="sr-only"></span>
+        </div>
+      </div>
 
 
-    <div class="row ">
+    <div *ngIf = "isLoaded" class="row ">
         <div class="col-1 "></div>
         <div class="col-3 ">
             <select class="form-select" style="width:200px" [ngModel]="pageSize" (ngModelChange)="setPageSize($event)">
