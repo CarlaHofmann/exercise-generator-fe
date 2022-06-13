@@ -15,7 +15,6 @@ import {DataService} from "../../services/data.service";
     templateUrl: './exercise-database.component.html',
     styleUrls: ['./exercise-database.component.css']
 })
-
 export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
 
     public displayedColumns: string[] = ['title', 'category', 'shortDescription', 'action'];
@@ -67,7 +66,7 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
         return s;
     }
 
-    public popAlert(message: string): void {
+    public displayAlert(message: string): void {
         this.alertMessage = message;
         this.showAlert = true;
     }
@@ -86,7 +85,8 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
             },
             error: error => {
                 // alert('There was an error: ' + error.message);
-                this.alertMessage = 'Error while trying to delete an exercise: ' + error.message;
+                this.alertMessage = 'Error while trying to delete an exercise.';
+                console.log(error);
                 this.showAlert = true;
             }
         });
@@ -99,7 +99,8 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
                 return true;
             },
             error: error => {
-                this.popAlert('Error sending ckeck/unckeck to backend: ' + error.message);
+                this.displayAlert('Error sending ckeck/unckeck to backend.');
+                console.log(error);
                 return false;
             }
         });
@@ -107,7 +108,7 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
     }
 
 
-    public refreshFilterData(): void{
+    public refreshFilterData(): void {
         this.categories = Array.from(new Set(this.displayExercises.reduce((previous, next) => previous.concat(next.categories.map(el => el.name)), new Array<string>())).values());
         this.courses = Array.from(new Set(this.displayExercises.reduce((previous, next) => previous.concat(next.courses.map(el => el.name)), new Array<string>())).values());
     }
@@ -128,7 +129,8 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
                 this.isLoaded = true;
             },
             error: error => {
-                this.popAlert('Error loading the database: ' + error.message);
+                this.displayAlert('Error loading from the database.');
+                console.log(error);
             }
         });
     }
@@ -149,7 +151,6 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
             this.coursesFilter = [];
         this.refreshExercises()
     }
-
 
 
     public refreshExercises() {
@@ -222,7 +223,7 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
         });
     }
 
-    public setPageSize(event: Event): void{
+    public setPageSize(event: Event): void {
         this.pageSize = Number(event);
         this.dataService.savePageSize(this.pageSize);
         this.refreshExercises();

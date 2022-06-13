@@ -1,3 +1,7 @@
+<p *ngIf="showAlert" class="pt-4 px-4">
+    <ngb-alert type="danger" (closed)="closeAlert()">{{alertMessage}}</ngb-alert>
+</p>
+
 <h1 class="p-4">Admin Console</h1>
 
 
@@ -27,8 +31,8 @@
 <h2 class="ps-5 pt-5">All Users</h2>
 
 <div class="d-flex justify-content-center">
-    <div *ngIf="!users.length">There were no users found.</div>
-    <div class="col-4" *ngIf="users.length">
+    <div *ngIf="!users.length && isLoaded">There were no users found.</div>
+    <div class="col-4" *ngIf="users.length && isLoaded">
         <table class="table table-striped">
             <thead>
             <tr>
@@ -44,7 +48,7 @@
 
         <div class="row">
             <div class="col">
-                <select class="form-select" style="width:200px" [(ngModel)]="pageSize" (ngModelChange)="users">
+                <select class="form-select" style="width:200px" [ngModel]="pageSize" (ngModelChange)="setPageSize($event)">
                     <option [ngValue]="5">5 items per page</option>
                     <option [ngValue]="10">10 items per page</option>
                     <option [ngValue]="25">25 items per page</option>
@@ -57,6 +61,12 @@
                                 class="" (pageChange)="users" [boundaryLinks]="true"></ngb-pagination>
             </div>
         </div>
+    </div>
+</div>
+
+<div *ngIf="!isLoaded" class="d-flex justify-content-center">
+    <div class="spinner-border text-primary" role="status">
+        <span class="sr-only"></span>
     </div>
 </div>
 
