@@ -13,6 +13,7 @@ import {
 import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Location, ViewportScroller} from "@angular/common";
+import {DataService} from "../../services/data.service";
 
 @Component({
     selector: 'app-exercise-form',
@@ -40,13 +41,16 @@ export class ExerciseFormComponent implements OnInit {
     public courses: Course[] = [];
     public categories: Category[] = [];
 
+    public isLoaded = false;
+
     constructor(private route: ActivatedRoute,
                 private router: Router,
                 private location: Location,
                 private viewportScroller: ViewportScroller,
                 private exerciseApiService: ExerciseApiService,
                 private courseApiService: CourseApiService,
-                private categoryApiService: CategoryApiService) {
+                private categoryApiService: CategoryApiService,
+                private dataService: DataService) {
     }
 
     ngOnInit(): void {
@@ -65,6 +69,7 @@ export class ExerciseFormComponent implements OnInit {
         if (this.isAddExercise) {
             this.texts.push(new FormControl("", [Validators.required, Validators.minLength(1)]));
             this.solutions.push(new FormControl("", [Validators.required, Validators.minLength(1)]));
+            this.isLoaded = true;
         } else {
             this.route.params.subscribe(params => {
                 this.exerciseId = params["id"];
@@ -93,10 +98,13 @@ export class ExerciseFormComponent implements OnInit {
 
                 this.exercise.texts.forEach(text => this.texts.push(new FormControl(text, [Validators.required, Validators.minLength(1)])));
                 this.exercise.solutions.forEach(solution => this.solutions.push(new FormControl(solution, [Validators.required, Validators.minLength(1)])));
+
+                this.isLoaded = true;
             },
             error: err => {
                 console.log(err);
-                this.router.navigate(["**"]);
+                this.isLoaded = true;
+                this.router.navigate(["**"], {skipLocationChange: true});
             }
         });
     }
@@ -133,6 +141,7 @@ export class ExerciseFormComponent implements OnInit {
         }
 
         this.createExerciseDto = {
+            isUsed: false,
             title: this.exerciseForm.controls["title"].value,
             categories: categories,
             courses: courses,
@@ -141,6 +150,8 @@ export class ExerciseFormComponent implements OnInit {
             texts: this.exerciseForm.controls["texts"].value,
             solutions: this.exerciseForm.controls["solutions"].value
         }
+
+        this.dataService.existUnsavedChanges = this.exerciseForm.dirty;
     }
 
     public addText(): void {
@@ -189,7 +200,7 @@ export class ExerciseFormComponent implements OnInit {
         this.exerciseForm?.reset();
     }
 
-    public onSubmitAndGoBack(): void{
+    public onSubmitAndGoBack(): void {
         this.onSubmit();
         this.location.back();
     }

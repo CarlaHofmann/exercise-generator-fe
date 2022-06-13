@@ -3,6 +3,7 @@ import {FormControl, FormGroup} from "@angular/forms";
 import {AuthService} from "../../services/auth.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CreateUserDto, User, UserApiService} from "../../../../build/openapi";
+import {DataService} from "../../services/data.service";
 
 @Component({
   selector: 'app-admin-console',
@@ -15,13 +16,18 @@ export class AdminConsoleComponent implements OnInit {
 
     public newUserForm: FormGroup;
 
-    public page: number = 1;
-    public pageSize: number = 10;
+    public page = 1;
+    public pageSize = this.dataService.getPageSize();
+
+    public showAlert = false;
+    public alertMessage = "";
+    public isLoaded = false;
 
     constructor(private authService: AuthService,
                 private router: Router,
                 private activatedRoute: ActivatedRoute,
-                private userService: UserApiService) {
+                private userService: UserApiService,
+                private dataService: DataService) {
     }
 
     ngOnInit(): void {
@@ -35,9 +41,25 @@ export class AdminConsoleComponent implements OnInit {
 
     private loadUsers(): void{
         this.userService.getAllUsers().subscribe({
-            next: response => this.users = response,
-            error: err => console.log(err)
+            next: response => {
+                this.users = response;
+                this.isLoaded = true;
+            },
+            error: err => {
+                console.log(err);
+                this.isLoaded = true;
+                this.displayAlert("Error loading the database.")
+            }
         });
+    }
+
+    public displayAlert(message: string): void {
+        this.alertMessage = message;
+        this.showAlert = true;
+    }
+
+    public closeAlert(): void {
+        this.showAlert = false;
     }
 
     public addUser(): void{
@@ -46,5 +68,10 @@ export class AdminConsoleComponent implements OnInit {
             next: response => this.users.push(response),
             error: err => console.log(err)
         });
+    }
+
+    public setPageSize(event: Event): void{
+        this.pageSize = Number(event);
+        this.dataService.savePageSize(this.pageSize);
     }
 }

@@ -1,9 +1,11 @@
 import {Injectable} from '@angular/core';
+import {Observable} from "rxjs";
 
 @Injectable({
     providedIn: 'root'
 })
 export class DataService {
+    private _existUnsavedChanges: Observable<boolean> | boolean = true;
 
     constructor() {
     }
@@ -17,5 +19,13 @@ export class DataService {
             return Number(localStorage.getItem("pageSize"));
         }
         return 10;
+    }
+
+    set existUnsavedChanges(isPendingChange: Observable<boolean> | boolean){
+        this._existUnsavedChanges = isPendingChange;
+    }
+
+    get existUnsavedChanges(): Observable<boolean> | boolean{
+        return this._existUnsavedChanges;
     }
 }

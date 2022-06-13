@@ -443,6 +443,8 @@ components:
             properties:
                 id:
                     type: string
+                isPublished:
+                    type: boolean
                 title:
                     type: string
                 publishedAt:
@@ -518,6 +520,8 @@ components:
                     type: string
                 author:
                     $ref: "#/components/schemas/Author"
+                isUsed:
+                    type: boolean
                 courses:
                     type: array
                     items:
@@ -544,8 +548,6 @@ components:
                     type: array
                     items:
                         type: string
-                isUsed:
-                    type: boolean
 
         CreateSheetDto:
             required:
@@ -555,6 +557,8 @@ components:
                 - exercises
             type: object
             properties:
+                isPublished:
+                    type: boolean
                 title:
                     type: string
                 courses:
@@ -605,6 +609,8 @@ components:
                 - solutions
             type: object
             properties:
+                isUsed:
+                    type: boolean
                 title:
                     type: string
                 courses:
