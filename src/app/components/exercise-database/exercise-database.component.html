@@ -1,119 +1,109 @@
-<!--<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>-->
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-
 <h1 class="p-4">Exercise Database</h1>
 
-<div class="px-4">
+
+<div class="d-flex row px-4">
     <p *ngIf="showAlert">
         <ngb-alert type="danger" (closed)="closeAlert()">{{alertMessage}}</ngb-alert>
     </p>
-    <nav class="navbar navbar-expand-lg sticky-top navbar-white bg-white">
-        <div class="collapse navbar-collapse">
-            <div class="justify-content-start" style="margin-right: 20px;margin-left: 20px;">
-                <ng-select [clearSearchOnAdd]="true" (change)="filterCourses($event)" [clearable]="false"
-                           [items]="courses" [multiple]="true" bindLabel="courses"
-                           placeholder="Filter by course">
-                </ng-select>
-            </div>
-            <div class="justify-content-start" style="margin-right: 20px;margin-left: 20px;">
-                <ng-select [clearSearchOnAdd]="true" (change)="filterCategories($event)" [clearable]="false"
-                           [items]="categories" [multiple]="true" bindLabel="categories"
-                           placeholder="Filter by category">
-                </ng-select>
-            </div>
+    <div class="justify-content-start col">
+        <ng-select [clearSearchOnAdd]="true" (change)="filterCourses($event)" [clearable]="false"
+                   [items]="courses" [multiple]="true" bindLabel="courses"
+                   placeholder="Filter by course">
+        </ng-select>
+    </div>
+    <div class="col">
+        <ng-select [clearSearchOnAdd]="true" (change)="filterCategories($event)" [clearable]="false"
+                   [items]="categories" [multiple]="true" bindLabel="categories"
+                   placeholder="Filter by category">
+        </ng-select>
+    </div>
+    <div class="col" style="margin-top: 15px">
+        <input *ngIf="isProfessor" type="text" (input)="onSearchChange($event)" class="form-control" id="search"
+               placeholder="Search in notes" mdbInput/>
+    </div>
+    <div class="text-end col" style="margin-top: 15px">
+        <a class="btn btn-primary" routerLink="/exercise/create">
+            <i class="bi bi-plus-circle"></i>
+            Create Exercise</a>
+    </div>
+</div>
 
-            <div style="margin-right: 20px;margin-left: 20px;">
-                <input *ngIf="isProfessor" type="text" (input)="onSearchChange($event)" class="form-control" id="search"
-                       placeholder="Search in notes" mdbInput/>
-            </div>
-        </div>
-    </nav>
+
+<div *ngIf="!isLoaded" class="d-flex justify-content-center">
+    <div class="spinner-border text-primary" role="status">
+        <span class="sr-only"></span>
+    </div>
+</div>
 
 
+<div *ngIf="displayExercises?.length" class="px-4">
     <table class="table table-striped">
         <thead>
-        <tr>
-            <th scope="col" class="col-2" sortable="title"> Title</th>
-            <th scope="col" class="col-2"> Course</th>
-            <th scope="col" class="col-2"> Category</th>
-            <th scope="col" class="col-2"> Short Description</th>
-            <th scope="col" class="col-2" *ngIf="isProfessor"> Notes</th>
+            <tr>
+                <th scope="col" class="col-2" sortable="title"> Title</th>
+                <th scope="col" class="col-2"> Course</th>
+                <th scope="col" class="col-2"> Category</th>
+                <th scope="col" class="col-2"> Short Description</th>
+                <th scope="col" class="col-2" *ngIf="isProfessor"> Notes</th>
 
-            <th scope="col" class="col-1" *ngIf="isProfessor">
-                <div class="d-flex justify-content-center">
-                    <div>Is used
-                        <a title="Press to uncheck all the isUsed flags." class=" btn btn-danger "
-                           (click)="uncheckAll()">
-                            <i class="bi bi-trash3 text-white"></i>
-                        </a>
-                    </div>
-                </div>
-            </th>
-            <th scope="col" class="col-1">
-                <div class="d-flex justify-content-end">
-                    <div>
-                        <div class="input-group" *ngIf="isProfessor">
-                            <a class=" btn btn-primary " routerLink="/exercise/create">
-                                <i class="bi bi-plus-circle"></i>
-                                Add exercise
+                <th scope="col" class="col-1" *ngIf="isProfessor">
+                    <div class="d-flex justify-content-center">
+                        <div>Is used
+                            <a title="Press to uncheck all the isUsed flags." class="btn btn-sm btn-danger"
+                               (click)="uncheckAll()">
+                                <i class="bi bi-trash3 text-white"></i>
                             </a>
                         </div>
                     </div>
-                </div>
-            </th>
-        </tr>
+                </th>
+                <th scope="col" class="col-1"></th>
+            </tr>
         </thead>
 
+
         <tbody *ngIf="isLoaded">
-        <tr *ngFor="let element of displayExercises | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize;">
-            <td scope="col">{{ element.title }}</td>
-            <td scope="col" [innerText]="categoriesToString(element.courses)"></td>
-            <td scope="col" [innerText]="categoriesToString(element.categories)"></td>
-            <td scope="col">{{ element.shortDescription }}</td>
-            <td scope="col col-2" *ngIf="isProfessor">{{ element.note }}</td>
+            <tr *ngFor="let element of displayExercises | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize;">
 
-            <td scope="col" *ngIf="isProfessor">
-                <div class="d-flex justify-content-center">
-                    <div><input class="form-check-input" type="checkbox" [(ngModel)]="element.isUsed"
-                                (change)="toggleCheckbox(element.id, element.isUsed);"/></div>
-                </div>
-            </td>
+                <td scope="col">{{ element.title }}</td>
+                <td scope="col" [innerText]="categoriesToString(element.courses)"></td>
+                <td scope="col" [innerText]="categoriesToString(element.categories)"></td>
+                <td scope="col">{{ element.shortDescription }}</td>
+                <td scope="col col-2" *ngIf="isProfessor">{{ element.note }}</td>
+                <td scope="col" *ngIf="isProfessor">
+                    <div class="d-flex justify-content-center">
+                        <div><input class="form-check-input" type="checkbox" [(ngModel)]="element.isUsed"
+                                    (change)="toggleCheckbox(element.id, element.isUsed);"/></div>
+                    </div>
+                </td>
+                <td scope="col" class="text-right;">
+                    <div class="d-flex justify-content-end">
+                        <div>
+                            <div class="btn-group" role="group" aria-label="group">
+                                <button type="button" class="btn btn-success" title="View the exercise as pdf">
+                                    <i class="bi bi-eye text-white"></i>
+                                </button>
 
-            <td scope="col" class="text-right;">
-                <div class="d-flex justify-content-end">
-                    <div>
-                        <div class="btn-group" role="group" aria-label="group">
-                            <button type="button" class="btn btn-success" title="View the exercise as pdf">
-                                <i class="bi bi-eye text-white"></i>
-                            </button>
+                                <button *ngIf="isProfessor" type="button" class="btn btn-warning" title="Edit the exercise"
+                                        routerLink="{{ '/exercise/'+element.id+'/edit' }}">
+                                    <i class="bi bi-pencil text-white"></i>
+                                </button>
 
-                            <button *ngIf="isProfessor" type="button" class="btn btn-warning" title="Edit the exercise"
-                                    routerLink="{{ '/exercise/'+element.id+'/edit' }}">
-                                <i class="bi bi-pencil text-white"></i>
-                            </button>
+                                <button *ngIf="isProfessor" type="button" class="btn btn-warning" title="Clone the exercise"
+                                        routerLink="{{ '/exercise/'+element.id+'/clone' }}">
+                                    <i class="bi bi-files text-white"></i>
+                                </button>
 
-                            <button *ngIf="isProfessor" type="button" class="btn btn-warning" title="Clone the exercise"
-                                    routerLink="{{ '/exercise/'+element.id+'/clone' }}">
-                                <i class="bi bi-files text-white"></i>
-                            </button>
-
-                            <button *ngIf="isProfessor" type="button" class="btn btn-danger"
-                                    title="Delete the exercise from the database" (click)="removeExercise(element.id);">
-                                <i class="bi bi-trash3 text-white"></i>
-                            </button>
+                                <button *ngIf="isProfessor" type="button" class="btn btn-danger"
+                                        title="Delete the exercise from the database" (click)="removeExercise(element.id);">
+                                    <i class="bi bi-trash3 text-white"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </td>
-        </tr>
+                </td>
+            </tr>
         </tbody>
     </table>
-    <div *ngIf = "!isLoaded" class="d-flex justify-content-center">
-        <div class="spinner-border text-primary" role="status">
-          <span class="sr-only"></span>
-        </div>
-      </div>
 
 
     <div *ngIf = "isLoaded" class="row ">
@@ -131,75 +121,10 @@
                             (pageChange)="refreshExercises()" [boundaryLinks]="true" [maxSize]="5" [ellipses]="true">
             </ngb-pagination>
         </div>
-        <div class="col-4 ">
-        </div>
     </div>
+</div>
 
 
-    <!--
-    <div class="container">
-        <ng-select
-            [clearSearchOnAdd]="true"
-            (change)="filterCategories($event)"
-            [clearable]="false"
-            [items]="topics"
-            [multiple]="true"
-            bindLabel="topics"
-            placeholder="Filter by topic"
-            style="margin-right: 100px;margin-left: 100px;">
-        </ng-select>
-        <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)"
-               class="mat-elevation-z8">
-
-            <ng-container matColumnDef="title">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by title">Title</th>
-                <td mat-cell *matCellDef="let element"> {{element.title}} </td>
-            </ng-container>
-
-
-            <ng-container matColumnDef="topic">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by topic"> Topic</th>
-                <td mat-cell *matCellDef="let element"> {{element.topic}} </td>
-            </ng-container>
-
-
-            <ng-container matColumnDef="shortDescription">
-                <th mat-header-cell *matHeaderCellDef> Short Description</th>
-                <td mat-cell *matCellDef="let element"> {{element.shortDescription}} </td>
-            </ng-container>
-
-
-            <ng-container matColumnDef="action">
-                <th mat-header-cell *matHeaderCellDef style=" text-align:right">
-                    <div class="input-group">
-                        <a class=" btn btn-success " mat-raised-button routerLink="professor/add-exercise">
-                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add exercise</a>
-                    </div>
-                </th>
-                <td mat-cell *matCellDef="let element" style=" text-align:right">
-                    <div class="btn-group" role="group" aria-label="group">
-                        <button type="button" class="btn btn-primary" matTooltip="View the exercise as pdf">
-                            <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
-                        </button>
-                        <button type="button" class="btn btn-warning" matTooltip="Edit the exercise">
-                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                        </button>
-                        <button type="button" class="btn btn-danger" matTooltip="Delete the exercise from the database"
-                                (click)="removeExercise(element.id)">
-                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                        </button>
-                    </div>
-                </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
-
-        <mat-paginator [pageSizeOptions]="[ 10, 20, 50, 100]"
-                       showFirstLastButtons
-                       aria-label="Select page of periodic elements">
-        </mat-paginator>
-    </div>
-    -->
-
+<div *ngIf="!displayExercises?.length && isLoaded" class="px-4 center" style="margin-top: 15px; font-size: 20px">
+    No Exercises found.
+</div>
