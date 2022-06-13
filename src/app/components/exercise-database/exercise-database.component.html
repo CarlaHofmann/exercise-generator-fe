@@ -22,9 +22,15 @@
                placeholder="Search in notes" mdbInput/>
     </div>
     <div class="text-end col" style="margin-top: 15px">
-        <a class="btn btn-primary" routerLink="/exercise/create">
+        <div class="btn-group" role="group" aria-label="group">
+            <button title="Press to uncheck all the isUsed flags." style="border: 1px white solid;" class="btn btn-sm btn-danger" (click)="uncheckAll()">
+         <i class="bi bi-trash3 text-white"></i>
+         Reset is Used
+            </button>
+        <button class="btn btn-primary" style="border: 1px white solid;" routerLink="/exercise/create">
             <i class="bi bi-plus-circle"></i>
-            Create Exercise</a>
+            Create Exercise</button>
+    </div>
     </div>
 </div>
 
@@ -49,10 +55,7 @@
                 <th scope="col" class="col-1" *ngIf="isProfessor">
                     <div class="d-flex justify-content-center">
                         <div>Is used
-                            <a title="Press to uncheck all the isUsed flags." class="btn btn-sm btn-danger"
-                               (click)="uncheckAll()">
-                                <i class="bi bi-trash3 text-white"></i>
-                            </a>
+
                         </div>
                     </div>
                 </th>
@@ -79,21 +82,21 @@
                     <div class="d-flex justify-content-end">
                         <div>
                             <div class="btn-group" role="group" aria-label="group">
-                                <button type="button" class="btn btn-success" title="View the exercise as pdf">
+                                <button style="border: 1px white solid;" type="button" class="btn btn-success" title="View the exercise as pdf">
                                     <i class="bi bi-eye text-white"></i>
                                 </button>
 
-                                <button *ngIf="isProfessor" type="button" class="btn btn-warning" title="Edit the exercise"
+                                <button *ngIf="isProfessor" type="button" style="border: 1px white solid;" class="btn btn-warning" title="Edit the exercise"
                                         routerLink="{{ '/exercise/'+element.id+'/edit' }}">
                                     <i class="bi bi-pencil text-white"></i>
                                 </button>
 
-                                <button *ngIf="isProfessor" type="button" class="btn btn-warning" title="Clone the exercise"
+                                <button *ngIf="isProfessor" type="button" style="border: 1px white solid;" class="btn btn-warning" title="Clone the exercise"
                                         routerLink="{{ '/exercise/'+element.id+'/clone' }}">
                                     <i class="bi bi-files text-white"></i>
                                 </button>
 
-                                <button *ngIf="isProfessor" type="button" class="btn btn-danger"
+                                <button *ngIf="isProfessor" style="border: 1px white solid;" type="button" class="btn btn-danger"
                                         title="Delete the exercise from the database" (click)="removeExercise(element.id);">
                                     <i class="bi bi-trash3 text-white"></i>
                                 </button>
