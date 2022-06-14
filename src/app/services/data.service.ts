@@ -5,7 +5,7 @@ import {Observable} from "rxjs";
     providedIn: 'root'
 })
 export class DataService {
-    private _existUnsavedChanges: Observable<boolean> | boolean = true;
+    private _existUnsavedChanges: Observable<boolean> | boolean = false;
 
     constructor() {
     }
@@ -21,8 +21,8 @@ export class DataService {
         return 10;
     }
 
-    set existUnsavedChanges(isPendingChange: Observable<boolean> | boolean){
-        this._existUnsavedChanges = isPendingChange;
+    set existUnsavedChanges(existUnsavedChange: Observable<boolean> | boolean){
+        this._existUnsavedChanges = existUnsavedChange;
     }
 
     get existUnsavedChanges(): Observable<boolean> | boolean{

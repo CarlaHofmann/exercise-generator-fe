@@ -25,6 +25,8 @@ export class CreateExerciseComponent implements OnInit, CanDeactivateComponent {
 
     @HostListener('window:beforeunload', ['$event'])
     beforeUnloadHandler(event: BeforeUnloadEvent) {
-        event.returnValue = this.dataService.existUnsavedChanges;
+        if(this.dataService.existUnsavedChanges){
+            event.returnValue = true;
+        }
     }
 }
