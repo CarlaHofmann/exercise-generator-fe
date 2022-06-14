@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {
     Category,
     CategoryApiService,
@@ -20,7 +20,7 @@ import {DataService} from "../../services/data.service";
     templateUrl: './exercise-form.component.html',
     styleUrls: ['./exercise-form.component.css']
 })
-export class ExerciseFormComponent implements OnInit {
+export class ExerciseFormComponent implements OnInit, OnDestroy {
     @Input()
     public isAddExercise: boolean = true;
 
@@ -55,13 +55,14 @@ export class ExerciseFormComponent implements OnInit {
 
     ngOnInit(): void {
         this.resetForm();
+        this.dataService.existUnsavedChanges = false;
 
         this.exerciseForm = new FormGroup({
             title: new FormControl("", [Validators.required, Validators.minLength(1)]),
             courses: new FormControl("", [Validators.required, Validators.minLength(1)]),
             categories: new FormControl("", [Validators.required, Validators.minLength(1)]),
-            note: new FormControl(""),
             shortDescription: new FormControl("", [Validators.required, Validators.minLength(1)]),
+            note: new FormControl(""),
             texts: this.texts,
             solutions: this.solutions
         });
@@ -81,6 +82,10 @@ export class ExerciseFormComponent implements OnInit {
         this.loadCategories();
     }
 
+    ngOnDestroy() {
+        this.dataService.existUnsavedChanges = false;
+    }
+
     private loadExercise(id: string): void {
         this.exerciseApiService.getExerciseById(id).subscribe({
             next: response => {
@@ -90,8 +95,8 @@ export class ExerciseFormComponent implements OnInit {
                     title: new FormControl(this.exercise.title, [Validators.required, Validators.minLength(1)]),
                     courses: new FormControl(this.exercise.courses, [Validators.required, Validators.minLength(1)]),
                     categories: new FormControl(this.exercise.categories, [Validators.required, Validators.minLength(1)]),
-                    note: new FormControl(this.exercise.note),
                     shortDescription: new FormControl(this.exercise.shortDescription, [Validators.required, Validators.minLength(1)]),
+                    note: new FormControl(this.exercise.note),
                     texts: this.texts,
                     solutions: this.solutions
                 });
@@ -143,15 +148,26 @@ export class ExerciseFormComponent implements OnInit {
         this.createExerciseDto = {
             isUsed: false,
             title: this.exerciseForm.controls["title"].value,
-            categories: categories,
             courses: courses,
-            note: this.exerciseForm.controls["note"].value,
+            categories: categories,
             shortDescription: this.exerciseForm.controls["shortDescription"].value,
+            note: this.exerciseForm.controls["note"].value,
             texts: this.exerciseForm.controls["texts"].value,
             solutions: this.exerciseForm.controls["solutions"].value
         }
 
-        this.dataService.existUnsavedChanges = this.exerciseForm.dirty;
+        this.checkUnsavedChanges();
+    }
+
+    private checkUnsavedChanges(): void {
+        this.dataService.existUnsavedChanges = Boolean(this.exerciseForm.controls["title"].value.length ||
+            this.exerciseForm.controls["courses"].value?.some((course: {name: string}) => course.name.length) ||
+            this.exerciseForm.controls["categories"].value?.some((category: {name: string}) => category.name.length) ||
+            this.exerciseForm.controls["shortDescription"].value.length ||
+            this.exerciseForm.controls["note"].value.length ||
+            this.exerciseForm.controls["texts"].value.some((text: string) => text.length) ||
+            this.exerciseForm.controls["solutions"].value.some((solution: string) => solution.length) ||
+            this.images.length);
     }
 
     public addText(): void {
@@ -187,11 +203,13 @@ export class ExerciseFormComponent implements OnInit {
             }
         }
 
+        this.checkUnsavedChanges();
         event.target.value = null;
     }
 
     public deleteImage(imageIndex: number): void {
         this.images.splice(imageIndex, 1);
+        this.checkUnsavedChanges();
     }
 
     private resetForm(): void {
