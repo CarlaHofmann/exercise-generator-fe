@@ -1,6 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import {Author, Category, Course, Sheet, SheetApiService} from 'build/openapi';
 import {AuthService} from 'src/app/services/auth.service';
+import {
+    Author,
+    Category,
+    Course,
+    Sheet,
+    SheetApiService,
+    UserApiService
+} from 'build/openapi';
 import {DataService} from "../../services/data.service";
 
 @Component({
@@ -9,8 +16,8 @@ import {DataService} from "../../services/data.service";
     styleUrls: ['./exercise-sheets.component.css']
 })
 
-
 export class ExerciseSheetsComponent implements OnInit {
+
     public sheets: Sheet[] = [];
     public authors: Author[] = [];
     public courses: Course[] = [];
@@ -28,26 +35,35 @@ export class ExerciseSheetsComponent implements OnInit {
 
     constructor(private authService: AuthService,
                 private dataService: DataService,
-                private sheetApiService: SheetApiService) {
+                private sheetApiService: SheetApiService,
+                private userApiService: UserApiService) {
     }
 
     public ngOnInit(): void {
         this.loadExerciseSheets();
     }
 
-
     private loadExerciseSheets(): void {
         this.sheetApiService.getAllSheets().subscribe({
             next: response => {
-                const uniqueAuthors: Author[] = [];
-                response.map(sheet => sheet.author).filter((author: Author) => {
-                    let i = uniqueAuthors.findIndex(a => a.name === author.name);
-                    if (i < 0) {
-                        uniqueAuthors.push(author);
-                    }
-                    return null;
-                })
-                this.authors = uniqueAuthors.sort((a, b) => (a.name < b.name) ? -1 : 1);
+                if (this.isProfessor){
+                    this.userApiService.getCurrentUser().subscribe({
+                        next: response => {
+                           this.filteredAuthorNames = [response.username];
+                        },
+                        error: error => console.log(error)
+                    })
+                }else{
+                    const uniqueAuthors: Author[] = [];
+                    response.map(sheet => sheet.author).filter((author: Author) => {
+                        let i = uniqueAuthors.findIndex(a => a.name === author.name);
+                        if (i < 0) {
+                            uniqueAuthors.push(author);
+                        }
+                        return null;
+                    })
+                    this.authors = uniqueAuthors.sort((a, b) => (a.name < b.name) ? -1 : 1);
+                }
 
                 const uniqueCourses: Course[] = [];
                 response.flatMap(sheet => sheet.courses).filter((course: Course) => {
@@ -83,20 +99,20 @@ export class ExerciseSheetsComponent implements OnInit {
             }
             return true;
         }).filter((sheet: Sheet) => {
-                if (this.filteredCourseNames.length) {
-                    return sheet.courses.map((course: Course) => course.name)
-                        .some((courseName: String) => this.filteredCourseNames
-                            .includes(courseName));
-                }
-                return true;
-            }).filter((sheet: Sheet) => {
-                if (this.filteredCategoryNames.length) {
-                    return sheet.categories.map((category: Category) => category.name)
-                        .some((categoryName: String) => this.filteredCategoryNames
-                            .includes(categoryName));
-                }
-                return true;
-            });
+            if (this.filteredCourseNames.length) {
+                return sheet.courses.map((course: Course) => course.name)
+                    .some((courseName: String) => this.filteredCourseNames
+                        .includes(courseName));
+            }
+            return true;
+        }).filter((sheet: Sheet) => {
+            if (this.filteredCategoryNames.length) {
+                return sheet.categories.map((category: Category) => category.name)
+                    .some((categoryName: String) => this.filteredCategoryNames
+                        .includes(categoryName));
+            }
+            return true;
+        });
     }
 
     public filterAuthorsChange(authors: any): void {
@@ -117,6 +133,19 @@ export class ExerciseSheetsComponent implements OnInit {
 
     public getSheetCategories(categories: Category[]): string {
         return categories.map(category => category.name).join(", ");
+    }
+
+    public toggleCheckbox(id: string, value: any) {
+        return this.sheetApiService.isPublishedUpdate(id, !value).subscribe({
+            next: data => {
+                return true;
+            },
+            error: error => console.log(error)
+        });
+    }
+
+    get isProfessor(): boolean {
+        return this.authService.isProfessor;
     }
 
     public setPageSize(event: Event): void{

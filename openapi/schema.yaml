@@ -6,6 +6,18 @@ servers:
     -   url: http://localhost:8080
         description: Generated server url
 paths:
+    /user:
+        get:
+            tags:
+                - UserApi
+            operationId: getCurrentUser
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/User"
     /users:
         get:
             tags:
@@ -101,6 +113,27 @@ paths:
                     required: true
                     schema:
                         type: string
+            responses:
+                "200":
+                    description: OK
+
+    /sheet/ispublished/{id}:
+        put:
+            tags:
+                - SheetApi
+            operationId: isPublishedUpdate
+            parameters:
+                -   name: id
+                    in: path
+                    required: true
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: boolean
+                required: true
             responses:
                 "200":
                     description: OK
@@ -434,12 +467,15 @@ components:
         Sheet:
             type: object
             required:
+                - id
                 - title
+                - updatedAt
+                - publishedAt
                 - author
+                - courses
                 - categories
                 - exercises
-                - publishedAt
-                - courses
+                - isPublished
             properties:
                 id:
                     type: string
@@ -447,6 +483,9 @@ components:
                     type: boolean
                 title:
                     type: string
+                updatedAt:
+                    type: string
+                    format: date-time
                 publishedAt:
                     type: string
                     format: date-time
@@ -509,6 +548,7 @@ components:
             type: object
             required:
                 - id
+                - author
                 - title
                 - categories
                 - solutions
