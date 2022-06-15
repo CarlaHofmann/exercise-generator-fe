@@ -75,7 +75,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#/components/schemas/CreateSheetDto"
+                            $ref: "#/components/schemas/SheetDto"
                 required: true
             responses:
                 "200":
@@ -160,7 +160,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#/components/schemas/CreateExerciseDto"
+                            $ref: "#/components/schemas/ExerciseDto"
                 required: true
             responses:
                 "200":
@@ -202,7 +202,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/CreateExerciseDto'
+                            $ref: '#/components/schemas/ExerciseDto'
                 required: true
             responses:
                 "200":
@@ -469,7 +469,6 @@ components:
             required:
                 - id
                 - title
-                - updatedAt
                 - publishedAt
                 - author
                 - courses
@@ -479,16 +478,13 @@ components:
             properties:
                 id:
                     type: string
+                publishedAt:
+                    type: string
+                    format: date-time
                 isPublished:
                     type: boolean
                 title:
                     type: string
-                updatedAt:
-                    type: string
-                    format: date-time
-                publishedAt:
-                    type: string
-                    format: date-time
                 author:
                     $ref: "#/components/schemas/Author"
                 courses:
@@ -548,6 +544,8 @@ components:
             type: object
             required:
                 - id
+                - isPublished
+                - publishedAt
                 - author
                 - title
                 - categories
@@ -558,10 +556,15 @@ components:
             properties:
                 id:
                     type: string
-                author:
-                    $ref: "#/components/schemas/Author"
+                publishedAt:
+                    type: string
+                    format: date-time
+                isPublished:
+                    type: boolean
                 isUsed:
                     type: boolean
+                author:
+                    $ref: "#/components/schemas/Author"
                 courses:
                     type: array
                     items:
@@ -589,7 +592,7 @@ components:
                     items:
                         type: string
 
-        CreateSheetDto:
+        SheetDto:
             required:
                 - title
                 - courses
@@ -640,7 +643,7 @@ components:
                 name:
                     type: string
 
-        CreateExerciseDto:
+        ExerciseDto:
             required:
                 - title
                 - courses
@@ -649,6 +652,8 @@ components:
                 - solutions
             type: object
             properties:
+                isPublished:
+                    type: boolean
                 isUsed:
                     type: boolean
                 title:

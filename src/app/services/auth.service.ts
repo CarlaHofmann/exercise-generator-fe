@@ -14,8 +14,8 @@ export class AuthService {
 
 
     get isProfessor(): boolean{
-        return true;
-        // return this._isProfessor;
+        // return true;
+        return this._isProfessor;
     }
 
     get isAdmin(): boolean{
@@ -29,6 +29,7 @@ export class AuthService {
                 this._isStudent = true;
                 this._isProfessor = false;
                 this._isAdmin = false;
+                localStorage.removeItem("pageSize");
                 break;
             case RoleEnum.PROFESSOR:
                 this._isStudent = false;

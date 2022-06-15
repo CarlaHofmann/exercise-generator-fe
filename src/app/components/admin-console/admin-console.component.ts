@@ -48,7 +48,7 @@ export class AdminConsoleComponent implements OnInit {
             error: err => {
                 console.log(err);
                 this.isLoaded = true;
-                this.displayAlert("Error loading the database.")
+                this.displayAlert("Error while loading users.");
             }
         });
     }

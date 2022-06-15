@@ -1,3 +1,7 @@
+<p *ngIf="showAlert" class="pt-4 px-4">
+    <ngb-alert type="danger" (closed)="closeAlert()">{{alertMessage}}</ngb-alert>
+</p>
+
 <form class="px-5 pt-2" [formGroup]="exerciseForm" *ngIf="isLoaded">
     <div class="form-group">
         <label for="exercise">Title</label>
@@ -17,10 +21,9 @@
         <label for="courses">Courses</label>
         <i class="bi bi-info-circle mx-4" title="These are the course names that the exercise correspond to."></i>
         <ng-select [items]="courses" [bindLabel]="'name'" [addTag]="true" [multiple]="true"
-                   class="form-control input-sm"
-                   appendTo="body"
-                   formControlName="courses" id="courses" placeholder="Choose or add a course:"
-                   (ngModelChange)="onFormChange()">
+                   class="form-control input-sm" formControlName="courses" id="courses"
+                   placeholder="Choose or add a course:"
+                   required="true" (ngModelChange)="onFormChange()">
         </ng-select>
         <div *ngIf="exerciseForm.controls['courses'].touched && exerciseForm.controls['courses'].invalid"
              class="alert alert-danger">
@@ -36,8 +39,8 @@
         <label for="categories">Categories</label>
         <i class="bi bi-info-circle mx-4" title="These are the category names that the exercise correspond to."></i>
         <ng-select [items]="categories" [bindLabel]="'name'" [addTag]="true" [multiple]="true"
-                   class="form-control input-sm" appendTo="body"
-                   formControlName="categories" id="categories" placeholder="Choose or add a category:"
+                   class="form-control input-sm" formControlName="categories" id="categories"
+                   placeholder="Choose or add a category:"
                    required="true" (ngModelChange)="onFormChange()">
         </ng-select>
         <div *ngIf="exerciseForm.controls['categories'].touched && exerciseForm.controls['categories'].invalid"
@@ -71,17 +74,16 @@
     <div class="form-group">
         <label for="note">Notes for professor</label>
         <i class="bi bi-info-circle mx-4" title="The notes will not be public, only the author can see them."></i>
-        <textarea class="form-control" id="note" formControlName="note" rows="3" (ngModelChange)="onFormChange()"></textarea>
+        <textarea class="form-control" id="note" formControlName="note" rows="3"
+                  (ngModelChange)="onFormChange()"></textarea>
     </div>
 
 
     <div class="form-group">
-        <div class="d-flex row col-2">
-            <div class="col-auto">LaTeX code for exercise</div>
-            <i class="bi bi-info-circle col-auto"
-               title="Here the LaTeX code for the exercise is entered. Every input box corresponds to a page in the PDF."></i>
-        </div>
-        <div *ngFor="let text of texts.controls; let textIndex = index">
+        <label for="texts">LaTeX code for exercise</label>
+        <i class="bi bi-info-circle mx-4"
+           title="Here the LaTeX code for the exercise is entered. Every input box corresponds to a page in the PDF."></i>
+        <div *ngFor="let text of texts.controls; let textIndex = index" id="texts">
             <div class="mt-1">
                 <label *ngIf="texts.length > 1">Page {{textIndex + 1}}</label>
                 <i class="bi bi-trash3 mx-4" (click)="deleteText(textIndex)" *ngIf="textIndex !== 0"></i>
@@ -101,12 +103,10 @@
 
 
     <div class="form-group">
-        <div class="d-flex row col-2">
-            <div class="col-auto">LaTeX code for solution</div>
-            <i class="bi bi-info-circle col-auto"
-               title="Here the LaTeX code for the solution is entered. Every input box corresponds to a page in the PDF."></i>
-        </div>
-        <div *ngFor="let solution of solutions.controls; let solutionIndex = index">
+        <label for="solutions">LaTeX code for solution</label>
+        <i class="bi bi-info-circle mx-4"
+           title="Here the LaTeX code for the solution is entered. Every input box corresponds to a page in the PDF."></i>
+        <div *ngFor="let solution of solutions.controls; let solutionIndex = index" id="solutions">
             <div class="mt-1">
                 <label *ngIf="solutions.length > 1">Page {{solutionIndex + 1}}</label>
                 <i class="bi bi-trash3 mx-4" (click)="deleteSolution(solutionIndex)" *ngIf="solutionIndex !== 0"></i>
@@ -154,12 +154,20 @@
     </div>
 
 
+    <div class="d-flex justify-content-center pt-4">
+        <input id="isPublished" class="form-check-input" type="checkbox" formControlName="isPublished"
+               (change)="toggleCheckbox()"/>
+        <label class="ms-2" for="isPublished">Publish exercise, so everyone can see it.</label>
+    </div>
+
     <div class="text-center pt-4">
         <div class="form-group text-center">
-            <button type="submit" class="btn btn-primary me-3" (click)="onSubmitAndGoBack()" [disabled]="exerciseForm.invalid">
+            <button type="submit" class="btn btn-primary me-3" (click)="onSubmit(true)"
+                    [disabled]="exerciseForm.invalid">
                 Save
             </button>
-            <button type="submit" class="btn btn-primary me-3" (click)="onSubmit()" [disabled]="exerciseForm.invalid"
+            <button type="submit" class="btn btn-primary me-3" (click)="onSubmit(false)"
+                    [disabled]="exerciseForm.invalid"
                     *ngIf="isAddExercise">
                 Save and add new exercise
             </button>
