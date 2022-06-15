@@ -1,13 +1,6 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {AuthService} from "../../services/auth.service";
-import {
-    Category,
-    CreateCategoryDto,
-    CreateCourseDto,
-    CreateExerciseDto,
-    Exercise,
-    ExerciseApiService
-} from 'build/openapi';
+import {Category, CreateCategoryDto, CreateCourseDto, Exercise, ExerciseApiService, ExerciseDto} from 'build/openapi';
 import {DataService} from "../../services/data.service";
 
 @Component({
@@ -17,7 +10,6 @@ import {DataService} from "../../services/data.service";
 })
 export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
 
-    public displayedColumns: string[] = ['title', 'category', 'shortDescription', 'action'];
     public dataSource: Exercise[] = [];
     public displayExercises: Exercise[] = [];
 
@@ -38,7 +30,7 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
 
     constructor(private authService: AuthService,
                 private dataService: DataService,
-                private exerciseService: ExerciseApiService) {
+                private exerciseApiService: ExerciseApiService) {
     }
 
     ngOnInit(): void {
@@ -77,7 +69,7 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
 
     public removeExercise(id: string) {
 
-        this.exerciseService.deleteExercise(id).subscribe({
+        this.exerciseApiService.deleteExercise(id).subscribe({
             next: data => {
                 // TODO: dialog
                 this.loadExercises();
@@ -94,7 +86,7 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
 
     public toggleCheckbox(id: string, value: any) {
 
-        return this.exerciseService.isUsedUpdate(id, !value).subscribe({
+        return this.exerciseApiService.isUsedUpdate(id, !value).subscribe({
             next: data => {
                 return true;
             },
@@ -120,7 +112,7 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
         this.refreshExercises()
         return true;*/
 
-        this.exerciseService.getAllExercises().subscribe({
+        this.exerciseApiService.getAllExercises().subscribe({
             next: data => {
                 this.dataSource = data;
                 this.categories = Array.from(new Set(this.dataSource.reduce((previous, next) => previous.concat(next.categories.map(el => el.name)), new Array<string>())).values());
@@ -167,7 +159,7 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
     }
 
     public uncheckAll(): void {
-        this.exerciseService.isUsedReset().subscribe({
+        this.exerciseApiService.isUsedReset().subscribe({
             next: data => {
                 for (var el of this.dataSource) {
                     el.isUsed = false;
@@ -186,7 +178,7 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
         var ex = this.dataSource.find(el => {
             return el.id == id;
         })
-        var update: CreateExerciseDto = {
+        var updatedExercise: ExerciseDto = {
             title: ex?.title!,
             note: value,
             shortDescription: ex?.shortDescription,
@@ -204,7 +196,7 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
         };
 
 
-        this.exerciseService.updateExercise(id, update).subscribe({
+        this.exerciseApiService.updateExercise(id, updatedExercise).subscribe({
             next: data => {
                 for (var el of this.dataSource) {
                     if (el.id == id)
