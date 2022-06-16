@@ -5,27 +5,27 @@
     <p *ngIf="showAlert">
         <ngb-alert type="danger" (closed)="closeAlert()">{{alertMessage}}</ngb-alert>
     </p>
-    <div class="justify-content-start col">
+    <div *ngIf = "isLoaded" class="justify-content-start col">
         <ng-select [clearSearchOnAdd]="true" (change)="filterCourses($event)" [clearable]="false"
                    [items]="courses" [multiple]="true" bindLabel="courses"
                    placeholder="Filter by course">
         </ng-select>
     </div>
-    <div class="col">
+    <div *ngIf = "isLoaded" class="col">
         <ng-select [clearSearchOnAdd]="true" (change)="filterCategories($event)" [clearable]="false"
                    [items]="categories" [multiple]="true" bindLabel="categories"
                    placeholder="Filter by category">
         </ng-select>
     </div>
-    <div class="col" style="margin-top: 15px">
+    <div *ngIf = "isLoaded" class="col" style="margin-top: 15px">
         <input *ngIf="isProfessor" type="text" (input)="onSearchChange($event)" class="form-control" id="search"
                placeholder="Search in notes" mdbInput/>
     </div>
-    <div class="text-end col" style="margin-top: 15px" *ngIf="isProfessor">
+    <div *ngIf = "isLoaded && isProfessor" class="text-end col" style="margin-top: 15px">
         <div class="btn-group" role="group" aria-label="group">
             <button title="Press to uncheck all the isUsed flags." style="border: 1px white solid;" class="btn btn-danger" (click)="uncheckAll()">
          <i class="bi bi-trash3 text-white"></i>
-         Reset is Used
+         Reset Used
             </button>
         <button class="btn btn-primary" style="border: 1px white solid;" routerLink="/exercise/create">
             <i class="bi bi-plus-circle"></i>
@@ -35,7 +35,7 @@
 </div>
 
 
-<div *ngIf="!isLoaded" class="d-flex justify-content-center">
+<div *ngIf="showLoading && !isLoaded" class="d-flex justify-content-center">
     <div class="spinner-border text-primary" role="status">
         <span class="sr-only"></span>
     </div>
@@ -49,12 +49,13 @@
                 <th scope="col" class="col-2" sortable="title"> Title</th>
                 <th scope="col" class="col-2"> Course</th>
                 <th scope="col" class="col-2"> Category</th>
+                <th *ngIf="!isProfessor" scope="col" class="col-sm"> Author</th>
                 <th scope="col" class="col-2"> Short Description</th>
                 <th scope="col" class="col-2" *ngIf="isProfessor"> Notes</th>
-
+                <th *ngIf="isProfessor" scope="col" class="col-sm justify-content-center">Published</th>
                 <th scope="col" class="col-1" *ngIf="isProfessor">
                     <div class="d-flex justify-content-center">
-                        <div>Is used
+                        <div>Used
 
                         </div>
                     </div>
@@ -70,8 +71,15 @@
                 <td scope="col">{{ element.title }}</td>
                 <td scope="col" [innerText]="categoriesToString(element.courses)"></td>
                 <td scope="col" [innerText]="categoriesToString(element.categories)"></td>
+                <td *ngIf="!isProfessor" scope="row">{{ element.author.name }}</td>
                 <td scope="col">{{ element.shortDescription }}</td>
                 <td scope="col col-2" *ngIf="isProfessor">{{ element.note }}</td>
+                <td scope="col" *ngIf="isProfessor">
+                    <div class="d-flex justify-content-center">
+                        <div><input class="form-check-input" type="checkbox" [(ngModel)]="element.isPublished"
+                                    (change)="toggleCheckbox(element.id, element.isPublished);"/></div>
+                    </div>
+                </td>
                 <td scope="col" *ngIf="isProfessor">
                     <div class="d-flex justify-content-center">
                         <div><input class="form-check-input" type="checkbox" [(ngModel)]="element.isUsed"

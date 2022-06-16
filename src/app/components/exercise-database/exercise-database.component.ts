@@ -2,6 +2,7 @@ import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {AuthService} from "../../services/auth.service";
 import {Category, CreateCategoryDto, CreateCourseDto, Exercise, ExerciseApiService, ExerciseDto} from 'build/openapi';
 import {DataService} from "../../services/data.service";
+import { timeout } from 'rxjs';
 
 @Component({
     selector: 'app-exercise-database',
@@ -26,6 +27,7 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
     public showAlert = false;
     public alertMessage = "";
     public isLoaded: boolean = false;
+    public showLoading:boolean = true;
 
 
     constructor(private authService: AuthService,
@@ -112,16 +114,18 @@ export class ExerciseDatabaseComponent implements OnInit, AfterViewInit {
         this.refreshExercises()
         return true;*/
 
-        this.exerciseApiService.getAllExercises().subscribe({
+        this.exerciseApiService.getAllExercises().pipe(timeout(3000)).subscribe({
             next: data => {
                 this.dataSource = data;
                 this.categories = Array.from(new Set(this.dataSource.reduce((previous, next) => previous.concat(next.categories.map(el => el.name)), new Array<string>())).values());
                 this.courses = Array.from(new Set(this.dataSource.reduce((previous, next) => previous.concat(next.courses.map(el => el.name)), new Array<string>())).values());
                 this.refreshExercises();
                 this.isLoaded = true;
+                this.showLoading = false;
             },
             error: error => {
-                this.displayAlert('Error loading from the database.');
+                this.displayAlert('Error loading from the database: '+error.message);
+                this.showLoading = false;
                 console.log(error);
             }
         });

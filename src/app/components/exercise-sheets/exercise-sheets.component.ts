@@ -9,6 +9,7 @@ import {
     UserApiService
 } from 'build/openapi';
 import {DataService} from "../../services/data.service";
+import { timeout } from 'rxjs';
 
 @Component({
     selector: 'app-exercise-sheets',
@@ -30,7 +31,11 @@ export class ExerciseSheetsComponent implements OnInit {
     public page: number = 1;
     public pageSize: number = this.dataService.getPageSize();
 
+    public showAlert = false;
+    public alertMessage = "";
+
     public isLoaded:boolean = false;
+    public showLoading:boolean = true;
 
 
     constructor(private authService: AuthService,
@@ -43,8 +48,17 @@ export class ExerciseSheetsComponent implements OnInit {
         this.loadExerciseSheets();
     }
 
+    public displayAlert(message: string): void {
+        this.alertMessage = message;
+        this.showAlert = true;
+    }
+
+    public closeAlert(): void {
+        this.showAlert = false;
+    }
+
     private loadExerciseSheets(): void {
-        this.sheetApiService.getAllSheets().subscribe({
+        this.sheetApiService.getAllSheets().pipe(timeout(3000)).subscribe({
             next: response => {
                 if (this.isProfessor){
                     this.userApiService.getCurrentUser().subscribe({
@@ -87,8 +101,13 @@ export class ExerciseSheetsComponent implements OnInit {
 
                 this.sheets = response.sort((a, b) => (a.publishedAt > b.publishedAt) ? -1 : 1);
                 this.isLoaded = true;
+                this.showLoading = false;
             },
-            error: error => console.log(error)
+            error: error => {
+                this.displayAlert('Error loading from the database: '+error.message);
+                this.showLoading = false;
+                console.log(error);
+            }
         });
     }
 

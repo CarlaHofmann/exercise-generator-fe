@@ -2,25 +2,28 @@
 
 
 <div class="d-flex row px-4">
-    <div *ngIf="!isProfessor" class="justify-content-start col">
+    <p *ngIf="showAlert">
+        <ngb-alert type="danger" (closed)="closeAlert()">{{alertMessage}}</ngb-alert>
+    </p>
+    <div *ngIf="!isProfessor && isLoaded" class="justify-content-start col">
         <ng-select [clearSearchOnAdd]="true" [searchable]="true" (change)="filterAuthorsChange($event)"
                    [clearable]="false" [items]="authors"
                    [multiple]="true" bindLabel="name" placeholder="Filter by author">
         </ng-select>
     </div>
-    <div class="col">
+    <div *ngIf="isLoaded" class="col">
         <ng-select [clearSearchOnAdd]="true" [searchable]="true" (change)="filterCoursesChange($event)"
                    [clearable]="false"
                    [items]="courses" [multiple]="true" bindLabel="name" placeholder="Filter by course">
         </ng-select>
     </div>
-    <div class="col">
+    <div *ngIf="isLoaded" class="col">
         <ng-select [clearSearchOnAdd]="true" [searchable]="true" (change)="filterCategoriesChange($event)"
                    [clearable]="false"
                    [items]="categories" [multiple]="true" bindLabel="name" placeholder="Filter by category">
         </ng-select>
     </div>
-    <div class="text-end col" style="margin-top: 15px" *ngIf="isProfessor">
+    <div class="text-end col" style="margin-top: 15px" *ngIf="isProfessor && isLoaded">
         <a class=" btn btn-primary" routerLink="/create-exercise-sheet">
             <i class="bi bi-plus-circle"></i>
             Create Exercise Sheet</a>
@@ -28,7 +31,7 @@
 </div>
 
 
-<div *ngIf="!isLoaded" class="d-flex justify-content-center px-4">
+<div *ngIf="showLoading" class="d-flex justify-content-center px-4">
     <div class="spinner-border text-primary" role="status">
         <span class="sr-only"></span>
     </div>
