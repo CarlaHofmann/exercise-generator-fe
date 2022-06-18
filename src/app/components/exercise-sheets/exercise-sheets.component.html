@@ -24,7 +24,7 @@
         </ng-select>
     </div>
     <div class="text-end col" style="margin-top: 15px" *ngIf="isProfessor && isLoaded">
-        <a class=" btn btn-primary" routerLink="/create-exercise-sheet">
+        <a class=" btn btn-primary" routerLink="/sheet/create">
             <i class="bi bi-plus-circle"></i>
             Create Exercise Sheet</a>
     </div>
@@ -68,8 +68,8 @@
                 </td>
                 <td scope="row">
                     <button type="submit" class="btn btn-success btn-sm"
-                            onclick="window.open('http://www.africau.edu/images/default/sample.pdf')">
-                        <i class="bi bi-download"></i>
+                            (click)="viewSheetPdf(sheet.id)">
+                        <i class="bi bi-eye text-white"></i>
                     </button>
                 </td>
 
@@ -96,6 +96,6 @@
 </div>
 
 
-<div *ngIf="!filteredSheets?.length && isLoaded" class="px-4 center" style="margin-top: 15px; font-size: 20px">
-    No Sheets found.
+<div *ngIf="!filteredSheets?.length && isLoaded" class="px-4 center no-data-found-text">
+    No sheets found.
 </div>

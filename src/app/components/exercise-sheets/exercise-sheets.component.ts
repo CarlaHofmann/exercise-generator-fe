@@ -1,15 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from 'src/app/services/auth.service';
-import {
-    Author,
-    Category,
-    Course,
-    Sheet,
-    SheetApiService,
-    UserApiService
-} from 'build/openapi';
+import {Author, Category, Course, Sheet, SheetApiService, UserApiService} from 'build/openapi';
 import {DataService} from "../../services/data.service";
-import { timeout } from 'rxjs';
+import {timeout} from 'rxjs';
 
 @Component({
     selector: 'app-exercise-sheets',
@@ -104,7 +97,7 @@ export class ExerciseSheetsComponent implements OnInit {
                 this.showLoading = false;
             },
             error: error => {
-                this.displayAlert('Error loading from the database: '+error.message);
+                this.displayAlert("Error loading from the database.");
                 this.showLoading = false;
                 console.log(error);
             }
@@ -155,12 +148,12 @@ export class ExerciseSheetsComponent implements OnInit {
     }
 
     public toggleCheckbox(id: string, value: any) {
-        return this.sheetApiService.isPublishedUpdate(id, !value).subscribe({
-            next: data => {
-                return true;
-            },
-            error: error => console.log(error)
-        });
+        // return this.sheetApiService.isPublishedUpdate(id, !value).subscribe({
+        //     next: data => {
+        //         return true;
+        //     },
+        //     error: error => console.log(error)
+        // });
     }
 
     get isProfessor(): boolean {
@@ -170,5 +163,9 @@ export class ExerciseSheetsComponent implements OnInit {
     public setPageSize(event: Event): void{
         this.pageSize = Number(event);
         this.dataService.savePageSize(this.pageSize);
+    }
+
+    public viewSheetPdf(id: string): void {
+        window.open("sheet/" + id + "/pdf");
     }
 }

@@ -13,12 +13,22 @@ import {AdminAuthGuard} from "./guards/admin-auth-guard.service";
 import {CloneExerciseComponent} from "./components/clone-exercise/clone-exercise.component";
 import {CreateExerciseComponent} from "./components/create-exercise/create-exercise.component";
 import {PendingChangesGuard} from "./guards/pending-changes-guard.service";
+import {PdfViewerComponent} from "./components/pdf-viewer/pdf-viewer.component";
 
 
 const routes: Routes = [
     {path: "login", component: LoginComponent},
-    {path: "exercise-sheets", component: ExerciseSheetsComponent},
-    {path: "create-exercise-sheet", component: CreateExerciseSheetComponent},
+    {path: "sheet", children: [
+            {path: "", component: PageNotFoundComponent},
+            {path: "db", component: ExerciseSheetsComponent},
+            {path: "create", component: CreateExerciseSheetComponent, canActivate: [ProfessorAuthGuard], canDeactivate: [PendingChangesGuard]},
+            {path: ":id", children: [
+                    {path: "", component: PageNotFoundComponent},
+                    // {path: "edit", component: EditExerciseComponent, canActivate: [ProfessorAuthGuard], canDeactivate: [PendingChangesGuard]},
+                    // {path: "clone", component: CloneExerciseComponent, canActivate: [ProfessorAuthGuard], canDeactivate: [PendingChangesGuard]},
+                    {path: "pdf", component: PdfViewerComponent},
+                ]},
+        ]},
     {path: "exercise", children: [
             {path: "", component: PageNotFoundComponent},
             {path: "db", component: ExerciseDatabaseComponent},
@@ -27,6 +37,7 @@ const routes: Routes = [
                     {path: "", component: PageNotFoundComponent},
                     {path: "edit", component: EditExerciseComponent, canActivate: [ProfessorAuthGuard], canDeactivate: [PendingChangesGuard]},
                     {path: "clone", component: CloneExerciseComponent, canActivate: [ProfessorAuthGuard], canDeactivate: [PendingChangesGuard]},
+                    {path: "pdf", component: PdfViewerComponent},
                 ]},
         ]},
     {path: "admin", component: AdminConsoleComponent, canActivate: [AdminAuthGuard]},

@@ -30,7 +30,6 @@
 <h2 class="ps-5 pt-5">All Users</h2>
 
 <div class="d-flex justify-content-center">
-    <div *ngIf="!users.length && isLoaded">There were no users found.</div>
     <div class="col-4" *ngIf="users.length && isLoaded">
         <table class="table table-striped">
             <thead>
@@ -61,6 +60,8 @@
             </div>
         </div>
     </div>
+
+    <div *ngIf="!users.length && isLoaded" class="no-data-found-text">No users found.</div>
 </div>
 
 <div *ngIf="!isLoaded" class="d-flex justify-content-center">
