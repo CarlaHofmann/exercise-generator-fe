@@ -52,9 +52,9 @@
             <th scope="col" class="col-2"> Course</th>
             <th scope="col" class="col-2"> Category</th>
             <th *ngIf="!isProfessor" scope="col" class="col-sm"> Author</th>
-                <th scope="col" class="col-2"> Short Description</th>
+            <th scope="col" class="col-2"> Short Description</th>
             <th scope="col" class="col-2" *ngIf="isProfessor"> Notes</th>
-                <th *ngIf="isProfessor" scope="col" class="col-sm justify-content-center">Published</th>
+            <th *ngIf="isProfessor" scope="col" class="col-sm justify-content-center">Published</th>
             <th scope="col" class="col-1" *ngIf="isProfessor">
                 <div class="d-flex justify-content-center">
                     <div>Used
@@ -124,8 +124,7 @@
 
 
     <div *ngIf="isLoaded" class="row ">
-        <div class="col-1 "></div>
-        <div class="col-3 ">
+        <div class="col-4 ">
             <select class="form-select" style="width:200px" [ngModel]="pageSize" (ngModelChange)="setPageSize($event)">
                 <option [ngValue]="5">5 items per page</option>
                 <option [ngValue]="10">10 items per page</option>

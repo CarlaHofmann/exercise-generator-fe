@@ -12,6 +12,7 @@ import {
 } from "../../../../build/openapi";
 import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
 import {AuthService} from "../../services/auth.service";
+import {DataService} from "../../services/data.service";
 
 @Component({
   selector: 'app-create-sheet',
@@ -37,13 +38,14 @@ export class CreateSheetComponent implements OnInit {
   public randomizedSheet: Boolean = true;
 
   public page: number = 1;
-  public pageSize: number = 10;
+  public pageSize: number = this.dataService.getPageSize();
 
   constructor(private categoryApiService: CategoryApiService,
               private courseApiService: CourseApiService,
               private exerciseApiService: ExerciseApiService,
               private userApiService: UserApiService,
-              private authService: AuthService) { }
+              private authService: AuthService,
+                private dataService: DataService) { }
 
   ngOnInit(): void {
     this.loadExercises();
@@ -177,5 +179,15 @@ export class CreateSheetComponent implements OnInit {
   public filterCategoriesChange(categories: any): void {
       this.filteredCategoryNames = categories.map((category: Category) => category.name);
   }
+
+  public setPageSize(event: Event): void {
+      this.pageSize = Number(event);
+      this.dataService.savePageSize(this.pageSize);
+  }
+
+  public viewSheetPdf(id: string): void {
+      window.open("sheet/" + id + "/pdf");
+  }
+
 
 }

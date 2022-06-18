@@ -453,6 +453,7 @@ components:
             required:
                 - id
                 - title
+                - updatedAt
                 - publishedAt
                 - author
                 - courses
@@ -462,6 +463,9 @@ components:
             properties:
                 id:
                     type: string
+                updatedAt:
+                    type: string
+                    format: date-time
                 publishedAt:
                     type: string
                     format: date-time

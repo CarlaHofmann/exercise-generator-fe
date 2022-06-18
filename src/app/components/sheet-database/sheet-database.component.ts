@@ -64,24 +64,15 @@ export class SheetDatabaseComponent implements OnInit {
     private loadSheets(): void {
         this.sheetApiService.getAllSheets().pipe(timeout(3000)).subscribe({
             next: response => {
-                if (this.isProfessor){
-                    this.userApiService.getCurrentUser().subscribe({
-                        next: response => {
-                           this.filteredAuthorNames = [response.username];
-                        },
-                        error: error => console.log(error)
-                    })
-                }else{
-                    const uniqueAuthors: Author[] = [];
-                    response.map(sheet => sheet.author).filter((author: Author) => {
-                        let i = uniqueAuthors.findIndex(a => a.name === author.name);
-                        if (i < 0) {
-                            uniqueAuthors.push(author);
-                        }
-                        return null;
-                    })
-                    this.authors = uniqueAuthors.sort((a, b) => (a.name < b.name) ? -1 : 1);
-                }
+                const uniqueAuthors: Author[] = [];
+                response.map(sheet => sheet.author).filter((author: Author) => {
+                    let i = uniqueAuthors.findIndex(a => a.name === author.name);
+                    if (i < 0) {
+                        uniqueAuthors.push(author);
+                    }
+                    return null;
+                })
+                this.authors = uniqueAuthors.sort((a, b) => (a.name < b.name) ? -1 : 1);
 
                 const uniqueCourses: Course[] = [];
                 response.flatMap(sheet => sheet.courses).filter((course: Course) => {
@@ -136,6 +127,22 @@ export class SheetDatabaseComponent implements OnInit {
             }
             return true;
         });
+    }
+
+    public removeSheet(id: string) {
+
+//         this.sheetApiService.deleteSheet(id).subscribe({
+//             next: data => {
+//                 // TODO: dialog
+//                 this.loadExercises();
+//                 //refresh list
+//             },
+//             error: error => {;
+//                 this.alertMessage = 'Error while trying to delete a sheet.';
+//                 console.log(error);
+//                 this.showAlert = true;
+//             }
+//         });
     }
 
     public filterAuthorsChange(authors: any): void {
