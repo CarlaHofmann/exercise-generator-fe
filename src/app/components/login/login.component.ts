@@ -13,6 +13,9 @@ export class LoginComponent implements OnInit {
     public loginForm: FormGroup;
     public isFailedLoginAttempt = false;
 
+    public showAlert = false;
+    public alertMessage = "";
+
     constructor(private authService: AuthService,
                 private router: Router,
                 private activatedRoute: ActivatedRoute) {
@@ -47,5 +50,14 @@ export class LoginComponent implements OnInit {
         //         //this.isFailedLoginAttempt = true;
         //     }
         // });
+    }
+
+    public displayAlert(message: string): void {
+        this.alertMessage = message;
+        this.showAlert = true;
+    }
+
+    public closeAlert(): void {
+        this.showAlert = false;
     }
 }

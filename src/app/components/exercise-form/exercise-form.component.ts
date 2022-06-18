@@ -6,14 +6,15 @@ import {
     CourseApiService,
     CreateCategoryDto,
     CreateCourseDto,
-    CreateExerciseDto,
     Exercise,
-    ExerciseApiService
+    ExerciseApiService,
+    ExerciseDto
 } from "../../../../build/openapi";
 import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Location, ViewportScroller} from "@angular/common";
 import {DataService} from "../../services/data.service";
+import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
 
 @Component({
     selector: 'app-exercise-form',
@@ -30,7 +31,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
     private exerciseId: string = "";
 
     private exercise: Exercise;
-    private createExerciseDto: CreateExerciseDto;
+    private exerciseDto: ExerciseDto;
 
     public images: { image: File, url: string }[] = [];
 
@@ -41,7 +42,14 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
     public courses: Course[] = [];
     public categories: Category[] = [];
 
+    public pdfUrl = "";
+
     public isLoaded = false;
+    public isPdfLoaded = true;
+    private isSubmitted = false;
+
+    public showAlert = false;
+    public alertMessages: string[] = [];
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
@@ -50,7 +58,8 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
                 private exerciseApiService: ExerciseApiService,
                 private courseApiService: CourseApiService,
                 private categoryApiService: CategoryApiService,
-                private dataService: DataService) {
+                private dataService: DataService,
+                private sanitizer: DomSanitizer) {
     }
 
     ngOnInit(): void {
@@ -64,12 +73,11 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
             shortDescription: new FormControl("", [Validators.required, Validators.minLength(1)]),
             note: new FormControl(""),
             texts: this.texts,
-            solutions: this.solutions
+            solutions: this.solutions,
+            isPublished: new FormControl(false)
         });
 
         if (this.isAddExercise) {
-            this.texts.push(new FormControl("", [Validators.required, Validators.minLength(1)]));
-            this.solutions.push(new FormControl("", [Validators.required, Validators.minLength(1)]));
             this.isLoaded = true;
         } else {
             this.route.params.subscribe(params => {
@@ -90,6 +98,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
         this.exerciseApiService.getExerciseById(id).subscribe({
             next: response => {
                 this.exercise = response;
+                this.exerciseDto = response;
 
                 this.exerciseForm = new FormGroup({
                     title: new FormControl(this.exercise.title, [Validators.required, Validators.minLength(1)]),
@@ -98,7 +107,8 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
                     shortDescription: new FormControl(this.exercise.shortDescription, [Validators.required, Validators.minLength(1)]),
                     note: new FormControl(this.exercise.note),
                     texts: this.texts,
-                    solutions: this.solutions
+                    solutions: this.solutions,
+                    isPublished: new FormControl(this.exercise.isPublished)
                 });
 
                 this.exercise.texts.forEach(text => this.texts.push(new FormControl(text, [Validators.required, Validators.minLength(1)])));
@@ -109,7 +119,9 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
             error: err => {
                 console.log(err);
                 this.isLoaded = true;
-                this.router.navigate(["**"], {skipLocationChange: true});
+                this.displayAlert("Exercise not found.");
+                this.texts.push(new FormControl("", [Validators.required, Validators.minLength(1)]));
+                this.solutions.push(new FormControl("", [Validators.required, Validators.minLength(1)]));
             }
         });
     }
@@ -117,18 +129,34 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
     private loadCourses(): void {
         this.courseApiService.getAllCourses().subscribe({
             next: response => this.courses = response,
-            error: error => console.log(error)
+            error: error => {
+                console.log(error);
+                this.displayAlert("Error while loading courses.");
+            }
         });
     }
 
     private loadCategories(): void {
         this.categoryApiService.getAllCategories().subscribe({
             next: response => this.categories = response,
-            error: error => console.log(error)
+            error: error => {
+                console.log(error);
+                this.displayAlert("Error while loading categories.");
+            }
         });
     }
 
+
+    public toggleCheckbox(): void {
+        this.onFormChange();
+        this.exerciseDto.isPublished = !this.exerciseDto.isPublished;
+    }
+
     public onFormChange(event?: Event): void {
+        if (this.isSubmitted) {
+            return;
+        }
+
         let courses: CreateCourseDto[] = [];
         if (this.exerciseForm.controls["courses"].value?.length) {
             courses = this.exerciseForm.controls["courses"].value.map((course: any) => {
@@ -145,7 +173,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
             });
         }
 
-        this.createExerciseDto = {
+        this.exerciseDto = {
             isUsed: false,
             title: this.exerciseForm.controls["title"].value,
             courses: courses,
@@ -153,7 +181,8 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
             shortDescription: this.exerciseForm.controls["shortDescription"].value,
             note: this.exerciseForm.controls["note"].value,
             texts: this.exerciseForm.controls["texts"].value,
-            solutions: this.exerciseForm.controls["solutions"].value
+            solutions: this.exerciseForm.controls["solutions"].value,
+            isPublished: this.exerciseDto?.isPublished ? this.exerciseDto.isPublished : false
         }
 
         this.checkUnsavedChanges();
@@ -161,8 +190,10 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
 
     private checkUnsavedChanges(): void {
         this.dataService.existUnsavedChanges = Boolean(this.exerciseForm.controls["title"].value.length ||
-            this.exerciseForm.controls["courses"].value?.some((course: {name: string}) => course.name.length) ||
-            this.exerciseForm.controls["categories"].value?.some((category: {name: string}) => category.name.length) ||
+            this.exerciseForm.controls["courses"].value &&
+            this.exerciseForm.controls["courses"].value.some((course: { name: string }) => course.name.length) ||
+            this.exerciseForm.controls["categories"].value &&
+            this.exerciseForm.controls["categories"].value.some((category: { name: string }) => category.name.length) ||
             this.exerciseForm.controls["shortDescription"].value.length ||
             this.exerciseForm.controls["note"].value.length ||
             this.exerciseForm.controls["texts"].value.some((text: string) => text.length) ||
@@ -216,30 +247,78 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
         this.texts.clear();
         this.solutions.clear();
         this.exerciseForm?.reset();
+        if (this.isAddExercise) {
+            this.texts.push(new FormControl("", [Validators.required, Validators.minLength(1)]));
+            this.solutions.push(new FormControl("", [Validators.required, Validators.minLength(1)]));
+        }
+        this.images = [];
+        this.dataService.existUnsavedChanges = false;
     }
 
-    public onSubmitAndGoBack(): void {
-        this.onSubmit();
-        this.location.back();
-    }
-
-    public onSubmit() {
+    public onSubmit(goBack: boolean): void {
         if (this.isAddExercise || this.isCloneExercise) {
-            this.exerciseApiService.createExercise(this.createExerciseDto).subscribe({
-                error: err => console.log(err)
+            this.exerciseApiService.createExercise(this.exerciseDto).subscribe({
+                next: () => {
+                    this.isSubmitted = true;
+                    this.resetForm();
+                    if (goBack) {
+                        this.location.back();
+                    }
+                },
+                error: err => {
+                    console.log(err);
+                    this.displayAlert("Error while creating exercise.");
+                }
             });
         } else {
-            this.exerciseApiService.updateExercise(this.exerciseId, this.createExerciseDto).subscribe({
-                error: err => console.log(err)
+            this.exerciseApiService.updateExercise(this.exerciseId, this.exerciseDto).subscribe({
+                next: () => {
+                    this.isSubmitted = true;
+                    this.resetForm();
+                    if (goBack) {
+                        this.location.back();
+                    }
+                },
+                error: err => {
+                    console.log(err);
+                    this.displayAlert("Error while updating exercise.");
+                }
             });
         }
 
-        this.resetForm();
-        this.texts.push(new FormControl("", [Validators.required, Validators.minLength(1)]));
-        this.solutions.push(new FormControl("", [Validators.required, Validators.minLength(1)]));
-        this.images = [];
+        if (!goBack) {
+            this.viewportScroller.scrollToPosition([0, 0]);
+        }
+    }
 
-        this.viewportScroller.scrollToPosition([0, 0]);
+    public viewExercisePdf(): void {
+        this.isPdfLoaded = false;
+
+        this.exerciseApiService.previewExerciseDto(this.exerciseDto).subscribe({
+            next: response => {
+                const pdf = new Blob([response], {type: "application/pdf"});
+                this.pdfUrl = URL.createObjectURL(pdf);
+
+                this.isPdfLoaded = true;
+            },
+            error: err => {
+                console.log(err);
+                this.displayAlert("Error while trying to get PDF.");
+                this.isPdfLoaded = true;
+            }
+        });
+    }
+
+    public getSanitizedUrl(url: string): SafeResourceUrl{
+        return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    }
+
+    public displayAlert(message: string): void {
+        this.alertMessages.push(message);
+    }
+
+    public closeAlert(message: string): void {
+        this.alertMessages = this.alertMessages.filter(m => m !== message);
     }
 
     public formatBytes(bytes: number, decimals = 2): string {

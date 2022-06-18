@@ -1,5 +1,9 @@
 <h1 class="text-center pt-4">Login</h1>
 
+<p *ngIf="showAlert" class="pt-4 px-4">
+    <ngb-alert type="danger" (closed)="closeAlert()">{{alertMessage}}</ngb-alert>
+</p>
+
 <div class="d-flex justify-content-center">
     <div class="mt-5 col-4">
         <form [formGroup]="loginForm" (ngSubmit)="logInAsProfessor()">

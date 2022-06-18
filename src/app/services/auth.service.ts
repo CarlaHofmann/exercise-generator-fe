@@ -19,8 +19,8 @@ export class AuthService {
     }
 
     get isAdmin(): boolean{
-        // return true;
-        return this._isAdmin;
+        return true;
+        // return this._isAdmin;
     }
 
     public authenticate(role: RoleEnum){
@@ -29,6 +29,7 @@ export class AuthService {
                 this._isStudent = true;
                 this._isProfessor = false;
                 this._isAdmin = false;
+                localStorage.removeItem("pageSize");
                 break;
             case RoleEnum.PROFESSOR:
                 this._isStudent = false;

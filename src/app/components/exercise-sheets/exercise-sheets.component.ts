@@ -9,6 +9,7 @@ import {
 } from 'build/openapi';
 import {AuthService} from '../../services/auth.service';
 import {DataService} from "../../services/data.service";
+import {timeout} from 'rxjs';
 
 @Component({
     selector: 'app-exercise-sheets',
@@ -32,7 +33,9 @@ export class ExerciseSheetsComponent implements OnInit {
 
     public showAlert = false;
     public alertMessage = "";
-    public isLoaded: boolean = false;
+
+    public isLoaded:boolean = false;
+    public showLoading:boolean = true;
 
 
     constructor(private authService: AuthService,
@@ -59,7 +62,7 @@ export class ExerciseSheetsComponent implements OnInit {
     }
 
     private loadExerciseSheets(): void {
-        this.sheetApiService.getAllSheets().subscribe({
+        this.sheetApiService.getAllSheets().pipe(timeout(3000)).subscribe({
             next: response => {
                 if (this.isProfessor){
                     this.userApiService.getCurrentUser().subscribe({
@@ -102,8 +105,13 @@ export class ExerciseSheetsComponent implements OnInit {
 
                 this.sheets = response.sort((a, b) => (a.publishedAt > b.publishedAt) ? -1 : 1);
                 this.isLoaded = true;
+                this.showLoading = false;
             },
-            error: error => console.log(error)
+            error: error => {
+                this.displayAlert("Error loading from the database.");
+                this.showLoading = false;
+                console.log(error);
+            }
         });
     }
 
@@ -166,5 +174,9 @@ export class ExerciseSheetsComponent implements OnInit {
     public setPageSize(event: Event): void{
         this.pageSize = Number(event);
         this.dataService.savePageSize(this.pageSize);
+    }
+
+    public viewSheetPdf(id: string): void {
+        window.open("sheet/" + id + "/pdf");
     }
 }
