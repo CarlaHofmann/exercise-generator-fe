@@ -1,6 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import {AuthService} from 'src/app/services/auth.service';
-import {Author, Category, Course, Sheet, SheetApiService, UserApiService} from 'build/openapi';
+import {
+    Author,
+    Category,
+    Course,
+    Sheet,
+    SheetApiService,
+    UserApiService
+} from 'build/openapi';
+import {AuthService} from '../../services/auth.service';
 import {DataService} from "../../services/data.service";
 import {timeout} from 'rxjs';
 
@@ -39,6 +46,10 @@ export class ExerciseSheetsComponent implements OnInit {
 
     public ngOnInit(): void {
         this.loadExerciseSheets();
+    }
+
+    get isProfessor(): boolean {
+        return this.authService.isProfessor;
     }
 
     public displayAlert(message: string): void {
@@ -148,16 +159,16 @@ export class ExerciseSheetsComponent implements OnInit {
     }
 
     public toggleCheckbox(id: string, value: any) {
-        // return this.sheetApiService.isPublishedUpdate(id, !value).subscribe({
-        //     next: data => {
-        //         return true;
-        //     },
-        //     error: error => console.log(error)
-        // });
-    }
-
-    get isProfessor(): boolean {
-        return this.authService.isProfessor;
+        return this.sheetApiService.isPublishedUpdate(id, !value).subscribe({
+            next: data => {
+                return true;
+            },
+            error: error => {
+                this.displayAlert('Error sending ckeck/unckeck to backend.');
+                console.log(error);
+                return false;
+            }
+        });
     }
 
     public setPageSize(event: Event): void{

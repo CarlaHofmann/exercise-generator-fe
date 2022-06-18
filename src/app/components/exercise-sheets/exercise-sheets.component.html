@@ -5,6 +5,7 @@
     <p *ngIf="showAlert">
         <ngb-alert type="danger" (closed)="closeAlert()">{{alertMessage}}</ngb-alert>
     </p>
+
     <div *ngIf="!isProfessor && isLoaded" class="justify-content-start col">
         <ng-select [clearSearchOnAdd]="true" [searchable]="true" (change)="filterAuthorsChange($event)"
                    [clearable]="false" [items]="authors"
@@ -97,5 +98,5 @@
 
 
 <div *ngIf="!filteredSheets?.length && isLoaded" class="px-4 center no-data-found-text">
-    No sheets found.
+  No Sheets found.
 </div>
