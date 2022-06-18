@@ -6,12 +6,6 @@
         <ngb-alert type="danger" (closed)="closeAlert()">{{alertMessage}}</ngb-alert>
     </p>
 
-    <div *ngIf="!isProfessor && isLoaded" class="justify-content-start col">
-        <ng-select [clearSearchOnAdd]="true" [searchable]="true" (change)="filterAuthorsChange($event)"
-                   [clearable]="false" [items]="authors"
-                   [multiple]="true" bindLabel="name" placeholder="Filter by author">
-        </ng-select>
-    </div>
     <div *ngIf="isLoaded" class="col">
         <ng-select [clearSearchOnAdd]="true" [searchable]="true" (change)="filterCoursesChange($event)"
                    [clearable]="false"
@@ -22,6 +16,12 @@
         <ng-select [clearSearchOnAdd]="true" [searchable]="true" (change)="filterCategoriesChange($event)"
                    [clearable]="false"
                    [items]="categories" [multiple]="true" bindLabel="name" placeholder="Filter by category">
+        </ng-select>
+    </div>
+    <div *ngIf="!isProfessor && isLoaded" class="justify-content-start col">
+        <ng-select [clearSearchOnAdd]="true" [searchable]="true" (change)="filterAuthorsChange($event)"
+                   [clearable]="false" [items]="authors"
+                   [multiple]="true" bindLabel="name" placeholder="Filter by author">
         </ng-select>
     </div>
     <div class="text-end col" style="margin-top: 15px" *ngIf="isProfessor && isLoaded">
