@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {AuthService} from 'src/app/services/auth.service';
 import {
     Author,
     Category,
@@ -8,6 +7,7 @@ import {
     SheetApiService,
     UserApiService
 } from 'build/openapi';
+import {AuthService} from '../../services/auth.service';
 import {DataService} from "../../services/data.service";
 
 @Component({
@@ -30,7 +30,9 @@ export class ExerciseSheetsComponent implements OnInit {
     public page: number = 1;
     public pageSize: number = this.dataService.getPageSize();
 
-    public isLoaded:boolean = false;
+    public showAlert = false;
+    public alertMessage = "";
+    public isLoaded: boolean = false;
 
 
     constructor(private authService: AuthService,
@@ -41,6 +43,19 @@ export class ExerciseSheetsComponent implements OnInit {
 
     public ngOnInit(): void {
         this.loadExerciseSheets();
+    }
+
+    get isProfessor(): boolean {
+        return this.authService.isProfessor;
+    }
+
+    public displayAlert(message: string): void {
+        this.alertMessage = message;
+        this.showAlert = true;
+    }
+
+    public closeAlert(): void {
+        this.showAlert = false;
     }
 
     private loadExerciseSheets(): void {
@@ -140,12 +155,12 @@ export class ExerciseSheetsComponent implements OnInit {
             next: data => {
                 return true;
             },
-            error: error => console.log(error)
+            error: error => {
+                this.displayAlert('Error sending ckeck/unckeck to backend.');
+                console.log(error);
+                return false;
+            }
         });
-    }
-
-    get isProfessor(): boolean {
-        return this.authService.isProfessor;
     }
 
     public setPageSize(event: Event): void{

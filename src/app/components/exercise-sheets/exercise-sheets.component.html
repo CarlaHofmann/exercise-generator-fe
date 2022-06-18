@@ -2,6 +2,9 @@
 
 
 <div class="d-flex row px-4">
+    <p *ngIf="showAlert">
+        <ngb-alert type="danger" (closed)="closeAlert()">{{alertMessage}}</ngb-alert>
+    </p>
     <div *ngIf="!isProfessor" class="justify-content-start col">
         <ng-select [clearSearchOnAdd]="true" [searchable]="true" (change)="filterAuthorsChange($event)"
                    [clearable]="false" [items]="authors"
@@ -95,6 +98,6 @@
 </div>
 
 
-<div *ngIf="!filteredSheets?.length && isLoaded" class="px-4 center" style="margin-top: 15px; font-size: 20px">
+<div *ngIf="!filteredSheets?.length && isLoaded" class="px-4 center no-data-found-text">
     No Sheets found.
 </div>
