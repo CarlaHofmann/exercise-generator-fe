@@ -1,4 +1,4 @@
-<h1 class="p-4">Create Exercise Sheet</h1>
+<h1 class="p-4">Create Sheet</h1>
 
 <div class="d-flex row pt-4 px-4">
     <div class="justify-content-start col">
@@ -18,8 +18,8 @@
 <div *ngIf="randomizedSheet" class="px-4">
     <div style="margin-top: 15px;">
         <label>Title</label>
-        <i class="bi bi-info-circle mx-4" title="This is the title of the exercise sheet."></i>
-        <input type="text" class="form-control" id="titleid" placeholder="Exercise sheet title">
+        <i class="bi bi-info-circle mx-4" title="This is the title of the sheet."></i>
+        <input type="text" class="form-control" id="titleid" placeholder="Sheet title">
     </div>
 
     <div style="margin-top: 15px;">
@@ -41,7 +41,7 @@
     <div style="margin-top: 15px;">
         <label>Number of Exercises</label>
         <i class="bi bi-info-circle mx-4" title="Choose the number of exercises."></i>
-        <input type="text" class="form-control" id="number" placeholder="Exercise sheet title">
+        <input type="text" class="form-control" id="number" placeholder="Sheet title">
     </div>
 
     <div class="text-center pt-4">
@@ -59,8 +59,8 @@
 <div *ngIf="!randomizedSheet" class="px-4" >
     <div style="margin-top: 15px;">
         <label>Title</label>
-        <i class="bi bi-info-circle mx-4" title="This is the title of the exercise sheet."></i>
-        <input type="text" class="form-control" id="title" placeholder="Exercise sheet title">
+        <i class="bi bi-info-circle mx-4" title="This is the title of the sheet."></i>
+        <input type="text" class="form-control" id="title" placeholder="Sheet title">
     </div>
 
     <div style="margin-top: 15px;">
@@ -81,7 +81,7 @@
 
     <div style="margin-top: 15px;">
         <label>Select Exercises</label>
-        <i class="bi bi-info-circle mx-4" title="Choose exercises for the exercise sheet."></i>
+        <i class="bi bi-info-circle mx-4" title="Choose exercises for the sheet."></i>
         <table class="table table-striped" *ngIf="filteredExercises.length">
             <thead>
             <tr>

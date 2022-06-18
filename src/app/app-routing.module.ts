@@ -3,8 +3,8 @@ import {RouterModule, Routes} from '@angular/router';
 import {LoginComponent} from "./components/login/login.component";
 import {ProfessorAuthGuard} from "./guards/professor-auth-guard.service";
 import {DashboardComponent} from "./components/dashboard/dashboard.component";
-import {ExerciseSheetsComponent} from './components/exercise-sheets/exercise-sheets.component';
-import {CreateExerciseSheetComponent} from './components/create-exercise-sheet/create-exercise-sheet.component';
+import {SheetDatabaseComponent} from './components/sheet-database/sheet-database.component';
+import {CreateSheetComponent} from './components/create-sheet/create-sheet.component';
 import {ExerciseDatabaseComponent} from './components/exercise-database/exercise-database.component';
 import {EditExerciseComponent} from "./components/edit-exercise/edit-exercise.component";
 import {PageNotFoundComponent} from "./components/page-not-found/page-not-found.component";
@@ -20,8 +20,8 @@ const routes: Routes = [
     {path: "login", component: LoginComponent},
     {path: "sheet", children: [
             {path: "", component: PageNotFoundComponent},
-            {path: "db", component: ExerciseSheetsComponent},
-            {path: "create", component: CreateExerciseSheetComponent, canActivate: [ProfessorAuthGuard], canDeactivate: [PendingChangesGuard]},
+            {path: "db", component: SheetDatabaseComponent},
+            {path: "create", component: CreateSheetComponent, canActivate: [ProfessorAuthGuard], canDeactivate: [PendingChangesGuard]},
             {path: ":id", children: [
                     {path: "", component: PageNotFoundComponent},
                     // {path: "edit", component: EditExerciseComponent, canActivate: [ProfessorAuthGuard], canDeactivate: [PendingChangesGuard]},
