@@ -2,33 +2,29 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {LoginComponent} from "./components/login/login.component";
 import {ProfessorAuthGuard} from "./guards/professor-auth-guard.service";
-import {DashboardComponent} from "./components/dashboard/dashboard.component";
-import {SheetDatabaseComponent} from './components/sheet-database/sheet-database.component';
-import {CreateSheetComponent} from './components/create-sheet/create-sheet.component';
-import {ExerciseDatabaseComponent} from './components/exercise-database/exercise-database.component';
-import {EditExerciseComponent} from "./components/edit-exercise/edit-exercise.component";
-import {PageNotFoundComponent} from "./components/page-not-found/page-not-found.component";
-import {AdminConsoleComponent} from "./components/admin-console/admin-console.component";
 import {AdminAuthGuard} from "./guards/admin-auth-guard.service";
-import {CloneExerciseComponent} from "./components/clone-exercise/clone-exercise.component";
-import {CreateExerciseComponent} from "./components/create-exercise/create-exercise.component";
 import {PendingChangesGuard} from "./guards/pending-changes-guard.service";
 import {PdfViewerComponent} from "./components/pdf-viewer/pdf-viewer.component";
+
+import {ExerciseDatabaseComponent} from './components/exercise-database/exercise-database.component';
+import {CreateExerciseComponent} from "./components/create-exercise/create-exercise.component";
+import {EditExerciseComponent} from "./components/edit-exercise/edit-exercise.component";
+import {CloneExerciseComponent} from "./components/clone-exercise/clone-exercise.component";
+
+import {SheetDatabaseComponent} from './components/sheet-database/sheet-database.component';
+import {CreateSheetComponent} from './components/create-sheet/create-sheet.component';
+import {EditSheetComponent} from "./components/edit-sheet/edit-sheet.component";
+import {CloneSheetComponent} from "./components/clone-sheet/clone-sheet.component";
+
+import {AdminConsoleComponent} from "./components/admin-console/admin-console.component";
+import {DashboardComponent} from "./components/dashboard/dashboard.component";
+import {PageNotFoundComponent} from "./components/page-not-found/page-not-found.component";
+
+
 
 
 const routes: Routes = [
     {path: "login", component: LoginComponent},
-    {path: "sheet", children: [
-            {path: "", component: PageNotFoundComponent},
-            {path: "db", component: SheetDatabaseComponent},
-            {path: "create", component: CreateSheetComponent, canDeactivate: [PendingChangesGuard]},
-            {path: ":id", children: [
-                    {path: "", component: PageNotFoundComponent},
-                    // {path: "edit", component: EditExerciseComponent, canActivate: [ProfessorAuthGuard], canDeactivate: [PendingChangesGuard]},
-                    // {path: "clone", component: CloneExerciseComponent, canActivate: [ProfessorAuthGuard], canDeactivate: [PendingChangesGuard]},
-                    {path: "pdf", component: PdfViewerComponent},
-                ]},
-        ]},
     {path: "exercise", children: [
             {path: "", component: PageNotFoundComponent},
             {path: "db", component: ExerciseDatabaseComponent},
@@ -37,6 +33,17 @@ const routes: Routes = [
                     {path: "", component: PageNotFoundComponent},
                     {path: "edit", component: EditExerciseComponent, canActivate: [ProfessorAuthGuard], canDeactivate: [PendingChangesGuard]},
                     {path: "clone", component: CloneExerciseComponent, canActivate: [ProfessorAuthGuard], canDeactivate: [PendingChangesGuard]},
+                    {path: "pdf", component: PdfViewerComponent},
+                ]},
+        ]},
+    {path: "sheet", children: [
+            {path: "", component: PageNotFoundComponent},
+            {path: "db", component: SheetDatabaseComponent},
+            {path: "create", component: CreateSheetComponent, canDeactivate: [PendingChangesGuard]},
+            {path: ":id", children: [
+                    {path: "", component: PageNotFoundComponent},
+                    {path: "edit", component: EditSheetComponent, canActivate: [ProfessorAuthGuard], canDeactivate: [PendingChangesGuard]},
+                    {path: "clone", component: CloneSheetComponent, canActivate: [ProfessorAuthGuard], canDeactivate: [PendingChangesGuard]},
                     {path: "pdf", component: PdfViewerComponent},
                 ]},
         ]},
