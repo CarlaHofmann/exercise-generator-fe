@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ExerciseSheetsComponent } from './sheet-database.component';
+import { SheetDatabaseComponent } from './sheet-database.component';
 
 describe('SheetDatabaseComponent', () => {
   let component: SheetDatabaseComponent;
