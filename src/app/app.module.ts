@@ -26,6 +26,7 @@ import {CodemirrorModule} from "@ctrl/ngx-codemirror";
 import {AdminConsoleComponent} from './components/admin-console/admin-console.component';
 import {CloneExerciseComponent} from './components/clone-exercise/clone-exercise.component';
 import {CreateExerciseComponent} from './components/create-exercise/create-exercise.component';
+import {PdfViewerComponent} from './components/pdf-viewer/pdf-viewer.component';
 
 @NgModule({
     declarations: [
@@ -42,7 +43,8 @@ import {CreateExerciseComponent} from './components/create-exercise/create-exerc
         ExerciseFormComponent,
         AdminConsoleComponent,
         CloneExerciseComponent,
-        CreateExerciseComponent
+        CreateExerciseComponent,
+        PdfViewerComponent,
     ],
     imports: [
         BrowserModule,
@@ -54,9 +56,9 @@ import {CreateExerciseComponent} from './components/create-exercise/create-exerc
         ReactiveFormsModule,
         CodemirrorModule,
         NgSelectModule,
+        BrowserAnimationsModule,
         MatPaginatorModule,
         MatTableModule,
-        BrowserAnimationsModule,
         MatTooltipModule,
         MatSortModule,
         //MatSort

@@ -103,6 +103,29 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/Sheet"
+        put:
+            tags:
+                - SheetApi
+            operationId: updateSheet
+            parameters:
+                -   name: id
+                    in: path
+                    required: true
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SheetDto'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Sheet'
         delete:
             tags:
                 - SheetApi
@@ -117,26 +140,25 @@ paths:
                 "200":
                     description: OK
 
-    /sheet/ispublished/{id}:
-        put:
+    /sheet/{id}/pdf:
+        get:
             tags:
                 - SheetApi
-            operationId: isPublishedUpdate
+            operationId: getSheetPdf
             parameters:
                 -   name: id
                     in: path
                     required: true
                     schema:
                         type: string
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            type: boolean
-                required: true
             responses:
                 "200":
                     description: OK
+                    content:
+                        application/pdf:
+                            schema:
+                                type: string
+                                format: byte
 
     /exercise:
         get:
@@ -169,6 +191,26 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/Exercise"
+
+    /exercise/pdf:
+        post:
+            tags:
+                - ExerciseApi
+            operationId: previewExerciseDto
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ExerciseDto'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/pdf:
+                            schema:
+                                type: string
+                                format: byte
 
     /exercise/{id}:
         get:
@@ -226,38 +268,25 @@ paths:
                 "200":
                     description: OK
 
-
-    /exercise/isused:
-        delete:
+    /exercise/{id}/pdf:
+        get:
             tags:
                 - ExerciseApi
-            operationId: isUsedReset
-            parameters:
-                []
-            responses:
-                "200":
-                    description: OK
-
-    /exercise/isused/{id}:
-        put:
-            tags:
-                - ExerciseApi
-            operationId: isUsedUpdate
+            operationId: getExercisePdf
             parameters:
                 -   name: id
                     in: path
                     required: true
                     schema:
                         type: string
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            type: boolean
-                required: true
             responses:
                 "200":
                     description: OK
+                    content:
+                        application/pdf:
+                            schema:
+                                type: string
+                                format: byte
 
     /courses:
         get:
@@ -386,51 +415,6 @@ paths:
             responses:
                 "200":
                     description: OK
-
-    /latex:
-        get:
-            tags:
-                - TestApi
-            operationId: getLatexPdf
-            parameters:
-                -   name: content
-                    in: query
-                    required: false
-                    schema:
-                        type: string
-                        default: Hello World!
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                type: array
-                                items:
-                                    type: string
-                                    format: byte
-
-    /latex/{exerciseId}:
-        get:
-            tags:
-                - TestApi
-            operationId: getExerciseLatex
-            parameters:
-                -   name: exerciseId
-                    in: path
-                    required: true
-                    schema:
-                        type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                type: array
-                                items:
-                                    type: string
-                                    format: byte
 
     /image:
         get:

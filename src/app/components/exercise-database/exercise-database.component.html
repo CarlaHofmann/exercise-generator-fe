@@ -23,14 +23,16 @@
     </div>
     <div *ngIf = "isLoaded && isProfessor" class="text-end col" style="margin-top: 15px">
         <div class="btn-group" role="group" aria-label="group">
-            <button title="Press to uncheck all the isUsed flags." style="border: 1px white solid;" class="btn btn-danger" (click)="uncheckAll()">
-         <i class="bi bi-trash3 text-white"></i>
-         Reset Used
+            <button title="Press to uncheck all the isUsed flags." style="border: 1px white solid;"
+                    class="btn btn-danger" (click)="uncheckAll()">
+                <i class="bi bi-trash3 text-white"></i>
+                Reset Used
             </button>
-        <button class="btn btn-primary" style="border: 1px white solid;" routerLink="/exercise/create">
-            <i class="bi bi-plus-circle"></i>
-            Create Exercise</button>
-    </div>
+            <button class="btn btn-primary" style="border: 1px white solid;" routerLink="/exercise/create">
+                <i class="bi bi-plus-circle"></i>
+                Create Exercise
+            </button>
+        </div>
     </div>
 </div>
 
@@ -45,74 +47,78 @@
 <div *ngIf="displayExercises?.length" class="px-4">
     <table class="table table-striped">
         <thead>
-            <tr>
-                <th scope="col" class="col-2" sortable="title"> Title</th>
-                <th scope="col" class="col-2"> Course</th>
-                <th scope="col" class="col-2"> Category</th>
-                <th *ngIf="!isProfessor" scope="col" class="col-sm"> Author</th>
+        <tr>
+            <th scope="col" class="col-2" sortable="title"> Title</th>
+            <th scope="col" class="col-2"> Course</th>
+            <th scope="col" class="col-2"> Category</th>
+            <th *ngIf="!isProfessor" scope="col" class="col-sm"> Author</th>
                 <th scope="col" class="col-2"> Short Description</th>
-                <th scope="col" class="col-2" *ngIf="isProfessor"> Notes</th>
+            <th scope="col" class="col-2" *ngIf="isProfessor"> Notes</th>
                 <th *ngIf="isProfessor" scope="col" class="col-sm justify-content-center">Published</th>
-                <th scope="col" class="col-1" *ngIf="isProfessor">
-                    <div class="d-flex justify-content-center">
-                        <div>Used
+            <th scope="col" class="col-1" *ngIf="isProfessor">
+                <div class="d-flex justify-content-center">
+                    <div>Used
 
-                        </div>
                     </div>
-                </th>
-                <th scope="col" class="col-1"></th>
-            </tr>
+                </div>
+            </th>
+            <th scope="col" class="col-1"></th>
+        </tr>
         </thead>
 
 
         <tbody *ngIf="isLoaded">
-            <tr *ngFor="let element of displayExercises | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize;">
+        <tr *ngFor="let element of displayExercises | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize;">
 
-                <td scope="col">{{ element.title }}</td>
-                <td scope="col" [innerText]="categoriesToString(element.courses)"></td>
-                <td scope="col" [innerText]="categoriesToString(element.categories)"></td>
-                <td *ngIf="!isProfessor" scope="row">{{ element.author.name }}</td>
+            <td scope="col">{{ element.title }}</td>
+            <td scope="col" [innerText]="categoriesToString(element.courses)"></td>
+            <td scope="col" [innerText]="categoriesToString(element.categories)"></td>
+            <td *ngIf="!isProfessor" scope="row">{{ element.author.name }}</td>
                 <td scope="col">{{ element.shortDescription }}</td>
-                <td scope="col col-2" *ngIf="isProfessor">{{ element.note }}</td>
+            <td scope="col col-2" *ngIf="isProfessor">{{ element.note }}</td>
                 <td scope="col" *ngIf="isProfessor">
                     <div class="d-flex justify-content-center">
                         <div><input class="form-check-input" type="checkbox" [(ngModel)]="element.isPublished"
                                     (change)="toggleCheckbox(element.id, element.isPublished);"/></div>
                     </div>
                 </td>
-                <td scope="col" *ngIf="isProfessor">
-                    <div class="d-flex justify-content-center">
-                        <div><input class="form-check-input" type="checkbox" [(ngModel)]="element.isUsed"
-                                    (change)="toggleCheckbox(element.id, element.isUsed);"/></div>
-                    </div>
-                </td>
-                <td scope="col" class="text-right;">
-                    <div class="d-flex justify-content-end">
-                        <div>
-                            <div class="btn-group" role="group" aria-label="group">
-                                <button style="border: 1px white solid;" type="button" class="btn btn-success" title="View the exercise as pdf">
-                                    <i class="bi bi-eye text-white"></i>
-                                </button>
+            <td scope="col" *ngIf="isProfessor">
+                <div class="d-flex justify-content-center">
+                    <div><input class="form-check-input" type="checkbox" [(ngModel)]="element.isUsed"
+                                (change)="toggleCheckbox(element.id, element.isUsed);"/></div>
+                </div>
+            </td>
+            <td scope="col" class="text-right;">
+                <div class="d-flex justify-content-end">
+                    <div>
+                        <div class="btn-group" role="group" aria-label="group">
+                            <button style="border: 1px white solid;" type="button" class="btn btn-success"
+                                    title="View the exercise as pdf" (click)="viewExercisePdf(element.id)">
+                                <i class="bi bi-eye text-white"></i>
+                            </button>
 
-                                <button *ngIf="isProfessor" type="button" style="border: 1px white solid;" class="btn btn-warning" title="Edit the exercise"
-                                        routerLink="{{ '/exercise/'+element.id+'/edit' }}">
-                                    <i class="bi bi-pencil text-white"></i>
-                                </button>
+                            <button *ngIf="isProfessor" type="button" style="border: 1px white solid;"
+                                    class="btn btn-warning" title="Edit the exercise"
+                                    routerLink="{{ '/exercise/'+element.id+'/edit' }}">
+                                <i class="bi bi-pencil text-white"></i>
+                            </button>
 
-                                <button *ngIf="isProfessor" type="button" style="border: 1px white solid;" class="btn btn-warning" title="Clone the exercise"
-                                        routerLink="{{ '/exercise/'+element.id+'/clone' }}">
-                                    <i class="bi bi-files text-white"></i>
-                                </button>
+                            <button *ngIf="isProfessor" type="button" style="border: 1px white solid;"
+                                    class="btn btn-warning" title="Clone the exercise"
+                                    routerLink="{{ '/exercise/'+element.id+'/clone' }}">
+                                <i class="bi bi-files text-white"></i>
+                            </button>
 
-                                <button *ngIf="isProfessor" style="border: 1px white solid;" type="button" class="btn btn-danger"
-                                        title="Delete the exercise from the database" (click)="removeExercise(element.id);">
-                                    <i class="bi bi-trash3 text-white"></i>
-                                </button>
-                            </div>
+                            <button *ngIf="isProfessor" style="border: 1px white solid;" type="button"
+                                    class="btn btn-danger"
+                                    title="Delete the exercise from the database" (click)="removeExercise(element.id);">
+                                <i class="bi bi-trash3 text-white"></i>
+                            </button>
                         </div>
                     </div>
-                </td>
-            </tr>
+                </div>
+            </td>
+        </tr>
         </tbody>
     </table>
 
@@ -136,6 +142,6 @@
 </div>
 
 
-<div *ngIf="!displayExercises?.length && isLoaded" class="px-4 center" style="margin-top: 15px; font-size: 20px">
-    No Exercises found.
+<div *ngIf="!displayExercises?.length && isLoaded" class="px-4 center no-data-found-text">
+    No exercises found.
 </div>

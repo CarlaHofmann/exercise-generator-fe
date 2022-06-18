@@ -14,6 +14,7 @@ import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Location, ViewportScroller} from "@angular/common";
 import {DataService} from "../../services/data.service";
+import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
 
 @Component({
     selector: 'app-exercise-form',
@@ -41,11 +42,14 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
     public courses: Course[] = [];
     public categories: Category[] = [];
 
+    public pdfUrl = "";
+
     public isLoaded = false;
+    public isPdfLoaded = true;
     private isSubmitted = false;
 
     public showAlert = false;
-    public alertMessage = "";
+    public alertMessages: string[] = [];
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
@@ -54,7 +58,8 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
                 private exerciseApiService: ExerciseApiService,
                 private courseApiService: CourseApiService,
                 private categoryApiService: CategoryApiService,
-                private dataService: DataService) {
+                private dataService: DataService,
+                private sanitizer: DomSanitizer) {
     }
 
     ngOnInit(): void {
@@ -115,6 +120,8 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
                 console.log(err);
                 this.isLoaded = true;
                 this.displayAlert("Exercise not found.");
+                this.texts.push(new FormControl("", [Validators.required, Validators.minLength(1)]));
+                this.solutions.push(new FormControl("", [Validators.required, Validators.minLength(1)]));
             }
         });
     }
@@ -284,13 +291,34 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
         }
     }
 
-    public displayAlert(message: string): void {
-        this.alertMessage = message;
-        this.showAlert = true;
+    public viewExercisePdf(): void {
+        this.isPdfLoaded = false;
+
+        this.exerciseApiService.previewExerciseDto(this.exerciseDto).subscribe({
+            next: response => {
+                const pdf = new Blob([response], {type: "application/pdf"});
+                this.pdfUrl = URL.createObjectURL(pdf);
+
+                this.isPdfLoaded = true;
+            },
+            error: err => {
+                console.log(err);
+                this.displayAlert("Error while trying to get PDF.");
+                this.isPdfLoaded = true;
+            }
+        });
     }
 
-    public closeAlert(): void {
-        this.showAlert = false;
+    public getSanitizedUrl(url: string): SafeResourceUrl{
+        return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    }
+
+    public displayAlert(message: string): void {
+        this.alertMessages.push(message);
+    }
+
+    public closeAlert(message: string): void {
+        this.alertMessages = this.alertMessages.filter(m => m !== message);
     }
 
     public formatBytes(bytes: number, decimals = 2): string {
