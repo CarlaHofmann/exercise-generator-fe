@@ -21,7 +21,7 @@ const routes: Routes = [
     {path: "sheet", children: [
             {path: "", component: PageNotFoundComponent},
             {path: "db", component: SheetDatabaseComponent},
-            {path: "create", component: CreateSheetComponent, canActivate: [ProfessorAuthGuard], canDeactivate: [PendingChangesGuard]},
+            {path: "create", component: CreateSheetComponent, canDeactivate: [PendingChangesGuard]},
             {path: ":id", children: [
                     {path: "", component: PageNotFoundComponent},
                     // {path: "edit", component: EditExerciseComponent, canActivate: [ProfessorAuthGuard], canDeactivate: [PendingChangesGuard]},
