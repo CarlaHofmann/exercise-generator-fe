@@ -10,8 +10,8 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {LoginComponent} from './components/login/login.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {DashboardComponent} from './components/dashboard/dashboard.component';
-import {ExerciseSheetsComponent} from './components/exercise-sheets/exercise-sheets.component';
-import {CreateExerciseSheetComponent} from './components/create-exercise-sheet/create-exercise-sheet.component';
+import {SheetDatabaseComponent} from './components/sheet-database/sheet-database.component';
+import {CreateSheetComponent} from './components/create-sheet/create-sheet.component';
 import {HeaderComponent} from './components/header/header.component';
 
 import {MatTableModule} from '@angular/material/table';
@@ -33,8 +33,8 @@ import {PdfViewerComponent} from './components/pdf-viewer/pdf-viewer.component';
         AppComponent,
         LoginComponent,
         DashboardComponent,
-        ExerciseSheetsComponent,
-        CreateExerciseSheetComponent,
+        SheetDatabaseComponent,
+        CreateSheetComponent,
         HeaderComponent,
         ExerciseDatabaseComponent,
         ExerciseDatabaseComponent,

@@ -14,14 +14,14 @@ import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
 import {AuthService} from "../../services/auth.service";
 
 @Component({
-  selector: 'app-create-exercise-sheet',
-  templateUrl: './create-exercise-sheet.component.html',
-  styleUrls: ['./create-exercise-sheet.component.css']
+  selector: 'app-create-sheet',
+  templateUrl: './create-sheet.component.html',
+  styleUrls: ['./create-sheet.component.css']
 })
 
-export class CreateExerciseSheetComponent implements OnInit {
-  public exerciseSheet: Sheet[];
-  public exerciseSheetForm: FormGroup;
+export class CreateSheetComponent implements OnInit {
+  public sheet: Sheet[];
+  public sheetForm: FormGroup;
   public texts: FormArray = new FormArray([]);
   public solutions: FormArray = new FormArray([]);
 
@@ -52,7 +52,7 @@ export class CreateExerciseSheetComponent implements OnInit {
   public onFormChange(): void {
           this.resetForm();
 
-          this.exerciseSheetForm = new FormGroup({
+          this.sheetForm = new FormGroup({
               title: new FormControl("", [Validators.required, Validators.minLength(1)]),
               courses: new FormControl("", [Validators.required, Validators.minLength(1)]),
               categories: new FormControl("", [Validators.required, Validators.minLength(1)])
@@ -167,7 +167,7 @@ export class CreateExerciseSheetComponent implements OnInit {
   private resetForm(): void {
       this.texts.clear();
       this.solutions.clear();
-      this.exerciseSheetForm?.reset();
+      this.sheetForm?.reset();
   }
 
   public filterCoursesChange(courses: any): void {

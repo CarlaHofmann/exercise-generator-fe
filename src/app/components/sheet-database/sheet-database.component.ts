@@ -12,12 +12,12 @@ import {DataService} from "../../services/data.service";
 import {timeout} from 'rxjs';
 
 @Component({
-    selector: 'app-exercise-sheets',
-    templateUrl: './exercise-sheets.component.html',
-    styleUrls: ['./exercise-sheets.component.css']
+    selector: 'app-sheet-database',
+    templateUrl: './sheet-database.component.html',
+    styleUrls: ['./sheet-database.component.css']
 })
 
-export class ExerciseSheetsComponent implements OnInit {
+export class SheetDatabaseComponent implements OnInit {
 
     public sheets: Sheet[] = [];
     public authors: Author[] = [];
@@ -45,7 +45,7 @@ export class ExerciseSheetsComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.loadExerciseSheets();
+        this.loadSheets();
     }
 
     get isProfessor(): boolean {
@@ -61,7 +61,7 @@ export class ExerciseSheetsComponent implements OnInit {
         this.showAlert = false;
     }
 
-    private loadExerciseSheets(): void {
+    private loadSheets(): void {
         this.sheetApiService.getAllSheets().pipe(timeout(3000)).subscribe({
             next: response => {
                 if (this.isProfessor){
@@ -159,16 +159,16 @@ export class ExerciseSheetsComponent implements OnInit {
     }
 
     public toggleCheckbox(id: string, value: any) {
-        return this.sheetApiService.isPublishedUpdate(id, !value).subscribe({
-            next: data => {
-                return true;
-            },
-            error: error => {
-                this.displayAlert('Error sending ckeck/unckeck to backend.');
-                console.log(error);
-                return false;
-            }
-        });
+//         return this.sheetApiService.isPublishedUpdate(id, !value).subscribe({
+//             next: data => {
+//                 return true;
+//             },
+//             error: error => {
+//                 this.displayAlert('Error sending ckeck/unckeck to backend.');
+//                 console.log(error);
+//                 return false;
+//             }
+//         });
     }
 
     public setPageSize(event: Event): void{
