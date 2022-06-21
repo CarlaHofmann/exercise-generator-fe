@@ -37,6 +37,10 @@
     border-color: var(--secondary-hover-colour);
 }
 
+.btn-table {
+    border: 1px white solid;
+}
+
 .form-group{
     margin-bottom: 30px;
 }
@@ -82,8 +86,6 @@
     color: #38424c;
 }
 
-
-
 .files-list {
     margin-top: 1.5rem;
     text-align: center;
@@ -124,8 +126,6 @@
 .files-list .single-file .preview {
     height: 13rem;
 }
-
-
 
 .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected,
 .ng-dropdown-panel,
