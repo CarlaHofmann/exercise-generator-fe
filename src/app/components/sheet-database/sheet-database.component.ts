@@ -4,6 +4,7 @@ import {
     Category,
     Course,
     Sheet,
+    SheetDto,
     SheetApiService,
     UserApiService
 } from 'build/openapi';
@@ -18,6 +19,9 @@ import {timeout} from 'rxjs';
 })
 
 export class SheetDatabaseComponent implements OnInit {
+
+    public sheet: Sheet;
+    public sheetDto: SheetDto
 
     public sheets: Sheet[] = [];
     public authors: Author[] = [];
@@ -130,31 +134,39 @@ export class SheetDatabaseComponent implements OnInit {
     }
 
     public removeSheet(id: string) {
-
-//         this.sheetApiService.deleteSheet(id).subscribe({
-//             next: data => {
-//                 // TODO: dialog
-//                 this.loadExercises();
-//                 //refresh list
-//             },
-//             error: error => {;
-//                 this.alertMessage = 'Error while trying to delete a sheet.';
-//                 console.log(error);
-//                 this.showAlert = true;
-//             }
-//         });
-    }
-
-    public filterAuthorsChange(authors: any): void {
-        this.filteredAuthorNames = authors.map((author: Author) => author.name);
+         const confirm = window.confirm("Are you sure you want to delete this sheet?");
+         if (confirm){
+              this.sheetApiService.deleteSheet(id).subscribe({
+                  next: data => {
+                      this.loadSheets();
+                  },
+                  error: error => {;
+                      this.alertMessage = 'Error while trying to delete a sheet.';
+                      console.log(error);
+                      this.showAlert = true;
+                  }
+              });
+         }
     }
 
     public filterCoursesChange(courses: any): void {
         this.filteredCourseNames = courses.map((course: Course) => course.name);
+        this.refreshFilterData();
     }
 
     public filterCategoriesChange(categories: any): void {
         this.filteredCategoryNames = categories.map((category: Category) => category.name);
+        this.refreshFilterData();
+    }
+
+    public filterAuthorsChange(authors: any): void {
+        this.filteredAuthorNames = authors.map((author: Author) => author.name);
+        this.refreshFilterData();
+    }
+
+    private refreshFilterData(): void {
+//         this.categories = Array.from(new Set(this.displayExercises.reduce((previous, next) => previous.concat(next.categories.map(el => el.name)), new Array<string>())).values());
+//         this.courses = Array.from(new Set(this.displayExercises.reduce((previous, next) => previous.concat(next.courses.map(el => el.name)), new Array<string>())).values());
     }
 
     public getSheetCourses(courses: Course[]): string {
@@ -165,17 +177,35 @@ export class SheetDatabaseComponent implements OnInit {
         return categories.map(category => category.name).join(", ");
     }
 
-    public toggleCheckbox(id: string, value: any) {
-//         return this.sheetApiService.isPublishedUpdate(id, !value).subscribe({
-//             next: data => {
-//                 return true;
-//             },
-//             error: error => {
-//                 this.displayAlert('Error sending ckeck/unckeck to backend.');
-//                 console.log(error);
-//                 return false;
-//             }
+    public toggleCheckbox(id: string) {
+//         this.sheetApiService.getSheetById(id).subscribe({
+//                 next: response => {
+//                     this.sheet = response;
+//
+//                     const updatedSheet: SheetDto = {
+//                                 title: this.sheet.title,
+//                                 courses: this.sheet.courses,
+//                                 categories: this.sheet.categories,
+//                                 exercises: this.sheet.exercises,
+//                                 isPublished: true
+//                     };
+//
+//                     this.sheetApiService.updateSheet(id, updatedSheet);
+//                 },
+//                 error: err => {
+//                     console.log(err);
+//                     this.isLoaded = true;
+//                     this.displayAlert("Sheet not found.");
+//                 }
 //         });
+    }
+
+    public uncheckAll(): void {
+//         this.sheets = filteredSheets();
+//         for (let sheet of this.sheets){
+//
+//             this.sheetApiService.updateSheet(sheet.id, );
+//         }
     }
 
     public setPageSize(event: Event): void{
