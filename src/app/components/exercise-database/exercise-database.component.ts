@@ -73,20 +73,21 @@ export class ExerciseDatabaseComponent implements OnInit {
     }
 
     public removeExercise(id: string) {
-
-        this.exerciseApiService.deleteExercise(id).subscribe({
-            next: data => {
-                // TODO: dialog
-                this.loadExercises();
-                //refresh list
-            },
-            error: error => {
-                // alert('There was an error: ' + error.message);
-                this.alertMessage = 'Error while trying to delete an exercise.';
-                console.log(error);
-                this.showAlert = true;
-            }
-        });
+         const confirm = window.confirm("Are you sure you want to delete this exercise?");
+         if (confirm){
+              this.exerciseApiService.deleteExercise(id).subscribe({
+                  next: data => {
+                      this.loadExercises();
+                      //refresh list
+                  },
+                  error: error => {
+                      // alert('There was an error: ' + error.message);
+                      this.alertMessage = 'Error while trying to delete an exercise.';
+                      console.log(error);
+                      this.showAlert = true;
+                  }
+              });
+         }
     }
 
     public toggleCheckbox(id: string, value: any) {
