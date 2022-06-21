@@ -24,10 +24,18 @@
                    [multiple]="true" bindLabel="name" placeholder="Filter by author">
         </ng-select>
     </div>
-    <div class="text-end col" style="margin-top: 15px" *ngIf="isLoaded">
-        <a class=" btn btn-primary" routerLink="/sheet/create">
-            <i class="bi bi-plus-circle"></i>
-            Create Sheet</a>
+    <div *ngIf = "isLoaded" class="text-end col" style="margin-top: 15px">
+        <div class="btn-group" role="group" aria-label="group">
+            <button *ngIf="isProfessor" title="Press to uncheck all the published flags." style="border: 1px white solid;"
+                    class="btn btn-danger" (click)="uncheckAll()">
+                <i class="bi bi-trash3 text-white"></i>
+                Reset Published
+            </button>
+            <button class="btn btn-primary" style="border: 1px white solid;" routerLink="/sheet/create">
+                <i class="bi bi-plus-circle"></i>
+                Create Exercise
+            </button>
+        </div>
     </div>
 </div>
 
@@ -43,13 +51,13 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th scope="col" class="col-lg"> Title</th>
-                <th scope="col" class="col-lg"> Course</th>
-                <th scope="col" class="col-lg"> Category</th>
-                <th *ngIf="!isProfessor" scope="col" class="col-sm"> Author</th>
-                <th *ngIf="isProfessor" scope="col" class="col-sm"> Updated At</th>
-                <th scope="col" class="col-sm"> Published At</th>
-                <th *ngIf="isProfessor" scope="col" class="col-sm justify-content-center">Published</th>
+                <th scope="col" class="col-lg"> Title </th>
+                <th scope="col" class="col-lg"> Course </th>
+                <th scope="col" class="col-lg"> Category </th>
+                <th *ngIf="!isProfessor" scope="col" class="col-sm"> Author </th>
+                <th *ngIf="isProfessor" scope="col" class="col-sm"> Updated At </th>
+                <th scope="col" class="col-sm"> Published At </th>
+                <th *ngIf="isProfessor" scope="col" class="col-sm"> Published </th>
                 <th scope="col" class="col"></th>
             </tr>
         </thead>
@@ -66,40 +74,36 @@
                 <td *ngIf="isProfessor" scope="row">{{ sheet.updatedAt | date:'dd.MM.YYYY' }}</td>
                 <td scope="row">{{ sheet.publishedAt | date:'dd.MM.YYYY' }}</td>
                 <td *ngIf="isProfessor" scope="col">
-                    <div><input class="form-check-input" type="checkbox" [(ngModel)]="sheet.isPublished"
-                                (change)="toggleCheckbox(sheet.id, sheet.isPublished)"/></div>
+                    <div>
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="sheet.isPublished"
+                                (change)="toggleCheckbox(sheet.id)"/>
+                    </div>
                 </td>
-                <td scope="col" class="text-right;">
+                <td scope="col" class="text-right">
                     <div class="d-flex justify-content-end">
-                        <div>
-                            <div class="btn-group" role="group" aria-label="group">
-                                <button style="border: 1px white solid;" type="button" class="btn btn-success"
-                                        title="View the sheet as pdf" (click)="viewSheetPdf(sheet.id)">
-                                    <i class="bi bi-eye text-white"></i>
-                                </button>
+                        <div class="btn-group" role="group" aria-label="group">
+                            <button type="button" class="btn btn-success btn-table"
+                                    title="View the sheet as pdf" (click)="viewSheetPdf(sheet.id)">
+                                <i class="bi bi-eye text-white"></i>
+                            </button>
 
-                                <button *ngIf="isProfessor" type="button" style="border: 1px white solid;"
-                                        class="btn btn-warning" title="Edit the sheet"
-                                        routerLink="{{ '/sheet/'+sheet.id+'/edit' }}">
-                                    <i class="bi bi-pencil text-white"></i>
-                                </button>
+                            <button *ngIf="isProfessor" type="button" class="btn btn-warning btn-table"
+                                    title="Edit the sheet" routerLink="{{ '/sheet/'+sheet.id+'/edit' }}">
+                                <i class="bi bi-pencil text-white"></i>
+                            </button>
 
-                                <button *ngIf="isProfessor" type="button" style="border: 1px white solid;"
-                                        class="btn btn-warning" title="Clone the sheet"
-                                        routerLink="{{ '/sheet/'+sheet.id+'/clone' }}">
-                                    <i class="bi bi-files text-white"></i>
-                                </button>
+                            <button *ngIf="isProfessor" type="button" class="btn btn-warning btn-table"
+                                    title="Clone the sheet" routerLink="{{ '/sheet/'+sheet.id+'/clone' }}">
+                                <i class="bi bi-files text-white"></i>
+                            </button>
 
-                                <button *ngIf="isProfessor" style="border: 1px white solid;" type="button"
-                                        class="btn btn-danger"
-                                        title="Delete the sheet from the database" (click)="removeSheet(sheet.id);">
-                                    <i class="bi bi-trash3 text-white"></i>
-                                </button>
-                            </div>
+                            <button *ngIf="isProfessor" type="button" class="btn btn-danger btn-table"
+                                    title="Delete the sheet from the database" (click)="removeSheet(sheet.id);">
+                                <i class="bi bi-trash3 text-white"></i>
+                            </button>
                         </div>
                     </div>
                 </td>
-
             </tr>
         </tbody>
     </table>
