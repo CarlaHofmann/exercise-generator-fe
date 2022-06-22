@@ -8,9 +8,9 @@
 <div class="d-flex row">
     <form class="px-5 pt-2 col" [formGroup]="sheetForm">
         <div class="form-group">
-            <label for="sheet">Title</label>
+            <label for="title">Title</label>
             <i class="bi bi-info-circle mx-4" title="This is the title of the sheet."></i>
-            <input type="text" class="form-control" id="sheet" [formControlName]="'title'"
+            <input type="text" class="form-control" id="title" formControlName="title"
                    placeholder="Sheet title" (ngModelChange)="onFormChange()">
             <div *ngIf="sheetForm.controls['title'].touched && sheetForm.controls['title'].invalid"
                  class="alert alert-danger">
@@ -59,40 +59,40 @@
 
 
         <div *ngIf="!isCreateSheet" class="form-group">
-            <label for="exercises">Exercises</label>
+            <!--            <label for="exercises">Exercises</label>  id="exercises" steht nirgendswo-->
             <i class="bi bi-info-circle mx-4" title="These are the exercises the sheet contains."></i>
             <table class="table table-striped">
                 <thead>
-                    <tr>
-                        <th scope="col" class="col-1"> Select </th>
-                        <th scope="col" class="col-2"> Title </th>
-                        <th scope="col" class="col-2"> Course </th>
-                        <th scope="col" class="col-2"> Category </th>
-                        <th scope="col" class="col-2"> Short Description </th>
-                        <th scope="col" class="col-2" > Notes </th>
-                        <th scope="col" class="col-1" > Is used </th>
-                        <th scope="col" class="col-1"> </th>
+                <tr>
+                    <th scope="col" class="col-1"> Select</th>
+                    <th scope="col" class="col-2"> Title</th>
+                    <th scope="col" class="col-2"> Course</th>
+                    <th scope="col" class="col-2"> Category</th>
+                    <th scope="col" class="col-2"> Short Description</th>
+                    <th scope="col" class="col-2"> Notes</th>
+                    <th scope="col" class="col-1"> Is used</th>
+                    <th scope="col" class="col-1"></th>
 
-                    </tr>
+                </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let exercise of sheetExercises | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize;">
+                <tr *ngFor="let exercise of sheetExercises | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
 
-                        <td scope="row"><input class="form-check-input" type="checkbox"></td>
-                        <td scope="row">{{ exercise.title }}</td>
-                        <td scope="row">{{ getExerciseCourses(exercise.courses) }} </td>
-                        <td scope="row">{{ getExerciseCategories(exercise.categories) }} </td>
-                        <td scope="row">{{ exercise.shortDescription }} </td>
-                        <td scope="row">{{ exercise.note }} </td>
-                        <td scope="row"><input class="form-check-input" type="checkbox"></td>
+                    <td scope="row"><input class="form-check-input" type="checkbox"></td>
+                    <td scope="row">{{ exercise.title }}</td>
+                    <td scope="row">{{ getExerciseCourses(exercise.courses) }} </td>
+                    <td scope="row">{{ getExerciseCategories(exercise.categories) }} </td>
+                    <td scope="row">{{ exercise.shortDescription }} </td>
+                    <td scope="row">{{ exercise.note }} </td>
+                    <td scope="row"><input class="form-check-input" type="checkbox"></td>
 
-                        <td scope="row">
-                            <button type="submit" class="btn btn-success btn-sm"
-                                    (click)="viewExercisePdf(exercise.id)">
-                                <i class="bi bi-eye text-white"></i>
-                            </button>
-                        </td>
-                    </tr>
+                    <td scope="row">
+                        <button type="submit" class="btn btn-success btn-sm"
+                                (click)="viewExercisePdf(exercise.id)">
+                            <i class="bi bi-eye text-white"></i>
+                        </button>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -101,52 +101,50 @@
         <div *ngIf="isCreateSheet && isRandomizedSheet">
             <label for="numberExercises">Number of Exercises</label>
             <i class="bi bi-info-circle mx-4" title="Choose the number of exercises."></i>
-            <input type="number" class="form-control" id="numberExercises" [formControlName]="numberExercises"
-                   value="1" min="1" (ngModelChange)="onFormChange()">
+            <input type="number" class="form-control" id="numberExercises" formControlName="numberExercises"
+                   min="1" (ngModelChange)="onFormChange()">
         </div>
 
 
-        <div *ngIf="isCreateSheet && !isRandomizedSheet" style="margin-top: 15px;" class="form-group">
+        <div *ngIf="isCreateSheet && !isRandomizedSheet" style="margin-top: 15px" class="form-group">
             <label>Select Exercises</label>
             <i class="bi bi-info-circle mx-4" title="Choose exercises for the sheet."></i>
             <table *ngIf="isLoaded" class="table table-striped">
                 <thead>
                 <tr>
-                    <th scope="col" class="col-1"> Select </th>
-                    <th scope="col" class="col-2"> Title </th>
-                    <th scope="col" class="col-2"> Course </th>
-                    <th scope="col" class="col-2"> Category </th>
-                    <th scope="col" class="col-2"> Short Description </th>
-                    <th scope="col" class="col-2" *ngIf="isProfessor"> Notes </th>
-                    <th scope="col" class="col-1" *ngIf="isProfessor"> Is used </th>
-                    <th scope="col" class="col-1"> </th>
-
+                    <th scope="col" class="col-1"> Select</th>
+                    <th scope="col" class="col-2"> Title</th>
+                    <th scope="col" class="col-2"> Course</th>
+                    <th scope="col" class="col-2"> Category</th>
+                    <th scope="col" class="col-2"> Short Description</th>
+                    <th scope="col" class="col-2" *ngIf="isProfessor"> Notes</th>
+                    <th scope="col" class="col-1" *ngIf="isProfessor"> Is used</th>
+                    <th scope="col" class="col-1"></th>
                 </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let exercise of filteredExercises | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize;">
+                <tr *ngFor="let exercise of filteredExercises | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
 
-                        <td scope="row"><input class="form-check-input" type="checkbox"></td>
-                        <td scope="row">{{ exercise.title }}</td>
-                        <td scope="row">{{ getExerciseCourses(exercise.courses) }} </td>
-                        <td scope="row">{{ getExerciseCategories(exercise.categories) }} </td>
-                        <td scope="row">{{ exercise.shortDescription }} </td>
-                        <td scope="row" *ngIf="isProfessor"> {{ exercise.note }} </td>
-                        <td scope="row" *ngIf="isProfessor"><input class="form-check-input" type="checkbox"></td>
+                    <td scope="row"><input class="form-check-input" type="checkbox"></td>
+                    <td scope="row">{{ exercise.title }}</td>
+                    <td scope="row">{{ getExerciseCourses(exercise.courses) }} </td>
+                    <td scope="row">{{ getExerciseCategories(exercise.categories) }} </td>
+                    <td scope="row">{{ exercise.shortDescription }} </td>
+                    <td scope="row" *ngIf="isProfessor"> {{ exercise.note }} </td>
+                    <td scope="row" *ngIf="isProfessor"><input class="form-check-input" type="checkbox"></td>
 
-                        <td scope="row">
-                            <button type="submit" class="btn btn-success btn-sm"
-                                    (click)="viewExercisePdf(exercise.id)">
-                                <i class="bi bi-eye text-white"></i>
-                            </button>
-                        </td>
-                    </tr>
+                    <td scope="row">
+                        <button type="submit" class="btn btn-success btn-sm"
+                                (click)="viewExercisePdf(exercise.id)">
+                            <i class="bi bi-eye text-white"></i>
+                        </button>
+                    </td>
+                </tr>
                 </tbody>
             </table>
-            <div *ngIf = "isLoaded" class="row ">
+            <div *ngIf="isLoaded" class="row ">
                 <div class="col-4 ">
-                    <select class="form-select" style="width:200px" [(ngModel)]="pageSize"
-                            [formControlName]="'numberExercises'"
+                    <select class="form-select" style="width:200px" formControlName="pageSize"
                             (ngModelChange)="setPageSize($event)">
                         <option [ngValue]="5">5 items per page</option>
                         <option [ngValue]="10">10 items per page</option>
@@ -178,7 +176,8 @@
                         [disabled]="sheetForm.invalid">
                     Compile and open sheet
                 </button>
-                <button *ngIf="isProfessor && isCreateSheet" type="submit" class="btn btn-primary me-3" (click)="onSubmit(true)"
+                <button *ngIf="isProfessor && isCreateSheet" type="submit" class="btn btn-primary me-3"
+                        (click)="onSubmit(true)"
                         [disabled]="sheetForm.invalid" routerLink="/sheet/db">
                     Save
                 </button>

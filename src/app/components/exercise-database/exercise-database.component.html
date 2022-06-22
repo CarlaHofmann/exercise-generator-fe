@@ -5,30 +5,30 @@
     <p *ngIf="showAlert">
         <ngb-alert type="danger" (closed)="closeAlert()">{{alertMessage}}</ngb-alert>
     </p>
-    <div *ngIf = "isLoaded" class="justify-content-start col">
+    <div *ngIf="isLoaded" class="justify-content-start col">
         <ng-select [clearSearchOnAdd]="true" (change)="filterCourses($event)" [clearable]="false"
                    [items]="courses" [multiple]="true" bindLabel="courses"
                    placeholder="Filter by course">
         </ng-select>
     </div>
-    <div *ngIf = "isLoaded" class="col">
+    <div *ngIf="isLoaded" class="col">
         <ng-select [clearSearchOnAdd]="true" (change)="filterCategories($event)" [clearable]="false"
                    [items]="categories" [multiple]="true" bindLabel="categories"
                    placeholder="Filter by category">
         </ng-select>
     </div>
-    <div *ngIf = "isLoaded" class="col" style="margin-top: 15px">
+    <div *ngIf="isLoaded" class="col" style="margin-top: 15px">
         <input *ngIf="isProfessor" type="text" (input)="onSearchChange($event)" class="form-control" id="search"
-               placeholder="Search in notes" mdbInput/>
+               placeholder="Search in notes"/>
     </div>
-    <div *ngIf = "isLoaded && isProfessor" class="text-end col" style="margin-top: 15px">
+    <div *ngIf="isLoaded && isProfessor" class="text-end col" style="margin-top: 15px">
         <div class="btn-group" role="group" aria-label="group">
-            <button title="Press to uncheck all the isUsed flags." style="border: 1px white solid;"
+            <button title="Press to uncheck all the isUsed flags." style="border: 1px white solid"
                     class="btn btn-danger" (click)="uncheckAll()">
                 <i class="bi bi-trash3 text-white"></i>
                 Reset Used
             </button>
-            <button class="btn btn-primary" style="border: 1px white solid;" routerLink="/exercise/create">
+            <button class="btn btn-primary" style="border: 1px white solid" routerLink="/exercise/create">
                 <i class="bi bi-plus-circle"></i>
                 Create Exercise
             </button>
@@ -44,7 +44,7 @@
 </div>
 
 
-<div *ngIf="displayExercises?.length" class="px-4">
+<div *ngIf="filteredExercises?.length" class="px-4">
     <table class="table table-striped">
         <thead>
         <tr>
@@ -68,7 +68,7 @@
 
 
         <tbody *ngIf="isLoaded">
-        <tr *ngFor="let element of displayExercises | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize;">
+        <tr *ngFor="let element of filteredExercises | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
 
             <td scope="col">{{ element.title }}</td>
             <td scope="col" [innerText]="categoriesToString(element.courses)"></td>
@@ -79,16 +79,16 @@
                 <td scope="col" *ngIf="isProfessor">
                     <div class="d-flex justify-content-center">
                         <div><input class="form-check-input" type="checkbox" [(ngModel)]="element.isPublished"
-                                    (change)="toggleCheckbox(element.id, element.isPublished);"/></div>
+                                    (change)="toggleCheckbox(element.id)"/></div>
                     </div>
                 </td>
             <td scope="col" *ngIf="isProfessor">
                 <div class="d-flex justify-content-center">
                     <div><input class="form-check-input" type="checkbox" [(ngModel)]="element.isUsed"
-                                (change)="toggleCheckbox(element.id, element.isUsed);"/></div>
+                                (change)="toggleCheckbox(element.id)"/></div>
                 </div>
             </td>
-            <td scope="col" class="text-right;">
+            <td scope="col" class="text-right">
                 <div class="d-flex justify-content-end">
                     <div>
                         <div class="btn-group" role="group" aria-label="group">
@@ -108,7 +108,7 @@
                             </button>
 
                             <button *ngIf="isProfessor" type="button" class="btn btn-danger btn-table"
-                                    title="Delete the exercise from the database" (click)="removeExercise(element.id);">
+                                    title="Delete the exercise from the database" (click)="removeExercise(element.id)">
                                 <i class="bi bi-trash3 text-white"></i>
                             </button>
                         </div>
@@ -130,7 +130,7 @@
             </select>
         </div>
         <div class="col-4  d-flex justify-content-around">
-            <ngb-pagination [collectionSize]="displayExercises.length" [(page)]="page" [pageSize]="pageSize" class=""
+            <ngb-pagination [collectionSize]="filteredExercises.length" [(page)]="page" [pageSize]="pageSize" class=""
                             (pageChange)="refreshExercises()" [boundaryLinks]="true" [maxSize]="5" [ellipses]="true">
             </ngb-pagination>
         </div>
@@ -138,6 +138,6 @@
 </div>
 
 
-<div *ngIf="!displayExercises?.length && isLoaded" class="px-4 center no-data-found-text">
+<div *ngIf="!filteredExercises?.length && isLoaded" class="px-4 center no-data-found-text">
     No exercises found.
 </div>

@@ -1,16 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {
-    Author,
-    Category,
-    Course,
-    Sheet,
-    SheetDto,
-    SheetApiService,
-    UserApiService
-} from 'build/openapi';
+import {Author, Category, Course, Sheet, SheetApiService, SheetDto,} from 'build/openapi';
 import {AuthService} from '../../services/auth.service';
 import {DataService} from "../../services/data.service";
-import {timeout} from 'rxjs';
 
 @Component({
     selector: 'app-sheet-database',
@@ -19,9 +10,6 @@ import {timeout} from 'rxjs';
 })
 
 export class SheetDatabaseComponent implements OnInit {
-
-    public sheet: Sheet;
-    public sheetDto: SheetDto
 
     public sheets: Sheet[] = [];
     public authors: Author[] = [];
@@ -32,20 +20,19 @@ export class SheetDatabaseComponent implements OnInit {
     public filteredCourseNames: String[] = [];
     public filteredCategoryNames: String[] = [];
 
-    public page: number = 1;
-    public pageSize: number = this.dataService.getPageSize();
+    public page = 1;
+    public pageSize = this.dataService.getPageSize();
 
     public showAlert = false;
     public alertMessage = "";
 
-    public isLoaded:boolean = false;
-    public showLoading:boolean = true;
+    public isLoaded = false;
+    public showLoading = true;
 
 
     constructor(private authService: AuthService,
                 private dataService: DataService,
-                private sheetApiService: SheetApiService,
-                private userApiService: UserApiService) {
+                private sheetApiService: SheetApiService) {
     }
 
     public ngOnInit(): void {
@@ -66,7 +53,7 @@ export class SheetDatabaseComponent implements OnInit {
     }
 
     private loadSheets(): void {
-        this.sheetApiService.getAllSheets().pipe(timeout(3000)).subscribe({
+        this.sheetApiService.getAllSheets().subscribe({
             next: response => {
                 const uniqueAuthors: Author[] = [];
                 response.map(sheet => sheet.author).filter((author: Author) => {
@@ -134,39 +121,31 @@ export class SheetDatabaseComponent implements OnInit {
     }
 
     public removeSheet(id: string) {
-         const confirm = window.confirm("Are you sure you want to delete this sheet?");
-         if (confirm){
-              this.sheetApiService.deleteSheet(id).subscribe({
-                  next: data => {
-                      this.loadSheets();
-                  },
-                  error: error => {;
-                      this.alertMessage = 'Error while trying to delete a sheet.';
-                      console.log(error);
-                      this.showAlert = true;
-                  }
-              });
-         }
+        const confirm = window.confirm("Are you sure you want to delete this sheet?");
+        if (confirm) {
+            this.sheetApiService.deleteSheet(id).subscribe({
+                next: () => {
+                    this.loadSheets();
+                },
+                error: error => {
+                    this.alertMessage = 'Error while trying to delete a sheet.';
+                    console.log(error);
+                    this.showAlert = true;
+                }
+            });
+        }
     }
 
     public filterCoursesChange(courses: any): void {
         this.filteredCourseNames = courses.map((course: Course) => course.name);
-        this.refreshFilterData();
     }
 
     public filterCategoriesChange(categories: any): void {
         this.filteredCategoryNames = categories.map((category: Category) => category.name);
-        this.refreshFilterData();
     }
 
     public filterAuthorsChange(authors: any): void {
         this.filteredAuthorNames = authors.map((author: Author) => author.name);
-        this.refreshFilterData();
-    }
-
-    private refreshFilterData(): void {
-//         this.categories = Array.from(new Set(this.displayExercises.reduce((previous, next) => previous.concat(next.categories.map(el => el.name)), new Array<string>())).values());
-//         this.courses = Array.from(new Set(this.displayExercises.reduce((previous, next) => previous.concat(next.courses.map(el => el.name)), new Array<string>())).values());
     }
 
     public getSheetCourses(courses: Course[]): string {
@@ -178,37 +157,44 @@ export class SheetDatabaseComponent implements OnInit {
     }
 
     public toggleCheckbox(id: string) {
-//         this.sheetApiService.getSheetById(id).subscribe({
-//                 next: response => {
-//                     this.sheet = response;
-//
-//                     const updatedSheet: SheetDto = {
-//                                 title: this.sheet.title,
-//                                 courses: this.sheet.courses,
-//                                 categories: this.sheet.categories,
-//                                 exercises: this.sheet.exercises,
-//                                 isPublished: true
-//                     };
-//
-//                     this.sheetApiService.updateSheet(id, updatedSheet);
-//                 },
-//                 error: err => {
-//                     console.log(err);
-//                     this.isLoaded = true;
-//                     this.displayAlert("Sheet not found.");
-//                 }
-//         });
+        const sheet = this.filteredSheets.find(sheet => sheet.id === id);
+        if (!sheet) {
+            return;
+        }
+
+        this.updateSheet(sheet);
     }
 
     public uncheckAll(): void {
-//         this.sheets = filteredSheets();
-//         for (let sheet of this.sheets){
-//
-//             this.sheetApiService.updateSheet(sheet.id, );
-//         }
+        this.filteredSheets.forEach(sheet => {
+            sheet.isPublished = false;
+
+            this.updateSheet(sheet);
+        });
     }
 
-    public setPageSize(event: Event): void{
+    private updateSheet(sheet: Sheet): void {
+        const originalIsPublished = sheet.isPublished;
+
+        const updatedSheet: SheetDto = {
+            title: sheet.title,
+            courses: sheet.courses,
+            categories: sheet.categories,
+            exercises: sheet.exercises.map(exercise => exercise.id),
+            isPublished: sheet.isPublished
+        }
+
+        this.sheetApiService.updateSheet(sheet.id, updatedSheet).subscribe({
+            error: err => {
+                this.alertMessage = "Error while updating sheet.";
+                this.showAlert = true;
+                console.log(err);
+                sheet.isPublished = originalIsPublished;
+            }
+        });
+    }
+
+    public setPageSize(event: Event): void {
         this.pageSize = Number(event);
         this.dataService.savePageSize(this.pageSize);
     }
