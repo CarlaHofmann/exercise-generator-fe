@@ -256,6 +256,25 @@ export class SheetFormComponent implements OnInit, OnDestroy {
         window.open("sheet/" + id + "/pdf");
     }
 
+    public viewExercisePdf(id: string): void {
+           window.open("exercise/" + id + "/pdf");
+//         this.isPdfLoaded = false;
+//
+//         this.exerciseApiService.previewExerciseDto(this.exerciseDto).subscribe({
+//             next: response => {
+//                 const pdf = new Blob([response], {type: "application/pdf"});
+//                 this.pdfUrl = URL.createObjectURL(pdf);
+//
+//                 this.isPdfLoaded = true;
+//             },
+//             error: err => {
+//                 console.log(err);
+//                 this.displayAlert("Error while trying to get PDF.");
+//                 this.isPdfLoaded = true;
+//             }
+//         });
+    }
+
     public toggleCheckbox(): void {
         this.onFormChange();
         this.sheetDto.isPublished = !this.sheetDto.isPublished;

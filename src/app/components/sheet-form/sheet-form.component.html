@@ -58,152 +58,140 @@
         </div>
 
 
-<!--        <div *ngIf="!isCreateSheet" class="form-group">-->
-<!--            <label for="exercises">Exercises</label>-->
-<!--            <i class="bi bi-info-circle mx-4" title="These are the exercises the sheet contains."></i>-->
-<!--            <table class="table table-striped">-->
-<!--                <thead>-->
-<!--                    <tr>-->
-<!--                        <th scope="col" class="col-1"> Select </th>-->
-<!--                        <th scope="col" class="col-2"> Title </th>-->
-<!--                        <th scope="col" class="col-2"> Course </th>-->
-<!--                        <th scope="col" class="col-2"> Category </th>-->
-<!--                        <th scope="col" class="col-2"> Short Description </th>-->
-<!--                        <th scope="col" class="col-2" > Notes </th>-->
-<!--                        <th scope="col" class="col-1" > Is used </th>-->
-<!--                        <th scope="col" class="col-1"> </th>-->
+        <div *ngIf="!isCreateSheet" class="form-group">
+            <label for="exercises">Exercises</label>
+            <i class="bi bi-info-circle mx-4" title="These are the exercises the sheet contains."></i>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col" class="col-1"> Select </th>
+                        <th scope="col" class="col-2"> Title </th>
+                        <th scope="col" class="col-2"> Course </th>
+                        <th scope="col" class="col-2"> Category </th>
+                        <th scope="col" class="col-2"> Short Description </th>
+                        <th scope="col" class="col-2" > Notes </th>
+                        <th scope="col" class="col-1" > Is used </th>
+                        <th scope="col" class="col-1"> </th>
 
-<!--                    </tr>-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                    <tr *ngFor="let exercise of sheetExercises | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize;">-->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let exercise of sheetExercises | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize;">
 
-<!--                        <td scope="row"><input class="form-check-input" type="checkbox"></td>-->
-<!--                        <td scope="row">{{ exercise.title }}</td>-->
-<!--                        <td scope="row">{{ getExerciseCourses(exercise.courses) }} </td>-->
-<!--                        <td scope="row">{{ getExerciseCategories(exercise.categories) }} </td>-->
-<!--                        <td scope="row">{{ exercise.shortDescription }} </td>-->
-<!--                        <td scope="row">{{ exercise.note }} </td>-->
-<!--                        <td scope="row"><input class="form-check-input" type="checkbox"></td>-->
+                        <td scope="row"><input class="form-check-input" type="checkbox"></td>
+                        <td scope="row">{{ exercise.title }}</td>
+                        <td scope="row">{{ getExerciseCourses(exercise.courses) }} </td>
+                        <td scope="row">{{ getExerciseCategories(exercise.categories) }} </td>
+                        <td scope="row">{{ exercise.shortDescription }} </td>
+                        <td scope="row">{{ exercise.note }} </td>
+                        <td scope="row"><input class="form-check-input" type="checkbox"></td>
 
-<!--                        <td scope="row">-->
-<!--&lt;!&ndash;                            <button type="submit" class="btn btn-success btn-sm"&ndash;&gt;-->
-<!--&lt;!&ndash;                                    (click)="viewSheetPdf(exercise.id)">&ndash;&gt;-->
-<!--&lt;!&ndash;                                <i class="bi bi-eye text-white"></i>&ndash;&gt;-->
-<!--&lt;!&ndash;                            </button>&ndash;&gt;-->
-<!--                        </td>-->
-<!--                    </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
-<!--        </div>-->
-
-
-<!--        <div *ngIf="isCreateSheet && isRandomizedSheet">-->
-<!--            <label for="numberExercises">Number of Exercises</label>-->
-<!--            <i class="bi bi-info-circle mx-4" title="Choose the number of exercises."></i>-->
-<!--            <input type="number" class="form-control" id="numberExercises" [formControlName]="'numberExercises'"-->
-<!--                   placeholder="Number of exercises" (ngModelChange)="onFormChange()">-->
-<!--            &lt;!&ndash;            <div *ngIf="sheetForm.controls['numberExercises'].touched && sheetForm.controls['numberExercises'].invalid"&ndash;&gt;-->
-<!--            &lt;!&ndash;                 class="alert alert-danger">&ndash;&gt;-->
-<!--            &lt;!&ndash;                <div *ngIf="sheetForm.controls['numberExercises'].hasError('required')">Number of exercises is mandatory.</div>&ndash;&gt;-->
-<!--            &lt;!&ndash;                <div *ngIf="sheetForm.controls['numberExercises'].hasError('minlength')">Number of exercises should be at least 1&ndash;&gt;-->
-<!--            &lt;!&ndash;                    character long.&ndash;&gt;-->
-<!--            &lt;!&ndash;                </div>&ndash;&gt;-->
-<!--            &lt;!&ndash;            </div>&ndash;&gt;-->
-<!--        </div>-->
+                        <td scope="row">
+                            <button type="submit" class="btn btn-success btn-sm"
+                                    (click)="viewExercisePdf(exercise.id)">
+                                <i class="bi bi-eye text-white"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
 
-<!--        <div *ngIf="isCreateSheet && !isRandomizedSheet" style="margin-top: 15px;" class="form-group">-->
-<!--            <label>Select Exercises</label>-->
-<!--            <i class="bi bi-info-circle mx-4" title="Choose exercises for the sheet."></i>-->
-<!--            <div *ngIf="showLoading" class="d-flex justify-content-center px-4">-->
-<!--                <div class="spinner-border text-primary" role="status">-->
-<!--                    <span class="sr-only"></span>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <table *ngIf="isLoaded" class="table table-striped">-->
-<!--                <thead>-->
-<!--                <tr>-->
-<!--                    <th scope="col" class="col-1"> Select </th>-->
-<!--                    <th scope="col" class="col-2"> Title </th>-->
-<!--                    <th scope="col" class="col-2"> Course </th>-->
-<!--                    <th scope="col" class="col-2"> Category </th>-->
-<!--                    <th scope="col" class="col-2"> Short Description </th>-->
-<!--                    <th scope="col" class="col-2" *ngIf="isProfessor"> Notes </th>-->
-<!--                    <th scope="col" class="col-1" *ngIf="isProfessor"> Is used </th>-->
-<!--                    <th scope="col" class="col-1"> </th>-->
-
-<!--                </tr>-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                    <tr *ngFor="let exercise of filteredExercises | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize;">-->
-
-<!--                        <td scope="row"><input class="form-check-input" type="checkbox"></td>-->
-<!--                        <td scope="row">{{ exercise.title }}</td>-->
-<!--                        <td scope="row">{{ getExerciseCourses(exercise.courses) }} </td>-->
-<!--                        <td scope="row">{{ getExerciseCategories(exercise.categories) }} </td>-->
-<!--                        <td scope="row">{{ exercise.shortDescription }} </td>-->
-<!--                        <td scope="row" *ngIf="isProfessor"> {{ exercise.note }} </td>-->
-<!--                        <td scope="row" *ngIf="isProfessor"><input class="form-check-input" type="checkbox"></td>-->
-
-<!--                        <td scope="row">-->
-<!--                            <button type="submit" class="btn btn-success btn-sm"-->
-<!--                                    (click)="viewSheetPdf(exercise.id)">-->
-<!--                                <i class="bi bi-eye text-white"></i>-->
-<!--                            </button>-->
-<!--                        </td>-->
-<!--                    </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
-<!--            <div *ngIf = "isLoaded" class="row ">-->
-<!--                <div class="col-4 ">-->
-<!--                    <select class="form-select" style="width:200px" [(ngModel)]="pageSize"-->
-<!--                            [formControlName]="'numberExercises'"-->
-<!--                            (ngModelChange)="setPageSize($event)">-->
-<!--                        <option [ngValue]="5">5 items per page</option>-->
-<!--                        <option [ngValue]="10">10 items per page</option>-->
-<!--                        <option [ngValue]="25">25 items per page</option>-->
-<!--                        <option [ngValue]="50">50 items per page</option>-->
-<!--                    </select>-->
-<!--                </div>-->
-<!--                <div class="col-4  d-flex justify-content-around">-->
-<!--                    <ngb-pagination [collectionSize]="exercises.length" [(page)]="page" [pageSize]="pageSize"-->
-<!--                                    [boundaryLinks]="true" [maxSize]="5" [ellipses]="true">-->
-<!--                    </ngb-pagination>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div *ngIf="!filteredExercises.length && !isLoaded" class="px-4 center no-data-found-text">-->
-<!--                No exercises found.-->
-<!--            </div>-->
-<!--        </div>-->
+        <div *ngIf="isCreateSheet && isRandomizedSheet">
+            <label for="numberExercises">Number of Exercises</label>
+            <i class="bi bi-info-circle mx-4" title="Choose the number of exercises."></i>
+            <input type="number" class="form-control" id="numberExercises" [formControlName]="numberExercises"
+                   value="1" min="1" (ngModelChange)="onFormChange()">
+        </div>
 
 
-<!--        <div *ngIf="isProfessor" class="d-flex justify-content-center pt-4">-->
-<!--            <input id="isPublished" class="form-check-input" type="checkbox" formControlName="isPublished"-->
-<!--                   (change)="toggleCheckbox()"/>-->
-<!--            <label class="ms-2" for="isPublished">Publish sheet, so everyone can see it.</label>-->
-<!--        </div>-->
+        <div *ngIf="isCreateSheet && !isRandomizedSheet" style="margin-top: 15px;" class="form-group">
+            <label>Select Exercises</label>
+            <i class="bi bi-info-circle mx-4" title="Choose exercises for the sheet."></i>
+            <table *ngIf="isLoaded" class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col" class="col-1"> Select </th>
+                    <th scope="col" class="col-2"> Title </th>
+                    <th scope="col" class="col-2"> Course </th>
+                    <th scope="col" class="col-2"> Category </th>
+                    <th scope="col" class="col-2"> Short Description </th>
+                    <th scope="col" class="col-2" *ngIf="isProfessor"> Notes </th>
+                    <th scope="col" class="col-1" *ngIf="isProfessor"> Is used </th>
+                    <th scope="col" class="col-1"> </th>
 
-<!--        <div class="text-center pt-4">-->
-<!--            <div class="form-group text-center align-items-center">-->
-<!--                <button type="submit" class="btn btn-primary me-3" (click)="onSubmit(false)"-->
-<!--                        [disabled]="sheetForm.invalid">-->
-<!--                    Compile and open sheet-->
-<!--                </button>-->
-<!--                <button *ngIf="isProfessor && isCreateSheet" type="submit" class="btn btn-primary me-3" (click)="onSubmit(true)"-->
-<!--                        [disabled]="sheetForm.invalid" routerLink="/sheet/db">-->
-<!--                    Save-->
-<!--                </button>-->
-<!--            </div>-->
-<!--        </div>-->
+                </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let exercise of filteredExercises | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize;">
+
+                        <td scope="row"><input class="form-check-input" type="checkbox"></td>
+                        <td scope="row">{{ exercise.title }}</td>
+                        <td scope="row">{{ getExerciseCourses(exercise.courses) }} </td>
+                        <td scope="row">{{ getExerciseCategories(exercise.categories) }} </td>
+                        <td scope="row">{{ exercise.shortDescription }} </td>
+                        <td scope="row" *ngIf="isProfessor"> {{ exercise.note }} </td>
+                        <td scope="row" *ngIf="isProfessor"><input class="form-check-input" type="checkbox"></td>
+
+                        <td scope="row">
+                            <button type="submit" class="btn btn-success btn-sm"
+                                    (click)="viewExercisePdf(exercise.id)">
+                                <i class="bi bi-eye text-white"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div *ngIf = "isLoaded" class="row ">
+                <div class="col-4 ">
+                    <select class="form-select" style="width:200px" [(ngModel)]="pageSize"
+                            [formControlName]="'numberExercises'"
+                            (ngModelChange)="setPageSize($event)">
+                        <option [ngValue]="5">5 items per page</option>
+                        <option [ngValue]="10">10 items per page</option>
+                        <option [ngValue]="25">25 items per page</option>
+                        <option [ngValue]="50">50 items per page</option>
+                    </select>
+                </div>
+                <div class="col-4  d-flex justify-content-around">
+                    <ngb-pagination [collectionSize]="exercises.length" [(page)]="page" [pageSize]="pageSize"
+                                    [boundaryLinks]="true" [maxSize]="5" [ellipses]="true">
+                    </ngb-pagination>
+                </div>
+            </div>
+            <div *ngIf="!filteredExercises.length && !isLoaded" class="px-4 center no-data-found-text">
+                No exercises found.
+            </div>
+        </div>
+
+
+        <div *ngIf="isProfessor" class="d-flex justify-content-center pt-4">
+            <input id="isPublished" class="form-check-input" type="checkbox" formControlName="isPublished"
+                   (change)="toggleCheckbox()"/>
+            <label class="ms-2" for="isPublished">Publish sheet, so everyone can see it.</label>
+        </div>
+
+        <div class="text-center pt-4">
+            <div class="form-group text-center align-items-center">
+                <button type="submit" class="btn btn-primary me-3" (click)="onSubmit(false)"
+                        [disabled]="sheetForm.invalid">
+                    Compile and open sheet
+                </button>
+                <button *ngIf="isProfessor && isCreateSheet" type="submit" class="btn btn-primary me-3" (click)="onSubmit(true)"
+                        [disabled]="sheetForm.invalid" routerLink="/sheet/db">
+                    Save
+                </button>
+            </div>
+        </div>
     </form>
 
-<!--    <object *ngIf="pdfUrl.length && isPdfLoaded"-->
-<!--            [data]="getSanitizedUrl(pdfUrl)"-->
-<!--            class="col pt-3"-->
-<!--            type="application/pdf"-->
-<!--            height="1000rem">-->
-<!--    </object>-->
+    <object *ngIf="pdfUrl.length && isPdfLoaded"
+            [data]="getSanitizedUrl(pdfUrl)"
+            class="col pt-3"
+            type="application/pdf"
+            height="1000rem">
+    </object>
 </div>
 
 <!--<div *ngIf="!isLoaded" class="d-flex justify-content-center center">-->
