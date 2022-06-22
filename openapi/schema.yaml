@@ -533,6 +533,7 @@ components:
             required:
                 - id
                 - isPublished
+                - isUsed
                 - publishedAt
                 - author
                 - title

@@ -170,6 +170,11 @@
 
         <div class="text-center pt-4">
             <div class="form-group text-center align-items-center">
+                <button class="btn btn-primary me-3" [disabled]="exerciseForm.invalid" (click)="viewExercisePdf()">
+                    Preview
+                    <span *ngIf="!isPdfLoaded" class="spinner-border spinner-border-sm" role="status"
+                          aria-hidden="true"></span>
+                </button>
                 <button type="submit" class="btn btn-primary me-3" (click)="onSubmit(true)"
                         [disabled]="exerciseForm.invalid">
                     Save
@@ -178,11 +183,6 @@
                         [disabled]="exerciseForm.invalid"
                         *ngIf="isAddExercise">
                     Save and add new exercise
-                </button>
-                <button class="btn btn-secondary me-3" [disabled]="exerciseForm.invalid" (click)="viewExercisePdf()">
-                    Compile and preview
-                    <span *ngIf="!isPdfLoaded" class="spinner-border spinner-border-sm" role="status"
-                          aria-hidden="true"></span>
                 </button>
             </div>
         </div>
