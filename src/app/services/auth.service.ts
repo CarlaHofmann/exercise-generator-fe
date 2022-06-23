@@ -14,13 +14,13 @@ export class AuthService {
 
 
     get isProfessor(): boolean{
-        return true;
-        // return this._isProfessor;
+        // return true;
+        return this._isProfessor;
     }
 
     get isAdmin(): boolean{
-        return true;
-        // return this._isAdmin;
+        // return true;
+        return this._isAdmin;
     }
 
     public authenticate(role: RoleEnum){
