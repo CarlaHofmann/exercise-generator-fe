@@ -300,6 +300,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
                 this.pdfUrl = URL.createObjectURL(pdf);
 
                 this.isPdfLoaded = true;
+                this.viewportScroller.scrollToPosition([0, 0]);
             },
             error: err => {
                 console.log(err);
