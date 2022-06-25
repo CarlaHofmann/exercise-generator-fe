@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {AuthService} from "../../services/auth.service";
 import {Category, Course, Exercise, ExerciseApiService, ExerciseDto} from 'build/openapi';
 import {DataService} from "../../services/data.service";
+import { FormGroup, FormControl, FormArray, FormBuilder } from '@angular/forms'
 
 @Component({
     selector: 'app-exercise-database',
@@ -16,6 +17,7 @@ export class ExerciseDatabaseComponent implements OnInit {
     private searchString: string = '';
     public categories: string[] = [];
     public courses: string[] = [];
+    public authors: string[] = [];
     private categoriesFilter: string[] = [];
     private coursesFilter: string[] = [];
 
@@ -27,10 +29,92 @@ export class ExerciseDatabaseComponent implements OnInit {
     public isLoaded = false;
     public showLoading = true;
 
+    // filter form
+    filterForm: FormGroup;
+
+    public applyFilters() : void{
+
+        this.filteredExercises =  Object.assign([], this.exercises);
+        for(let filter of this.filterForm.value.filters)
+        {
+            switch(filter.choice) {
+                case "Category": {
+                   this.filteredExercises = this.filteredExercises
+                   .filter(exercise => (filter.value.length == 0 || (filter.value as string[]).some(x => exercise.categories.map(el => el.name).includes(x))));
+                   break;
+                }
+                case "Course": {
+                    this.filteredExercises = this.filteredExercises
+                    .filter(exercise => (filter.value.length == 0 || (filter.value as string[]).some(x => exercise.courses.map(el => el.name).includes(x))));
+                   break;
+                }
+                case "Author": {
+                    this.filteredExercises = this.filteredExercises
+                    .filter(exercise => (filter.value.length == 0 || (filter.value as string[]).includes(exercise.author.name)));
+                   break;
+                }
+                case "ShortDescription": {
+                    this.filteredExercises = this.filteredExercises
+                    .filter(exercise => (filter.value.length == 0 || exercise.shortDescription.toLowerCase().includes(filter.value)));
+                   break;
+                }
+                case "Title": {
+                    this.filteredExercises = this.filteredExercises
+                    .filter(exercise => (filter.value.length == 0 || exercise.title.toLowerCase().includes(filter.value.toLowerCase())));
+                   break;
+                }
+                case "Notes": {
+                    this.filteredExercises = this.filteredExercises
+                    .filter(exercise => (filter.value.length == 0 || (filter.contains == exercise.note?.toLowerCase().includes(filter.value))));
+                   break;
+                }
+
+
+             }
+
+        }
+
+      /*  this.filteredExercises = this.exercises
+        .filter(exercise => (this.categoriesFilter.length == 0 || this.categoriesFilter.some(x => exercise.categories.map(el => el.name).includes(x))))
+        .filter(exercise => (this.coursesFilter.length == 0 || this.coursesFilter.some(x => exercise.courses.map(el => el.name).includes(x))))
+        .filter(exercise => (this.searchString.length == 0 || exercise.note?.toLowerCase().includes(this.searchString)));
+*/
+    }
+
+    public addFilter() : void{
+
+        this.filters().push(this.fb.group({
+            choice: '',
+            contains: true,
+            value: [],
+          })  );
+
+    }
+
+    public removeFilter(index : number): void{
+        this.filters().removeAt(index);
+        this.applyFilters();
+
+    }
+
+    public removeAllFilters(): void{
+        this.filters().clear();
+        this.applyFilters();
+    }
+
+    filters() : FormArray {
+        return this.filterForm.get("filters") as FormArray
+    }
 
     constructor(private authService: AuthService,
                 private dataService: DataService,
-                private exerciseApiService: ExerciseApiService) {
+                private exerciseApiService: ExerciseApiService,
+                private fb:FormBuilder) {
+                    this.filterForm = this.fb.group({
+                        name: '',
+                        filters: this.fb.array([]) ,
+                      });
+
     }
 
     ngOnInit(): void {
@@ -83,6 +167,7 @@ export class ExerciseDatabaseComponent implements OnInit {
                 this.exercises = data;
                 this.categories = Array.from(new Set(this.exercises.reduce((previous, next) => previous.concat(next.categories.map(el => el.name)), new Array<string>())).values());
                 this.courses = Array.from(new Set(this.exercises.reduce((previous, next) => previous.concat(next.courses.map(el => el.name)), new Array<string>())).values());
+                if (!this.isProfessor) this.authors = Array.from(new Set(this.exercises.map((elem) => elem.author.name)).values());
                 this.refreshExercises();
                 this.isLoaded = true;
                 this.showLoading = false;
