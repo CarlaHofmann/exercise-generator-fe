@@ -1,11 +1,79 @@
 <h1 class="p-4">Exercise Database</h1>
 
 
+
+
+<form  *ngIf="isLoaded" [formGroup]="filterForm" style="margin-right:15px;margin-left:15px;" (ngSubmit)="applyFilters()">
+
+
+
+    <table class="table borderless" formArrayName="filters">
+
+      <tbody >
+      <tr scope="row" style="border: 1px,gray; border-top: 1px, gray;" *ngFor="let filter of filters().controls; let i=index" [formGroupName]="i">
+        <td  scope="col" class="col-2 align-middle">
+            <select class="browser-default custom-select form-control" formControlName="choice" placeholder="Filter by...">
+                <option [ngValue]="undefined" hidden>Filter by...</option>
+                <option value="Title" >Title</option>
+                <option value="Category">Category</option>
+                <option value="Course">Course</option>
+                <option value="Notes" *ngIf="isProfessor">Notes</option>
+                <option value="ShortDescription">Short description</option>
+                <option value="Author" *ngIf="!isProfessor">Author</option>
+            </select>
+        </td>
+        <td  scope="col" class="col-9 align-middle">
+            <ng-select *ngIf="this.filterForm.value.filters.at(i).choice=='Course'" [clearSearchOnAdd]="true"  [clearable]="false"
+                   [items]="courses" [multiple]="true" bindLabel="courses"
+                   placeholder="Filter by course" formControlName="value"  (change)="applyFilters()">
+            </ng-select>
+            <ng-select *ngIf="this.filterForm.value.filters.at(i).choice=='Category'" [clearSearchOnAdd]="true" [clearable]="false"
+                [items]="categories" [multiple]="true" bindLabel="categories"
+                placeholder="Filter by category" formControlName="value"  (change)="applyFilters()">
+            </ng-select>
+            <ng-select *ngIf="this.filterForm.value.filters.at(i).choice=='Author' && !isProfessor" [clearSearchOnAdd]="true" [clearable]="false"
+                [items]="authors" [multiple]="true" bindLabel="authors"
+                placeholder="Filter by author" formControlName="value"  (change)="applyFilters()">
+            </ng-select>
+
+            <div *ngIf="this.filterForm.value.filters.at(i).choice=='Notes' && isProfessor" class="input-group  ">
+                <div class="input-group-prepend">
+                    <div class="input-group-text" title="If checked the search will include the given text. If unchecked, the search will return result NOT including the given text.">
+                      <input type="checkbox" formControlName="contains"  (change)="applyFilters()"> &nbsp; contains
+                    </div>
+                  </div>
+                <input type="text"  class="form-control" placeholder="Search in notes" formControlName="value" (input)="applyFilters()"/>
+            </div>
+            <input *ngIf="this.filterForm.value.filters.at(i).choice=='Title'" type="text"  class="form-control" id="search"
+               placeholder="Search by title" formControlName="value"  (input)="applyFilters()"/>
+            <input *ngIf="this.filterForm.value.filters.at(i).choice=='ShortDescription'" type="text"  class="form-control" id="search"
+               placeholder="Search by short description" formControlName="value" (input)="applyFilters()"/>
+
+        </td>
+        <td scope="col" class="col-1 align-middle" class="text-right">
+            <div class="d-flex justify-content-end">
+                <button (click)="removeFilter(i)" class="btn btn-danger" title="Remove filter">  <i class="bi bi-trash3 text-white"></i> </button>
+            </div>
+
+        </td>
+      </tr>
+      </tbody>
+    </table>
+   <!-- {{this.filterForm.value.filters | json}} -->
+    <div class=" d-flex justify-content-around">
+    <div class="btn-group" role="group" aria-label="filter actions">
+    <button type="button" style="width:100px" (click)="addFilter()" *ngIf="this.filterForm.value.filters.length>0" class="btn btn-primary" title="Add an additional filter condition. The conditions are connected with logical AND.">Add filter</button>
+    <button type="button" style="width:100px" (click)="removeAllFilters()" *ngIf="this.filterForm.value.filters.length>0" class="btn btn-danger" title="Clear all the filters.">Clear</button>
+  <!--  <button type="submit" *ngIf="this.filterForm.value.filters.length>0" class="btn btn-primary">Filter</button> -->
+    </div>
+    </div>
+  </form>
+
 <div class="d-flex row px-4">
     <p *ngIf="showAlert">
         <ngb-alert type="danger" (closed)="closeAlert()">{{alertMessage}}</ngb-alert>
     </p>
-    <div *ngIf="isLoaded" class="justify-content-start col">
+ <!--   <div *ngIf="isLoaded" class="justify-content-start col">
         <ng-select [clearSearchOnAdd]="true" (change)="filterCourses($event)" [clearable]="false"
                    [items]="courses" [multiple]="true" bindLabel="courses"
                    placeholder="Filter by course">
@@ -20,8 +88,11 @@
     <div *ngIf="isLoaded" class="col" style="margin-top: 15px">
         <input *ngIf="isProfessor" type="text" (input)="onSearchChange($event)" class="form-control" id="search"
                placeholder="Search in notes"/>
+    </div> -->
+    <div *ngIf="isLoaded" class="col text-right" style="margin-top:15px">
+        <button type="button" style="width:100px" (click)="addFilter()" *ngIf="this.filterForm.value.filters.length==0" class="btn btn-primary" title="Add an additional filter condition. The conditions are connected with logical AND.">Add filter</button>
     </div>
-    <div *ngIf="isLoaded && isProfessor" class="text-end col" style="margin-top: 15px">
+       <div *ngIf="isLoaded && isProfessor" class="text-end col" style="margin-top: 15px">
         <div class="btn-group" role="group" aria-label="group">
             <button title="Press to uncheck all the isUsed flags." style="border: 1px white solid"
                     class="btn btn-danger" (click)="uncheckAll()">
@@ -33,6 +104,8 @@
                 Create Exercise
             </button>
         </div>
+
+
     </div>
 </div>
 
