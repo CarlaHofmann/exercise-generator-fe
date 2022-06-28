@@ -47,7 +47,7 @@ export class SheetFormComponent implements OnInit, OnDestroy {
     public courses: Course[] = [];
     public categories: Category[] = [];
     public exercises: Exercise[] = [];
-    public selectedExercises: Exercise[] = [];
+    public sheetExercises: Exercise[] = [];
     public numberExercises = 0;
 
     public filteredAuthorNames: String[] = [];
@@ -95,7 +95,6 @@ export class SheetFormComponent implements OnInit, OnDestroy {
             this.sheetForm.addControl("categories", new FormControl("", [Validators.required, Validators.minLength(1)]));
             this.sheetForm.addControl("numberExercises", new FormControl(1, [Validators.required]));
         } else if (this.isCreateSheet){
-            this.sheetForm.addControl("exercises", new FormControl("", [Validators.required]));
             this.sheetForm.addControl("pageSize", new FormControl(this.dataService.getPageSize()));
         } else {
             this.sheetForm.addControl("courses", new FormControl("", [Validators.required, Validators.minLength(1)]));
@@ -221,18 +220,18 @@ export class SheetFormComponent implements OnInit, OnDestroy {
                     return true;
                 });
 
-        this.sheetDto.exercises = [...randomExercises].sort(() => 0.5 - Math.random()).slice(0, this.numberExercises);
+        this.sheetExercises = [...randomExercises].sort(() => 0.5 - Math.random()).slice(0, this.numberExercises);
     }
 
     public selectExercise(exercise: Exercise) {
-        if (!this.selectedExercises.includes(exercise)){
-            this.selectedExercises.push(exercise);
+        if (!this.sheetExercises.includes(exercise)){
+            this.sheetExercises.push(exercise);
         } else {
-            const indexOfExercise = this.selectedExercises.findIndex((e) => {
+            const indexOfExercise = this.sheetExercises.findIndex((e) => {
                 return e.id === exercise.id;
             });
             if (indexOfExercise !== -1) {
-              this.selectedExercises.splice(indexOfExercise, 1);
+              this.sheetExercises.splice(indexOfExercise, 1);
             }
         }
         this.onFormChange();
@@ -249,37 +248,6 @@ export class SheetFormComponent implements OnInit, OnDestroy {
         if (val = 'isPublished'){
                 this.sheetDto.isPublished = !this.sheetDto.isPublished;
         }
-    }
-
-    get sheetExercises(): Exercise[] {
-        return this.sheet.exercises;
-    }
-
-    private updateExercise(exercise: Exercise): void{
-        const originalIsPublished = exercise.isPublished;
-        const originalIsUsed = exercise.isUsed;
-
-        const updatedExercise: ExerciseDto = {
-            title: exercise.title,
-            courses: exercise.courses,
-            categories: exercise.categories,
-            note: exercise.note,
-            shortDescription: exercise.shortDescription,
-            texts: exercise.texts,
-            solutions: exercise.solutions,
-            images: exercise.images,
-            isPublished: exercise.isPublished,
-            isUsed: exercise.isUsed
-        }
-
-        this.exerciseApiService.updateExercise(exercise.id, updatedExercise).subscribe({
-            error: err => {
-                console.log(err);
-                this.displayAlert("Error while updating exercise.")
-                exercise.isPublished = originalIsPublished;
-                exercise.isUsed = originalIsUsed;
-            }
-        });
     }
 
     public removeExercise(id: string) {
@@ -313,10 +281,19 @@ export class SheetFormComponent implements OnInit, OnDestroy {
         }
     }
 
+    private exercisesToStringArray(exercises: Exercise[]): string[]{
+        const exercisesStringArray: string[] = [];
+        for (let i=0; i < exercises.length; i++) {
+            exercisesStringArray.push(exercises[i]["id"])
+        }
+        console.log(exercisesStringArray);
+        return exercisesStringArray;
+    }
+
     public onFormChange(event?: Event): void {
         let courses: CreateCourseDto[] = [];
         let categories: CreateCategoryDto[] = [];
-        let exercises: Exercise[] = [];
+        let exercises: string[] = [];
 
         if (this.isSubmitted) {
             return;
@@ -340,7 +317,7 @@ export class SheetFormComponent implements OnInit, OnDestroy {
             this.numberExercises = this.sheetForm.controls["numberExercises"].value;
 
         } else if (this.isCreateSheet){
-            this.selectedExercises.flatMap(exercise => exercise.courses).filter((course: Course) => {
+            this.sheetExercises.flatMap(exercise => exercise.courses).filter((course: Course) => {
                 let i = courses.findIndex(c => c.name === course.name);
                 if (i < 0) {
                     courses.push(course);
@@ -348,15 +325,13 @@ export class SheetFormComponent implements OnInit, OnDestroy {
                return null;
             })
 
-            this.selectedExercises.flatMap(exercise => exercise.categories).filter((category: Category) => {
+            this.sheetExercises.flatMap(exercise => exercise.categories).filter((category: Category) => {
                 let i = categories.findIndex(c => c.name === category.name);
                 if (i < 0) {
                     categories.push(category);
                 }
                return null;
             })
-
-            exercises = this.selectedExercises;
 
         }else{
             if (this.sheetForm.controls["courses"].value?.length) {
@@ -374,6 +349,8 @@ export class SheetFormComponent implements OnInit, OnDestroy {
             }
         }
 
+        exercises = this.exercisesToStringArray(this.sheetExercises);
+        console.log(exercises);
 
         this.sheetDto = {
             title: this.sheetForm.controls["title"].value,
@@ -381,16 +358,22 @@ export class SheetFormComponent implements OnInit, OnDestroy {
             categories: categories,
             exercises: exercises,
         }
-        console.log(this.sheetDto);
-//         this.checkUnsavedChanges();
+
+        this.checkUnsavedChanges();
     }
 
     private checkUnsavedChanges(): void {
-        this.dataService.existUnsavedChanges = Boolean(this.sheetForm.controls["title"].value.length ||
-            this.sheetForm.controls["courses"].value &&
-            this.sheetForm.controls["courses"].value.some((course: { name: string }) => course.name.length) ||
-            this.sheetForm.controls["categories"].value &&
-            this.sheetForm.controls["categories"].value.some((category: { name: string }) => category.name.length));
+        if (this.isRandomizedSheet || !this.isCreateSheet){
+            this.dataService.existUnsavedChanges = Boolean(this.sheetForm.controls["title"].value.length ||
+                this.sheetForm.controls["courses"].value &&
+                this.sheetForm.controls["courses"].value.some((course: { name: string }) => course.name.length) ||
+                this.sheetForm.controls["categories"].value &&
+                this.sheetForm.controls["categories"].value.some((category: { name: string }) => category.name.length));
+        } else {
+            this.dataService.existUnsavedChanges = Boolean(this.sheetForm.controls["title"].value.length);
+        }
+
+
     }
 
     public viewSheetPdf(): void {
@@ -423,12 +406,6 @@ export class SheetFormComponent implements OnInit, OnDestroy {
             }
             this.sheetApiService.createSheet(this.sheetDto).subscribe({
                 next: () => {
-                    this.sheetDto.exercises.forEach(exercise => {
-                        exercise.isPublished = true;
-                        exercise.isUsed = true;
-
-                        this.updateExercise(exercise);
-                    })
                     this.isSubmitted = true;
                     this.resetForm();
                     if (goBack) {
