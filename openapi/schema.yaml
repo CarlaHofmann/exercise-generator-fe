@@ -632,7 +632,7 @@ components:
                 exercises:
                     type: array
                     items:
-                        type: string
+                        $ref: "#/components/schemas/Exercise"
 
         CreateUserDto:
             type: object
