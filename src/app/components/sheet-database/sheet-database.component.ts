@@ -176,13 +176,11 @@ export class SheetDatabaseComponent implements OnInit {
     private updateSheet(sheet: Sheet): void {
         const originalIsPublished = sheet.isPublished;
 
-        const exercisesString = this.exercisesToStringArray(sheet.exercises);
-
         const updatedSheet: SheetDto = {
             title: sheet.title,
             courses: sheet.courses,
             categories: sheet.categories,
-            exercises: exercisesString,
+            exercises: sheet.exercises.map(exercise => exercise.id),
             isPublished: sheet.isPublished
         }
 
