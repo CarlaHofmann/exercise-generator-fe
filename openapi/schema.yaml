@@ -85,6 +85,26 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Sheet"
 
+    /sheet/pdf:
+        post:
+            tags:
+                - SheetApi
+            operationId: previewSheetDto
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SheetDto'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/pdf:
+                            schema:
+                                type: string
+                                format: byte
+
     /sheet/{id}:
         get:
             tags:
@@ -471,6 +491,10 @@ components:
                     format: date-time
                 isPublished:
                     type: boolean
+                useNumericTitles:
+                    type: boolean
+                showSolutions:
+                    type: boolean
                 title:
                     type: string
                 author:
@@ -591,6 +615,10 @@ components:
             properties:
                 isPublished:
                     type: boolean
+                useNumericTitles:
+                    type: boolean
+                showSolutions:
+                    type: boolean
                 title:
                     type: string
                 courses:
@@ -604,7 +632,7 @@ components:
                 exercises:
                     type: array
                     items:
-                        type: string
+                        $ref: "#/components/schemas/Exercise"
 
         CreateUserDto:
             type: object
