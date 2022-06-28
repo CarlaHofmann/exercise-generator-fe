@@ -180,7 +180,7 @@ export class SheetDatabaseComponent implements OnInit {
             title: sheet.title,
             courses: sheet.courses,
             categories: sheet.categories,
-            exercises: sheet.exercises.map(exercise => exercise.id),
+            exercises: sheet.exercises,
             isPublished: sheet.isPublished
         }
 
