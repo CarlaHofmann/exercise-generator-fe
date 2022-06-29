@@ -471,6 +471,10 @@ components:
                     format: date-time
                 isPublished:
                     type: boolean
+                useNumericTitles:
+                    type: boolean
+                showSolutions:
+                    type: boolean
                 title:
                     type: string
                 author:
@@ -590,6 +594,10 @@ components:
             type: object
             properties:
                 isPublished:
+                    type: boolean
+                useNumericTitles:
+                    type: boolean
+                showSolutions:
                     type: boolean
                 title:
                     type: string
