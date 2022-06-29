@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Author, Category, Course, Sheet, SheetApiService, SheetDto,} from 'build/openapi';
+import {Author, Category, Course, Sheet, SheetApiService, SheetDto, Exercise} from 'build/openapi';
 import {AuthService} from '../../services/auth.service';
 import {DataService} from "../../services/data.service";
 
@@ -117,7 +117,7 @@ export class SheetDatabaseComponent implements OnInit {
                         .includes(categoryName));
             }
             return true;
-        });
+        }).sort((a, b) => (a.updatedAt > b.updatedAt) ? -1 : 1);
     }
 
     public removeSheet(id: string) {
@@ -176,11 +176,13 @@ export class SheetDatabaseComponent implements OnInit {
     private updateSheet(sheet: Sheet): void {
         const originalIsPublished = sheet.isPublished;
 
+        const exercisesString = this.exercisesToStringArray(sheet.exercises);
+
         const updatedSheet: SheetDto = {
             title: sheet.title,
             courses: sheet.courses,
             categories: sheet.categories,
-            exercises: sheet.exercises.map(exercise => exercise.id),
+            exercises: exercisesString,
             isPublished: sheet.isPublished
         }
 
@@ -192,6 +194,15 @@ export class SheetDatabaseComponent implements OnInit {
                 sheet.isPublished = originalIsPublished;
             }
         });
+    }
+
+    private exercisesToStringArray(exercises: Exercise[]): string[]{
+        const exercisesStringArray: string[] = [];
+        for (let i=0; i < exercises.length; i++) {
+            exercisesStringArray.push(exercises[i]["id"])
+        }
+        console.log(exercisesStringArray);
+        return exercisesStringArray;
     }
 
     public setPageSize(event: Event): void {
