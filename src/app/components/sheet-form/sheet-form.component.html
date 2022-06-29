@@ -10,8 +10,8 @@
         <div class="form-group">
             <label for="title">Title</label>
             <i class="bi bi-info-circle mx-4" title="This is the title of the sheet."></i>
-            <input type="text" class="form-control" id="title" formControlName="title"
-                   placeholder="Sheet title" (ngModelChange)="onFormChange()">
+            <input (ngModelChange)="onFormChange()" class="form-control" formControlName="title" id="title"
+                   placeholder="Sheet title" type="text">
             <div *ngIf="sheetForm.controls['title'].touched && sheetForm.controls['title'].invalid"
                  class="alert alert-danger">
                 <div *ngIf="sheetForm.controls['title'].hasError('required')">Title is mandatory.</div>
@@ -22,13 +22,13 @@
         </div>
 
 
-        <div class="form-group">
+        <div *ngIf="(isCreateSheet && isRandomizedSheet) || !isCreateSheet" class="form-group">
             <label for="courses">Courses</label>
             <i class="bi bi-info-circle mx-4" title="These are the course names that the sheet correspond to."></i>
-            <ng-select [items]="courses" [bindLabel]="'name'" [addTag]="false" [multiple]="true"
-                       class="form-control input-sm" formControlName="courses" id="courses"
-                       placeholder="Choose a course"
-                       required="true" (ngModelChange)="onFormChange()">
+            <ng-select (ngModelChange)="onFormChange()" [addTag]="false" [bindLabel]="'name'" [items]="courses"
+                       [multiple]="true" class="form-control input-sm" formControlName="courses"
+                       id="courses"
+                       placeholder="Choose a course" required="true">
             </ng-select>
             <div *ngIf="sheetForm.controls['courses'].touched && sheetForm.controls['courses'].invalid"
                  class="alert alert-danger">
@@ -40,13 +40,13 @@
         </div>
 
 
-        <div class="form-group">
+        <div *ngIf="(isCreateSheet && isRandomizedSheet) || !isCreateSheet" class="form-group">
             <label for="categories">Categories</label>
             <i class="bi bi-info-circle mx-4" title="These are the category names that the sheet correspond to."></i>
-            <ng-select [items]="categories" [bindLabel]="'name'" [addTag]="false" [multiple]="true"
-                       class="form-control input-sm" formControlName="categories" id="categories"
-                       placeholder="Choose or add a category"
-                       required="true" (ngModelChange)="onFormChange()">
+            <ng-select (ngModelChange)="onFormChange()" [addTag]="false" [bindLabel]="'name'" [items]="categories"
+                       [multiple]="true" class="form-control input-sm" formControlName="categories"
+                       id="categories"
+                       placeholder="Choose or add a category" required="true">
             </ng-select>
             <div *ngIf="sheetForm.controls['categories'].touched && sheetForm.controls['categories'].invalid"
                  class="alert alert-danger">
@@ -58,46 +58,6 @@
         </div>
 
 
-        <div *ngIf="!isCreateSheet" class="form-group">
-            <!--            <label for="exercises">Exercises</label>  id="exercises" steht nirgendswo-->
-            <i class="bi bi-info-circle mx-4" title="These are the exercises the sheet contains."></i>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th scope="col" class="col-1"> Select</th>
-                    <th scope="col" class="col-2"> Title</th>
-                    <th scope="col" class="col-2"> Course</th>
-                    <th scope="col" class="col-2"> Category</th>
-                    <th scope="col" class="col-2"> Short Description</th>
-                    <th scope="col" class="col-2"> Notes</th>
-                    <th scope="col" class="col-1"> Is used</th>
-                    <th scope="col" class="col-1"></th>
-
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let exercise of sheetExercises | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
-
-                    <td scope="row"><input class="form-check-input" type="checkbox"></td>
-                    <td scope="row">{{ exercise.title }}</td>
-                    <td scope="row">{{ getExerciseCourses(exercise.courses) }} </td>
-                    <td scope="row">{{ getExerciseCategories(exercise.categories) }} </td>
-                    <td scope="row">{{ exercise.shortDescription }} </td>
-                    <td scope="row">{{ exercise.note }} </td>
-                    <td scope="row"><input class="form-check-input" type="checkbox"></td>
-
-                    <td scope="row">
-                        <button type="submit" class="btn btn-success btn-sm"
-                                (click)="viewExercisePdf(exercise.id)">
-                            <i class="bi bi-eye text-white"></i>
-                        </button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
-
         <div *ngIf="isCreateSheet && isRandomizedSheet">
             <label for="numberExercises">Number of Exercises</label>
             <i class="bi bi-info-circle mx-4" title="Choose the number of exercises."></i>
@@ -106,7 +66,7 @@
         </div>
 
 
-        <div *ngIf="isCreateSheet && !isRandomizedSheet" style="margin-top: 15px" class="form-group">
+        <div *ngIf="!isRandomizedSheet" style="margin-top: 15px" class="form-group">
             <label>Select Exercises</label>
             <i class="bi bi-info-circle mx-4" title="Choose exercises for the sheet."></i>
             <table *ngIf="isLoaded" class="table table-striped">
@@ -118,26 +78,47 @@
                     <th scope="col" class="col-2"> Category</th>
                     <th scope="col" class="col-2"> Short Description</th>
                     <th scope="col" class="col-2" *ngIf="isProfessor"> Notes</th>
-                    <th scope="col" class="col-1" *ngIf="isProfessor"> Is used</th>
+                    <th scope="col" class="col-1" *ngIf="isProfessor"> Published</th>
+                    <th scope="col" class="col-2" *ngIf="isProfessor"> Used</th>
                     <th scope="col" class="col-1"></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr *ngFor="let exercise of filteredExercises | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
 
-                    <td scope="row"><input class="form-check-input" type="checkbox"></td>
+                    <td scope="row"><input class="form-check-input" type="checkbox"
+                                           (change)="selectExercise(exercise)"/></td>
                     <td scope="row">{{ exercise.title }}</td>
-                    <td scope="row">{{ getExerciseCourses(exercise.courses) }} </td>
-                    <td scope="row">{{ getExerciseCategories(exercise.categories) }} </td>
+                    <td scope="row">{{ getCoursesString(exercise.courses) }} </td>
+                    <td scope="row">{{ getCategoriesString(exercise.categories) }} </td>
                     <td scope="row">{{ exercise.shortDescription }} </td>
-                    <td scope="row" *ngIf="isProfessor"> {{ exercise.note }} </td>
-                    <td scope="row" *ngIf="isProfessor"><input class="form-check-input" type="checkbox"></td>
+                    <td scope="row" *ngIf="isProfessor">{{ exercise.note }} </td>
+                    <td scope="row" *ngIf="isProfessor">{{ booleanToString(exercise.isPublished) }} </td>
+                    <td scope="row" *ngIf="isProfessor">{{ booleanToString(exercise.isUsed) }} </td>
+                    <td scope="col" class="text-right">
+                        <div class="d-flex justify-content-end">
+                            <div class="btn-group" role="group" aria-label="group">
+                                <button type="button" class="btn btn-success btn-table"
+                                        title="View the exercise as pdf." (click)="viewExercisePdf(exercise.id)">
+                                    <i class="bi bi-eye text-white"></i>
+                                </button>
 
-                    <td scope="row">
-                        <button type="submit" class="btn btn-success btn-sm"
-                                (click)="viewExercisePdf(exercise.id)">
-                            <i class="bi bi-eye text-white"></i>
-                        </button>
+                                <button *ngIf="isProfessor" type="button" class="btn btn-warning btn-table"
+                                        title="Edit the exercise." routerLink="{{ '/exercise/'+exercise.id+'/edit' }}">
+                                    <i class="bi bi-pencil text-white"></i>
+                                </button>
+
+                                <button *ngIf="isProfessor" type="button" class="btn btn-warning btn-table"
+                                        title="Clone the exercise." routerLink="{{ '/exercise/'+exercise.id+'/clone' }}">
+                                    <i class="bi bi-files text-white"></i>
+                                </button>
+
+                                <button *ngIf="isProfessor" type="button" class="btn btn-danger btn-table"
+                                        title="Delete the exercise from the database." (click)="removeExercise(exercise.id);">
+                                    <i class="bi bi-trash3 text-white"></i>
+                                </button>
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 </tbody>
@@ -164,17 +145,31 @@
         </div>
 
 
+        <div *ngIf="isCreateSheet" class="d-flex justify-content-center pt-4">
+            <input id="useNumericTitles" class="form-check-input" type="checkbox" formControlName="useNumericTitles"
+                   (change)="toggleCheckbox('useNumericTitles')"/>
+            <label class="ms-2" for="useNumericTitles">Use numeric exercise titles.</label>
+        </div>
+
+
+        <div *ngIf="isCreateSheet" class="d-flex justify-content-center pt-4">
+            <input id="showSolutions" class="form-check-input" type="checkbox" formControlName="showSolutions"
+                   (change)="toggleCheckbox('showSolutions')"/>
+            <label class="ms-2" for="showSolutions">Show solutions of the exercises in the sheet.</label>
+        </div>
+
+
         <div *ngIf="isProfessor" class="d-flex justify-content-center pt-4">
             <input id="isPublished" class="form-check-input" type="checkbox" formControlName="isPublished"
-                   (change)="toggleCheckbox()"/>
+                   (change)="toggleCheckbox('isPublished')"/>
             <label class="ms-2" for="isPublished">Publish sheet, so everyone can see it.</label>
         </div>
 
         <div class="text-center pt-4">
             <div class="form-group text-center align-items-center">
-                <button type="submit" class="btn btn-primary me-3" (click)="onSubmit(false)"
+                <button type="submit" class="btn btn-primary me-3" (click)="viewSheetPdf()"
                         [disabled]="sheetForm.invalid">
-                    Compile and open sheet
+                    Open sheet
                 </button>
                 <button *ngIf="isProfessor && isCreateSheet" type="submit" class="btn btn-primary me-3"
                         (click)="onSubmit(true)"
@@ -185,16 +180,18 @@
         </div>
     </form>
 
-    <object *ngIf="pdfUrl.length && isPdfLoaded"
-            [data]="getSanitizedUrl(pdfUrl)"
-            class="col pt-3"
-            type="application/pdf"
-            height="1000rem">
-    </object>
+    <div class="col pt-3 pe-5 d-flex" *ngIf="pdfUrl.length && isPdfLoaded">
+        <object [data]="getSanitizedUrl(pdfUrl)"
+                type="application/pdf"
+                class="col"
+                height="1000rem">
+        </object>
+        <i class="bi bi-x col-auto" style="font-size: 3rem; margin-top: -1rem" title="Close PDF preview." (click)="pdfUrl = ''"></i>
+    </div>
 </div>
 
-<!--<div *ngIf="!isLoaded" class="d-flex justify-content-center center">-->
-<!--    <div class="spinner-border text-primary" role="status">-->
-<!--        <span class="sr-only"></span>-->
-<!--    </div>-->
-<!--</div>-->
+<div *ngIf="!isLoaded" class="d-flex justify-content-center center">
+    <div class="spinner-border text-primary" role="status">
+        <span class="sr-only"></span>
+    </div>
+</div>
