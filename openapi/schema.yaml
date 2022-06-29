@@ -85,6 +85,26 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Sheet"
 
+    /sheet/pdf:
+        post:
+            tags:
+                - SheetApi
+            operationId: previewSheetDto
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SheetDto'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/pdf:
+                            schema:
+                                type: string
+                                format: byte
+
     /sheet/{id}:
         get:
             tags:
@@ -679,4 +699,3 @@ components:
                     type: array
                     items:
                         type: string
-
