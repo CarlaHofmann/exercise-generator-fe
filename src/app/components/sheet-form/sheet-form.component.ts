@@ -27,10 +27,10 @@ import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
 })
 export class SheetFormComponent implements OnInit, OnDestroy {
     @Input()
-    public isCreateSheet: boolean = true;
+    public isCreateSheet: boolean = false;
 
     @Input()
-    public isRandomizedSheet: boolean = true;
+    public isRandomizedSheet: boolean = false;
 
     @Input()
     public isCloneSheet: boolean = false;
