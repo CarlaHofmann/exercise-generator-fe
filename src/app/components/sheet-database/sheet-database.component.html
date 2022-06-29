@@ -74,11 +74,8 @@
             <td *ngIf="!isProfessor" scope="row">{{ sheet.author.name }}</td>
             <td *ngIf="isProfessor" scope="row">{{ sheet.updatedAt | date:'dd.MM.YYYY' }}</td>
             <td scope="row">{{ sheet.publishedAt | date:'dd.MM.YYYY' }}</td>
-            <td *ngIf="isProfessor" scope="col">
-                <div>
-                    <input class="form-check-input" type="checkbox" [(ngModel)]="sheet.isPublished"
-                           (change)="toggleCheckbox(sheet.id)"/>
-                </div>
+            <td *ngIf="isProfessor" scope="col"><input class="form-check-input" type="checkbox"
+                [(ngModel)]="sheet.isPublished" (change)="toggleCheckbox(sheet.id)"/>
             </td>
             <td scope="col" class="text-right">
                 <div class="d-flex justify-content-end">
