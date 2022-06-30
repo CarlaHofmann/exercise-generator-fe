@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {RoleEnum} from 'src/app/enums/RoleEnum';
 import {AuthService} from 'src/app/services/auth.service';
 
 @Component({
@@ -26,8 +25,8 @@ export class HeaderComponent implements OnInit {
         return this.authService.isAdmin;
     }
 
-    public logOutAsProfessor(): void {
-        this.authService.authenticate(RoleEnum.STUDENT);
+    public logout(): void {
+        this.authService.logout();
         this.router.navigate([""], {relativeTo: this.activatedRoute});
     }
 }

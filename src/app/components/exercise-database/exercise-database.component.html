@@ -146,7 +146,7 @@
             <td scope="col">{{ element.title }}</td>
             <td scope="col" [innerText]="categoriesToString(element.courses)"></td>
             <td scope="col" [innerText]="categoriesToString(element.categories)"></td>
-            <td *ngIf="!isProfessor" scope="row">{{ element.author.name }}</td>
+            <td *ngIf="!isProfessor" scope="row">{{ element.author.username }}</td>
                 <td scope="col">{{ element.shortDescription }}</td>
             <td scope="col col-2" *ngIf="isProfessor">{{ element.note }}</td>
                 <td scope="col" *ngIf="isProfessor">

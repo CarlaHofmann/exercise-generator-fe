@@ -1,7 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
-import {AuthService} from "../../services/auth.service";
-import {ActivatedRoute, Router} from "@angular/router";
 import {CreateUserDto, User, UserApiService} from "../../../../build/openapi";
 import {DataService} from "../../services/data.service";
 
@@ -15,6 +13,7 @@ export class AdminConsoleComponent implements OnInit {
     public users: User[] = [];
 
     public newUserForm: FormGroup;
+    public userSearchForm: FormGroup;
 
     public page = 1;
     public pageSize = this.dataService.getPageSize();
@@ -23,39 +22,46 @@ export class AdminConsoleComponent implements OnInit {
     public alertMessage = "";
     public isLoaded = false;
 
-    constructor(private authService: AuthService,
-                private router: Router,
-                private activatedRoute: ActivatedRoute,
-                private userService: UserApiService,
+    constructor(private userApiService: UserApiService,
                 private dataService: DataService) {
     }
 
     ngOnInit(): void {
         this.newUserForm = new FormGroup({
             username: new FormControl(""),
-            password: new FormControl("")
+            password: new FormControl(""),
+            admin: new FormControl(false)
+        });
+
+        this.userSearchForm = new FormGroup({
+            searchString: new FormControl("")
         });
 
         this.loadUsers()
     }
 
     private loadUsers(): void{
-        this.userService.getAllUsers().subscribe({
+        this.userApiService.getAllUsers().subscribe({
             next: response => {
                 this.users = response;
                 this.isLoaded = true;
             },
             error: err => {
-                console.log(err);
                 this.isLoaded = true;
-                this.displayAlert("Error while loading users.");
+                this.displayAlert("Error while loading users.", err);
             }
         });
     }
 
-    public displayAlert(message: string): void {
+    get filteredUsers(): User[]{
+        const searchString = this.userSearchForm.value.searchString;
+        return this.users.filter(user => user.username.toLowerCase().includes(searchString.toLowerCase()));
+    }
+
+    public displayAlert(message: string, error: string): void {
         this.alertMessage = message;
         this.showAlert = true;
+        console.log(error);
     }
 
     public closeAlert(): void {
@@ -64,9 +70,19 @@ export class AdminConsoleComponent implements OnInit {
 
     public addUser(): void{
         const user: CreateUserDto = this.newUserForm.value;
-        this.userService.createUser(user).subscribe({
-            next: response => this.users.push(response),
-            error: err => console.log(err)
+        this.userApiService.createUser(user).subscribe({
+            next: response => {
+                this.users.push(response);
+                this.newUserForm.reset();
+            },
+            error: err => this.displayAlert("Error while creating user.", err)
+        });
+    }
+
+    public deleteUser(username: string): void{
+        this.userApiService.deleteUserByUsername(username).subscribe({
+            next: () => this.users = this.users.filter(user => user.username !== username),
+            error: err => this.displayAlert("Error while deleting user.", err)
         });
     }
 

@@ -6,7 +6,7 @@
 
 <div class="d-flex justify-content-center">
     <div class="mt-5 col-4">
-        <form [formGroup]="loginForm" (ngSubmit)="logInAsProfessor()">
+        <form [formGroup]="loginForm" (ngSubmit)="login()">
             <div class="form-group">
                 <div>E-Mail</div>
                 <input class="form-control" type="text" formControlName="name">
@@ -18,7 +18,7 @@
             </div>
 
             <div class="text-center">
-                <button class="btn btn-primary p-1 mt-4 col-2" type="submit">Login</button>
+                <button class="btn btn-primary p-1 col-2" type="submit">Login</button>
             </div>
 
 

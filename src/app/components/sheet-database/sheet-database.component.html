@@ -110,7 +110,7 @@
             <td scope="row">{{ sheet.title }}</td>
             <td scope="row">{{ coursesToString(sheet.courses) }}</td>
             <td scope="row">{{ categoriesToString(sheet.categories) }}</td>
-            <td *ngIf="!isProfessor" scope="row">{{ sheet.author.name }}</td>
+            <td *ngIf="!isProfessor" scope="row">{{ sheet.author.username }}</td>
             <td *ngIf="isProfessor" scope="row">{{ sheet.updatedAt | date:'dd.MM.YYYY' }}</td>
             <td scope="row">{{ sheet.publishedAt | date:'dd.MM.YYYY' }}</td>
             <td *ngIf="isProfessor" scope="row"><input class="form-check-input" type="checkbox" [(ngModel)]="sheet.isPublished"
@@ -165,7 +165,7 @@
 
 
 <div *ngIf="!filteredSheets?.length && isLoaded" class="px-4 center no-data-found-text">
-    No Sheets found.
+    No sheets found.
 </div>
 
 

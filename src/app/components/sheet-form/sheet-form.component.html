@@ -1,8 +1,6 @@
-<div class="pt-4 px-4">
-    <p class="pt-1" *ngFor="let message of alertMessages">
-        <ngb-alert type="danger" (closed)="closeAlert(message)">{{message}}</ngb-alert>
-    </p>
-</div>
+<p *ngIf="showAlert" class="pt-4 px-4">
+    <ngb-alert type="danger" (closed)="closeAlert()">{{alertMessage}}</ngb-alert>
+</p>
 
 
 <div class="d-flex row">
