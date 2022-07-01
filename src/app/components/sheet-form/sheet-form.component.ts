@@ -1,5 +1,6 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {
+    Author,
     Category,
     CategoryApiService,
     Course,
@@ -12,7 +13,7 @@ import {
     SheetApiService,
     SheetDto
 } from "../../../../build/openapi";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormControl, FormGroup, FormArray, FormBuilder, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Location, ViewportScroller} from "@angular/common";
 import {DataService} from "../../services/data.service";
@@ -36,20 +37,26 @@ export class SheetFormComponent implements OnInit, OnDestroy {
     public isCloneSheet: boolean = false;
 
     private sheetId: string = "";
-
     private sheet: Sheet;
     private sheetDto: SheetDto;
 
     public sheetForm: FormGroup;
-    public courses: Course[] = [];
-    public categories: Category[] = [];
+    public authors: string[] = [];
+    public courses: string[] = [];
+    public categories: string[] = [];
     public exercises: Exercise[] = [];
     public sheetExercises: Exercise[] = [];
     public numberExercises = 0;
 
-    public filteredAuthorNames: String[] = [];
-    public filteredCourseNames: String[] = [];
-    public filteredCategoryNames: String[] = [];
+    public filterForm: FormGroup;
+    public filteredExercises: Exercise[] = [];
+    private categoriesFilter: string[] = [];
+    private coursesFilter: string[] = [];
+    private searchString: string = '';
+
+//     public filteredAuthorNames: String[] = [];
+//     public filteredCourseNames: String[] = [];
+//     public filteredCategoryNames: String[] = [];
 
     public pdfUrl = "";
 
@@ -73,7 +80,10 @@ export class SheetFormComponent implements OnInit, OnDestroy {
                 private exerciseApiService: ExerciseApiService,
                 private dataService: DataService,
                 private authService: AuthService,
-                private sanitizer: DomSanitizer) {
+                private sanitizer: DomSanitizer,
+                private fb:FormBuilder) {
+
+                this.filterForm = this.fb.group({name: '', filters: this.fb.array([]), });
     }
 
     ngOnInit(): void {
@@ -90,8 +100,8 @@ export class SheetFormComponent implements OnInit, OnDestroy {
         if (this.isRandomizedSheet) {
             this.sheetForm.addControl("courses", new FormControl("", [Validators.required, Validators.minLength(1)]));
             this.sheetForm.addControl("categories", new FormControl("", [Validators.required, Validators.minLength(1)]));
-            this.sheetForm.addControl("numberExercises", new FormControl(1, [Validators.required]));
-        } else if (this.isCreateSheet) {
+            this.sheetForm.addControl("numberExercises", new FormControl(1));
+        } else if (this.isCreateSheet){
             this.sheetForm.addControl("pageSize", new FormControl(this.dataService.getPageSize()));
         } else {
             this.sheetForm.addControl("courses", new FormControl("", [Validators.required, Validators.minLength(1)]));
@@ -109,8 +119,8 @@ export class SheetFormComponent implements OnInit, OnDestroy {
             });
         }
 
-        this.loadCourses();
-        this.loadCategories();
+//         this.loadCourses();
+//         this.loadCategories();
         this.loadExercises();
     }
 
@@ -120,6 +130,73 @@ export class SheetFormComponent implements OnInit, OnDestroy {
 
     get isProfessor(): boolean {
         return this.authService.isProfessor;
+    }
+
+    public filters() : FormArray {
+        return this.filterForm.get("filters") as FormArray
+    }
+
+    public applyFilters() : void{
+
+        this.filteredExercises =  Object.assign([], this.exercises);
+        for(let filter of this.filterForm.value.filters)
+        {
+            switch(filter.choice) {
+                case "Category": {
+                   this.filteredExercises = this.filteredExercises
+                   .filter(exercise => (filter.value.length == 0 || (filter.value as string[]).some(x => exercise.categories.map(el => el.name).includes(x))));
+                   break;
+                }
+                case "Course": {
+                    this.filteredExercises = this.filteredExercises
+                    .filter(exercise => (filter.value.length == 0 || (filter.value as string[]).some(x => exercise.courses.map(el => el.name).includes(x))));
+                   break;
+                }
+                case "Author": {
+                    this.filteredExercises = this.filteredExercises
+                    .filter(exercise => (filter.value.length == 0 || (filter.value as string[]).includes(exercise.author.name)));
+                   break;
+                }
+                case "ShortDescription": {
+                    this.filteredExercises = this.filteredExercises
+                    .filter(exercise => (filter.value.length == 0 || exercise.shortDescription.toLowerCase().includes(filter.value)));
+                   break;
+                }
+                case "Title": {
+                    this.filteredExercises = this.filteredExercises
+                    .filter(exercise => (filter.value.length == 0 || exercise.title.toLowerCase().includes(filter.value.toLowerCase())));
+                   break;
+                }
+                case "Notes": {
+                    this.filteredExercises = this.filteredExercises
+                    .filter(exercise => (filter.value.length == 0 || (filter.contains == exercise.note?.toLowerCase().includes(filter.value))));
+                   break;
+                }
+             }
+        }
+    }
+
+    public addFilter() : void{
+        this.filters().push(this.fb.group({
+            choice: '',
+            contains: true,
+            value: [],
+          })  );
+    }
+
+    private refreshFilterData(): void {
+        this.categories = Array.from(new Set(this.filteredExercises.reduce((previous, next) => previous.concat(next.categories.map(el => el.name)), new Array<string>())).values());
+        this.courses = Array.from(new Set(this.filteredExercises.reduce((previous, next) => previous.concat(next.courses.map(el => el.name)), new Array<string>())).values());
+    }
+
+    public removeFilter(index : number): void{
+        this.filters().removeAt(index);
+        this.applyFilters();
+    }
+
+    public removeAllFilters(): void{
+        this.filters().clear();
+        this.applyFilters();
     }
 
     private loadSheet(id: string): void {
@@ -144,54 +221,70 @@ export class SheetFormComponent implements OnInit, OnDestroy {
         });
     }
 
-    private loadCourses(): void {
-        this.courseApiService.getAllCourses().subscribe({
-            next: response => this.courses = response,
-            error: error => {
-                this.displayAlert("Error while loading courses.", error);
-            }
-        });
-    }
-
-    private loadCategories(): void {
-        this.categoryApiService.getAllCategories().subscribe({
-            next: response => this.categories = response,
-            error: error => {
-                this.displayAlert("Error while loading categories.", error);
-            }
-        });
-    }
+//     private loadCourses(): void {
+//         this.courseApiService.getAllCourses().subscribe({
+//             next: response => this.courses = response,
+//             error: err => {
+//                 this.displayAlert("Error while loading courses.", err);
+//             }
+//         });
+//     }
+//
+//     private loadCategories(): void {
+//         this.categoryApiService.getAllCategories().subscribe({
+//             next: response => this.categories = response,
+//             error: err => {
+//                 this.displayAlert("Error while loading categories.", err);
+//             }
+//         });
+//     }
 
     private loadExercises(): void {
         this.exerciseApiService.getAllExercises().subscribe({
-            next: response => this.exercises = response,
-            error: error => {
-                this.displayAlert("Error while loading exercises.", error);
+            next: response => {
+                this.exercises = response;
+                this.categories = Array.from(new Set(this.exercises.reduce((previous, next) => previous.concat(next.categories.map(el => el.name)), new Array<string>())).values());
+                this.courses = Array.from(new Set(this.exercises.reduce((previous, next) => previous.concat(next.courses.map(el => el.name)), new Array<string>())).values());
+                if (!this.isProfessor) this.authors = Array.from(new Set(this.exercises.map((elem) => elem.author.name)).values());
+                this.refreshExercises();
+                this.isLoaded = true;
+//                 this.showLoading = false;
+            },
+            error: err => {
+                this.displayAlert("Error while loading exercises.", err);
             }
         });
     }
 
-    get filteredExercises(): Exercise[] {
-        return this.exercises.filter((exercise: Exercise) => {
-            if (this.filteredAuthorNames.length) {
-                return this.filteredAuthorNames.includes(exercise.author.username);
-            }
-            return true;
-        }).filter((exercise: Exercise) => {
-            if (this.filteredCategoryNames.length) {
-                return exercise.categories.map((category: Category) => category.name)
-                    .some((categoryName: String) => this.filteredCategoryNames
-                        .includes(categoryName));
-            }
-            return true;
-        }).filter((exercise: Exercise) => {
-            if (this.filteredCourseNames.length) {
-                return exercise.courses.map((course: Course) => course.name)
-                    .some((courseName: String) => this.filteredCourseNames
-                        .includes(courseName));
-            }
-            return true;
-        });
+//     get filteredExercises(): Exercise[] {
+//         return this.exercises.filter((exercise: Exercise) => {
+//             if (this.filteredAuthorNames.length) {
+//                 return this.filteredAuthorNames.includes(exercise.author.name);
+//             }
+//             return true;
+//         }).filter((exercise: Exercise) => {
+//             if (this.filteredCategoryNames.length) {
+//                 return exercise.categories.map((category: Category) => category.name)
+//                     .some((categoryName: String) => this.filteredCategoryNames
+//                         .includes(categoryName));
+//             }
+//             return true;
+//         }).filter((exercise: Exercise) => {
+//             if (this.filteredCourseNames.length) {
+//                 return exercise.courses.map((course: Course) => course.name)
+//                     .some((courseName: String) => this.filteredCourseNames
+//                         .includes(courseName));
+//             }
+//             return true;
+//         });
+//     }
+
+    public refreshExercises() {
+        this.filteredExercises = this.exercises
+            .filter(exercise => (this.categoriesFilter.length == 0 || this.categoriesFilter.some(x => exercise.categories.map(el => el.name).includes(x))))
+            .filter(exercise => (this.coursesFilter.length == 0 || this.coursesFilter.some(x => exercise.courses.map(el => el.name).includes(x))))
+            .filter(exercise => (this.searchString.length == 0 || exercise.note?.toLowerCase().includes(this.searchString)));
+        this.refreshFilterData();
     }
 
     private randomizedExercises(): void {
@@ -250,36 +343,11 @@ export class SheetFormComponent implements OnInit, OnDestroy {
                 next: () => {
                     this.loadExercises();
                 },
-                error: error => {
-                    this.displayAlert('Error while trying to delete an exercise.', error);
+                error: err => {
+                    this.displayAlert('Error while trying to delete an exercise.', err);
                 }
             });
         }
-    }
-
-    public getCoursesString(courses: Course[]): string {
-        return courses.map(course => course.name).join(", ");
-    }
-
-    public getCategoriesString(categories: Category[]): string {
-        return categories.map(category => category.name).join(", ");
-    }
-
-    public booleanToString(value: boolean): string {
-        if (value) {
-            return "Yes";
-        } else {
-            return "No";
-        }
-    }
-
-    private exercisesToStringArray(exercises: Exercise[]): string[] {
-        const exercisesStringArray: string[] = [];
-        for (let i = 0; i < exercises.length; i++) {
-            exercisesStringArray.push(exercises[i]["id"])
-        }
-        console.log(exercisesStringArray);
-        return exercisesStringArray;
     }
 
     public onFormChange(event?: Event): void {
@@ -432,6 +500,26 @@ export class SheetFormComponent implements OnInit, OnDestroy {
         this.dataService.existUnsavedChanges = false;
     }
 
+    public coursesToString(courses: Course[]): string {
+        return courses.map(course => course.name).join(", ");
+    }
+
+    public categoriesToString(categories: Category[]): string {
+        return categories.map(category => category.name).join(", ");
+    }
+
+    public booleanToString(value: boolean): string {
+        return value ? "Yes" : "No";
+    }
+
+    private exercisesToStringArray(exercises: Exercise[]): string[]{
+        const exercisesStringArray: string[] = [];
+        for (let i=0; i < exercises.length; i++) {
+            exercisesStringArray.push(exercises[i]["id"])
+        }
+        return exercisesStringArray;
+    }
+
     public getSanitizedUrl(url: string): SafeResourceUrl {
         return this.sanitizer.bypassSecurityTrustResourceUrl(url);
     }
@@ -440,6 +528,7 @@ export class SheetFormComponent implements OnInit, OnDestroy {
         this.alertMessage = message;
         this.showAlert = true;
         console.log(error);
+        this.viewportScroller.scrollToPosition([0, 0]);
     }
 
     public closeAlert(): void {
