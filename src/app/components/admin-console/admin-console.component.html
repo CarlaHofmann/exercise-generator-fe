@@ -49,12 +49,12 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let user of filteredUsers | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
+            <tr *ngFor="let user of sortedUsers | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
                 <td>{{user.username}}</td>
                 <td>{{user.admin ? 'Yes' : 'No'}}</td>
                 <td class="text-right">
                     <div class="d-flex justify-content-end">
-                        <button type="button" class="btn btn-danger btn-table"
+                        <button type="button" class="btn btn-danger btn-table" *ngIf="user.username !== currentUsername"
                                 title="Delete the exercise from the database" (click)="deleteUser(user.username)">
                             <i class="bi bi-trash3 text-white"></i>
                         </button>

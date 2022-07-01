@@ -23,7 +23,7 @@ export class AuthService {
                 private dataService: DataService) {
     }
 
-    get username(): String | undefined {
+    get username(): string | undefined {
         return this.user?.username;
     }
 

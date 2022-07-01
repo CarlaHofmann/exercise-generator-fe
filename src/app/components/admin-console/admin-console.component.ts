@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
 import {CreateUserDto, User, UserApiService} from "../../../../build/openapi";
 import {DataService} from "../../services/data.service";
+import {AuthService} from "../../services/auth.service";
 
 @Component({
   selector: 'app-admin-console',
@@ -10,6 +11,7 @@ import {DataService} from "../../services/data.service";
 })
 export class AdminConsoleComponent implements OnInit {
 
+    public currentUsername: string | undefined = "";
     public users: User[] = [];
 
     public newUserForm: FormGroup;
@@ -22,8 +24,9 @@ export class AdminConsoleComponent implements OnInit {
     public alertMessage = "";
     public isLoaded = false;
 
-    constructor(private userApiService: UserApiService,
-                private dataService: DataService) {
+    constructor(private authService: AuthService,
+                private dataService: DataService,
+                private userApiService: UserApiService) {
     }
 
     ngOnInit(): void {
@@ -37,6 +40,7 @@ export class AdminConsoleComponent implements OnInit {
             searchString: new FormControl("")
         });
 
+        this.currentUsername = this.authService.username;
         this.loadUsers()
     }
 
@@ -56,6 +60,10 @@ export class AdminConsoleComponent implements OnInit {
     get filteredUsers(): User[]{
         const searchString = this.userSearchForm.value.searchString;
         return this.users.filter(user => user.username.toLowerCase().includes(searchString.toLowerCase()));
+    }
+
+    get sortedUsers(): User[]{
+        return this.filteredUsers.sort((a, b) => a.username.toLowerCase().localeCompare(b.username.toLowerCase()));
     }
 
     public displayAlert(message: string, error: string): void {
