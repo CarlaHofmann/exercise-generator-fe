@@ -6,7 +6,7 @@
     </p>
 </div>
 
-<form  *ngIf="isLoaded" [formGroup]="filterForm" style="margin-right:15px;margin-left:15px;" (ngSubmit)="applyFilters()">
+<form  *ngIf="isLoaded && filteredSheets?.length" [formGroup]="filterForm" style="margin-right:15px;margin-left:15px;" (ngSubmit)="applyFilters()">
 
     <table class="table borderless" formArrayName="filters">
         <tbody >
@@ -65,14 +65,14 @@
     </div>
 </form>
 
-<div class="d-flex row px-4">
-    <div *ngIf="isLoaded" class="col text-right" style="margin-top:15px">
+<div *ngIf="isLoaded" class="d-flex row px-4">
+    <div *ngIf="filteredSheets?.length"class="col text-right" style="margin-top:15px">
         <button type="button" style="width:100px" (click)="addFilter()" *ngIf="this.filterForm.value.filters.length==0" class="btn btn-primary" title="Add an additional filter condition. The conditions are connected with logical AND.">Add filter</button>
     </div>
 
-    <div *ngIf="isLoaded" class="text-end col" style="margin-top: 15px">
+    <div class="text-end col" style="margin-top: 15px">
         <div class="btn-group" role="group" aria-label="group">
-            <button *ngIf="isProfessor" title="Press to uncheck all the published flags."
+            <button *ngIf="isProfessor && filteredSheets?.length" title="Press to uncheck all the published flags."
                     style="border: 1px white solid;"
                     class="btn btn-danger" (click)="uncheckAll()">
                 <i class="bi bi-trash3 text-white"></i>
@@ -87,7 +87,7 @@
 </div>
 
 
-<div *ngIf="filteredSheets?.length" class="px-4">
+<div *ngIf="isLoaded && filteredSheets?.length" class="px-4">
     <table class="table table-striped">
         <thead>
         <tr>
@@ -103,7 +103,7 @@
         </thead>
 
 
-        <tbody *ngIf="isLoaded">
+        <tbody>
         <tr
             *ngFor="let sheet of filteredSheets | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
 
@@ -146,7 +146,7 @@
     </table>
 
 
-    <div *ngIf="isLoaded" class="row ">
+    <div class="row ">
         <div class="col-4 ">
             <select class="form-select" style="width:200px" [ngModel]="pageSize" (ngModelChange)="setPageSize($event)">
                 <option [ngValue]="5">5 items per page</option>
