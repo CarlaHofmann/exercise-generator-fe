@@ -20,38 +20,48 @@
         </div>
 
 
-        <div *ngIf="(isCreateSheet && isRandomizedSheet) || !isCreateSheet" class="form-group">
+        <div class="form-group">
             <label for="courses">Courses</label>
             <i class="bi bi-info-circle mx-4" title="These are the course names that the sheet correspond to."></i>
-            <ng-select (ngModelChange)="onFormChange()" [addTag]="false" [bindLabel]="'name'" [items]="courses"
-                       [multiple]="true" class="form-control input-sm" formControlName="courses"
-                       id="courses"
-                       placeholder="Choose a course" required="true">
-            </ng-select>
-            <div *ngIf="sheetForm.controls['courses'].touched && sheetForm.controls['courses'].invalid"
-                 class="alert alert-danger">
-                <div *ngIf="sheetForm.controls['courses'].hasError('required')">Course is mandatory.</div>
-                <div *ngIf="sheetForm.controls['courses'].hasError('minlength')">Course should be at least 1
-                    character long.
+            <div *ngIf="isCreateSheet && isRandomizedSheet">
+                <ng-select (ngModelChange)="onFormChange()" [addTag]="false" [bindLabel]="'name'" [items]="courses"
+                           [multiple]="true" class="form-control input-sm" formControlName="courses"
+                           id="courses"
+                           placeholder="Choose a course" required="true">
+                </ng-select>
+                <div *ngIf="sheetForm.controls['courses'].touched && sheetForm.controls['courses'].invalid"
+                     class="alert alert-danger">
+                    <div *ngIf="sheetForm.controls['courses'].hasError('required')">Course is mandatory.</div>
+                    <div *ngIf="sheetForm.controls['courses'].hasError('minlength')">Course should be at least 1
+                        character long.
+                    </div>
                 </div>
+            </div>
+            <div *ngIf="!isRandomizedSheet">
+                {{sheetCourses}}
             </div>
         </div>
 
 
-        <div *ngIf="(isCreateSheet && isRandomizedSheet) || !isCreateSheet" class="form-group">
+        <div class="form-group">
             <label for="categories">Categories</label>
             <i class="bi bi-info-circle mx-4" title="These are the category names that the sheet correspond to."></i>
-            <ng-select (ngModelChange)="onFormChange()" [addTag]="false" [bindLabel]="'name'" [items]="categories"
-                       [multiple]="true" class="form-control input-sm" formControlName="categories"
-                       id="categories"
-                       placeholder="Choose or add a category" required="true">
-            </ng-select>
-            <div *ngIf="sheetForm.controls['categories'].touched && sheetForm.controls['categories'].invalid"
-                 class="alert alert-danger">
-                <div *ngIf="sheetForm.controls['categories'].hasError('required')">Category is mandatory.</div>
-                <div *ngIf="sheetForm.controls['categories'].hasError('minlength')">Category should be at least 1
-                    character long.
+            <div *ngIf="isRandomizedSheet">
+                <ng-select (ngModelChange)="onFormChange()" [addTag]="false" [bindLabel]="'name'" [items]="categories"
+                           [multiple]="true" class="form-control input-sm" formControlName="categories"
+                           id="categories"
+                           placeholder="Choose or add a category" required="true">
+                </ng-select>
+                <div *ngIf="sheetForm.controls['categories'].touched && sheetForm.controls['categories'].invalid"
+                     class="alert alert-danger">
+                    <div *ngIf="sheetForm.controls['categories'].hasError('required')">Category is mandatory.</div>
+                    <div *ngIf="sheetForm.controls['categories'].hasError('minlength')">Category should be at least 1
+                        character long.
+                    </div>
                 </div>
+            </div>
+            <div *ngIf="!isRandomizedSheet">
+                {{sheetCategories}}
             </div>
         </div>
 
@@ -64,59 +74,67 @@
         </div>
 
 
+        <div *ngIf="isLoaded && filteredExercises?.length && !isRandomizedSheet" class="d-flex row px-4 col text-right" style="margin-top:15px">
+                <button type="button" style="width:100px" (click)="addFilter()"
+                        *ngIf="this.filterForm.value.filters.length==0" class="btn btn-primary"
+                        title="Add an additional filter condition. The conditions are connected with logical AND.">
+                    Add filter
+                </button>
+        </div>
+
+
         <form  *ngIf="!isRandomizedSheet" [formGroup]="filterForm" style="margin-right:15px;margin-left:15px;"
                (ngSubmit)="applyFilters()">
-<!--            <table class="table borderless" formArrayName="filters">-->
-<!--                <tbody >-->
-<!--                <tr scope="row" style="border: 1px,gray; border-top: 1px, gray;" *ngFor="let filter of filters().controls; let i=index" [formGroupName]="i">-->
-<!--                    <td  scope="col" class="col-2 align-middle">-->
-<!--                        <select class="browser-default custom-select form-control" formControlName="choice" placeholder="Filter by...">-->
-<!--                            <option [ngValue]="undefined" hidden>Filter by...</option>-->
-<!--                            <option value="Title" >Title</option>-->
-<!--                            <option value="Category">Category</option>-->
-<!--                            <option value="Course">Course</option>-->
-<!--                            <option value="Notes" *ngIf="isProfessor">Notes</option>-->
-<!--                            <option value="ShortDescription">Short description</option>-->
-<!--                            <option value="Author" *ngIf="!isProfessor">Author</option>-->
-<!--                        </select>-->
-<!--                    </td>-->
-<!--                    <td  scope="col" class="col-9 align-middle">-->
-<!--                        <ng-select *ngIf="this.filterForm.value.filters.at(i).choice=='Course'" [clearSearchOnAdd]="true"  [clearable]="false"-->
-<!--                                   [items]="courses" [multiple]="true" bindLabel="courses"-->
-<!--                                   placeholder="Filter by course" formControlName="value"  (change)="applyFilters()">-->
-<!--                        </ng-select>-->
-<!--                        <ng-select *ngIf="this.filterForm.value.filters.at(i).choice=='Category'" [clearSearchOnAdd]="true" [clearable]="false"-->
-<!--                                   [items]="categories" [multiple]="true" bindLabel="categories"-->
-<!--                                   placeholder="Filter by category" formControlName="value"  (change)="applyFilters()">-->
-<!--                        </ng-select>-->
-<!--                        <ng-select *ngIf="this.filterForm.value.filters.at(i).choice=='Author' && !isProfessor" [clearSearchOnAdd]="true" [clearable]="false"-->
-<!--                                   [items]="authors" [multiple]="true" bindLabel="authors"-->
-<!--                                   placeholder="Filter by author" formControlName="value"  (change)="applyFilters()">-->
-<!--                        </ng-select>-->
+            <table class="table borderless" formArrayName="filters">
+                <tbody >
+                <tr scope="row" style="border: 1px,gray; border-top: 1px, gray;" *ngFor="let filter of filters().controls; let i=index" [formGroupName]="i">
+                    <td  scope="col" class="col-2 align-middle">
+                        <select class="browser-default custom-select form-control" formControlName="choice" placeholder="Filter by...">
+                            <option [ngValue]="undefined" hidden>Filter by...</option>
+                            <option value="Title" >Title</option>
+                            <option value="Course">Course</option>
+                            <option value="Category">Category</option>
+                            <option value="Author" *ngIf="!isProfessor">Author</option>
+                            <option value="ShortDescription">Short description</option>
+                            <option value="Notes" *ngIf="isProfessor">Notes</option>
+                        </select>
+                    </td>
+                    <td  scope="col" class="col-9 align-middle">
+                        <input *ngIf="this.filterForm.value.filters.at(i).choice=='Title'" type="text"  class="form-control" id="search"
+                               placeholder="Search by title" formControlName="value"  (input)="applyFilters()"/>
+                        <ng-select *ngIf="this.filterForm.value.filters.at(i).choice=='Course'" [clearSearchOnAdd]="true"  [clearable]="false"
+                                   [items]="courses" [multiple]="true" bindLabel="name"
+                                   placeholder="Filter by course" formControlName="value"  (change)="applyFilters()">
+                        </ng-select>
+                        <ng-select *ngIf="this.filterForm.value.filters.at(i).choice=='Category'" [clearSearchOnAdd]="true" [clearable]="false"
+                                   [items]="categories" [multiple]="true" bindLabel="name"
+                                   placeholder="Filter by category" formControlName="value"  (change)="applyFilters()">
+                        </ng-select>
+                        <ng-select *ngIf="this.filterForm.value.filters.at(i).choice=='Author' && !isProfessor" [clearSearchOnAdd]="true" [clearable]="false"
+                                   [items]="authors" [multiple]="true" bindLabel="authors"
+                                   placeholder="Filter by author" formControlName="value"  (change)="applyFilters()">
+                        </ng-select>
+                        <input *ngIf="this.filterForm.value.filters.at(i).choice=='ShortDescription'" type="text"  class="form-control" id="search"
+                               placeholder="Search by short description" formControlName="value" (input)="applyFilters()"/>
+                        <div *ngIf="this.filterForm.value.filters.at(i).choice=='Notes' && isProfessor" class="input-group  ">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text" title="If checked the search will include the given text. If unchecked, the search will return result NOT including the given text.">
+                                    <input type="checkbox" formControlName="contains"  (change)="applyFilters()"> &nbsp; contains
+                                </div>
+                            </div>
+                            <input type="text"  class="form-control" placeholder="Search in notes" formControlName="value" (input)="applyFilters()"/>
+                        </div>
 
-<!--                        <div *ngIf="this.filterForm.value.filters.at(i).choice=='Notes' && isProfessor" class="input-group  ">-->
-<!--                            <div class="input-group-prepend">-->
-<!--                                <div class="input-group-text" title="If checked the search will include the given text. If unchecked, the search will return result NOT including the given text.">-->
-<!--                                    <input type="checkbox" formControlName="contains"  (change)="applyFilters()"> &nbsp; contains-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <input type="text"  class="form-control" placeholder="Search in notes" formControlName="value" (input)="applyFilters()"/>-->
-<!--                        </div>-->
-<!--                        <input *ngIf="this.filterForm.value.filters.at(i).choice=='Title'" type="text"  class="form-control" id="search"-->
-<!--                               placeholder="Search by title" formControlName="value"  (input)="applyFilters()"/>-->
-<!--                        <input *ngIf="this.filterForm.value.filters.at(i).choice=='ShortDescription'" type="text"  class="form-control" id="search"-->
-<!--                               placeholder="Search by short description" formControlName="value" (input)="applyFilters()"/>-->
+                    </td>
+                    <td scope="col" class="col-1 align-middle" class="text-right">
+                        <div class="d-flex justify-content-end">
+                            <button (click)="removeFilter(i)" class="btn btn-danger" title="Remove filter">  <i class="bi bi-trash3 text-white"></i> </button>
+                        </div>
 
-<!--                    </td>-->
-<!--                    <td scope="col" class="col-1 align-middle" class="text-right">-->
-<!--                        <div class="d-flex justify-content-end">-->
-<!--                            <button (click)="removeFilter(i)" class="btn btn-danger" title="Remove filter">  <i class="bi bi-trash3 text-white"></i> </button>-->
-<!--                        </div>-->
-
-<!--                    </td>-->
-<!--                </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
+                    </td>
+                </tr>
+                </tbody>
+            </table>
             <div class=" d-flex justify-content-around">
                 <div class="btn-group" role="group" aria-label="filter actions">
                     <button type="button" style="width:100px" (click)="addFilter()" *ngIf="this.filterForm.value.filters.length>0" class="btn btn-primary" title="Add an additional filter condition. The conditions are connected with logical AND.">Add filter</button>
@@ -135,8 +153,10 @@
                     <th scope="col" class="col-2"> Title</th>
                     <th scope="col" class="col-2"> Course</th>
                     <th scope="col" class="col-2"> Category</th>
+                    <th *ngIf="!isProfessor" scope="col" class="col-1"> Author</th>
                     <th scope="col" class="col-2"> Short Description</th>
                     <th scope="col" class="col-2" *ngIf="isProfessor"> Notes</th>
+                    <th scope="col" class="col-2"> Updated At</th>
                     <th scope="col" class="col-1" *ngIf="isProfessor"> Published</th>
                     <th scope="col" class="col-2" *ngIf="isProfessor"> Used</th>
                     <th scope="col" class="col-1"></th>
@@ -150,10 +170,12 @@
                     <td scope="row">{{ exercise.title }}</td>
                     <td scope="row">{{ coursesToString(exercise.courses) }} </td>
                     <td scope="row">{{ categoriesToString(exercise.categories) }} </td>
+                    <td *ngIf="!isProfessor" scope="row">{{ exercise.author.username }}</td>
                     <td scope="row">{{ exercise.shortDescription }} </td>
-                    <td scope="row" *ngIf="isProfessor">{{ exercise.note }} </td>
-                    <td scope="row" *ngIf="isProfessor">{{ booleanToString(exercise.isPublished) }} </td>
-                    <td scope="row" *ngIf="isProfessor">{{ booleanToString(exercise.isUsed) }} </td>
+                    <td *ngIf="isProfessor" scope="row">{{ exercise.note }} </td>
+                    <td scope="row">{{ exercise.updatedAt }} </td>
+                    <td *ngIf="isProfessor" scope="row">{{ booleanToString(exercise.isPublished) }} </td>
+                    <td *ngIf="isProfessor"scope="row">{{ booleanToString(exercise.isUsed) }} </td>
                     <td scope="col" class="text-right">
                         <div class="d-flex justify-content-end">
                             <div class="btn-group" role="group" aria-label="group">
@@ -226,8 +248,13 @@
 
         <div class="text-center pt-4">
             <div class="form-group text-center align-items-center">
-                <button class="btn btn-primary me-3" [disabled]="sheetForm.invalid" (click)="viewSheetPdf()">
+                <button *ngIf="!isProfessor" class="btn btn-primary me-3" [disabled]="sheetForm.invalid" (click)="viewSheetPdf()">
                     Open Sheet
+                    <span *ngIf="!isPdfLoaded" class="spinner-border spinner-border-sm" role="status"
+                          aria-hidden="true"></span>
+                </button>
+                <button *ngIf="isProfessor" class="btn btn-primary me-3" [disabled]="sheetForm.invalid" (click)="viewSheetPdf()">
+                    Sheet Preview
                     <span *ngIf="!isPdfLoaded" class="spinner-border spinner-border-sm" role="status"
                           aria-hidden="true"></span>
                 </button>
@@ -243,7 +270,7 @@
         </div>
     </form>
 
-    <div class="col pt-3 pe-5 d-flex" *ngIf="pdfUrl.length && isPdfLoaded">
+    <div class="col pt-3 pe-5 d-flex" *ngIf="pdfUrl.length && isPdfLoaded && isProfessor">
         <object [data]="getSanitizedUrl(pdfUrl)"
                 type="application/pdf"
                 class="col"
@@ -251,6 +278,7 @@
         </object>
         <i class="bi bi-x col-auto" style="font-size: 3rem; margin-top: -1rem" title="Close PDF preview." (click)="pdfUrl = ''"></i>
     </div>
+
 </div>
 
 <div *ngIf="!isLoaded" class="d-flex justify-content-center center">
