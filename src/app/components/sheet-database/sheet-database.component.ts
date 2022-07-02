@@ -12,7 +12,7 @@ import {FormArray, FormBuilder, FormGroup} from '@angular/forms'
 
 export class SheetDatabaseComponent implements OnInit {
 
-    filterForm: FormGroup;
+    public filterForm: FormGroup;
     public filteredSheets: Sheet[] = [];
 
     public sheets: Sheet[] = [];
