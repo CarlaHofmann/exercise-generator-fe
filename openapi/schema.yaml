@@ -618,6 +618,7 @@ components:
                 - id
                 - isPublished
                 - isUsed
+                - updatedAt
                 - publishedAt
                 - author
                 - title
@@ -629,6 +630,9 @@ components:
             properties:
                 id:
                     type: string
+                updatedAt:
+                    type: string
+                    format: date-time
                 publishedAt:
                     type: string
                     format: date-time
