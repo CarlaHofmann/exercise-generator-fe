@@ -3,6 +3,7 @@ import {AuthService} from "../../services/auth.service";
 import {Category, Course, Exercise, ExerciseApiService, ExerciseDto} from 'build/openapi';
 import {DataService} from "../../services/data.service";
 import {FormArray, FormBuilder, FormGroup} from '@angular/forms'
+import { ViewportScroller } from '@angular/common';
 
 @Component({
     selector: 'app-exercise-database',
@@ -36,7 +37,8 @@ export class ExerciseDatabaseComponent implements OnInit {
     constructor(private authService: AuthService,
                 private dataService: DataService,
                 private exerciseApiService: ExerciseApiService,
-                private fb: FormBuilder) {
+                private fb: FormBuilder,
+                private viewportScroller: ViewportScroller) {
         this.filterForm = this.fb.group({
             name: '',
             filters: this.fb.array([]),
@@ -121,6 +123,11 @@ export class ExerciseDatabaseComponent implements OnInit {
         return this.filterForm.get("filters") as FormArray
     }
 
+
+    public sortByUpdatedAt():void{
+        this.exercises.sort(function(a, b) { return new Date(a.updatedAt!) > new Date(b.updatedAt!) ? -1 : new Date(a.updatedAt!) < new Date(b.updatedAt!) ? 1 : 0;} )
+
+    }
     get isProfessor(): boolean {
         return this.authService.isProfessor;
     }
@@ -129,12 +136,13 @@ export class ExerciseDatabaseComponent implements OnInit {
         return categories.map(c => c.name).join(", ");
     }
 
+
     public displayAlert(message: string, error: string): void {
         this.alertMessage = message;
         this.showAlert = true;
         console.log(error);
+        this.viewportScroller.scrollToPosition([0, 0]);
     }
-
     public closeAlert(): void {
         this.showAlert = false;
     }
@@ -166,6 +174,7 @@ export class ExerciseDatabaseComponent implements OnInit {
                 this.categories = Array.from(new Set(this.exercises.reduce((previous, next) => previous.concat(next.categories.map(el => el.name)), new Array<string>())).values());
                 this.courses = Array.from(new Set(this.exercises.reduce((previous, next) => previous.concat(next.courses.map(el => el.name)), new Array<string>())).values());
                 if (!this.isProfessor) this.authors = Array.from(new Set(this.exercises.map((elem) => elem.author.username)).values());
+                this.sortByUpdatedAt();
                 this.refreshExercises();
                 this.isLoaded = true;
                 this.showLoading = false;

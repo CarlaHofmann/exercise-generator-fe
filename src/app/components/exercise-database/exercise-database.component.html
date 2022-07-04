@@ -127,6 +127,7 @@
             <th *ngIf="!isProfessor" scope="col" class="col-sm"> Author</th>
             <th scope="col" class="col-2"> Short Description</th>
             <th scope="col" class="col-2" *ngIf="isProfessor"> Notes</th>
+            <th  scope="col" class="col-1 justify-content-center"> Updated At</th>
             <th *ngIf="isProfessor" scope="col" class="col-sm justify-content-center">Published</th>
             <th scope="col" class="col-1" *ngIf="isProfessor">
                 <div class="d-flex justify-content-center">
@@ -149,16 +150,30 @@
             <td *ngIf="!isProfessor" scope="row">{{ element.author.username }}</td>
                 <td scope="col">{{ element.shortDescription }}</td>
             <td scope="col col-2" *ngIf="isProfessor">{{ element.note }}</td>
-                <td scope="col" *ngIf="isProfessor">
-                    <div class="d-flex justify-content-center">
-                        <div><input class="form-check-input" type="checkbox" [(ngModel)]="element.isPublished"
-                                    (change)="toggleCheckbox(element.id)"/></div>
-                    </div>
-                </td>
-            <td scope="col" *ngIf="isProfessor">
+
+            <td  scope="row">{{ element.updatedAt | date:'dd.MM.YYYY' }}</td>
+             <td scope="col" *ngIf="isProfessor">
                 <div class="d-flex justify-content-center">
-                    <div><input class="form-check-input" type="checkbox" [(ngModel)]="element.isUsed"
-                                (change)="toggleCheckbox(element.id)"/></div>
+                    <div *ngIf="element.isPublished">
+                        Yes
+                   </div>
+                   <div *ngIf="!element.isPublished">
+                    No
+               </div>
+                 </div>
+            </td>
+            <td scope="col" *ngIf="isProfessor">
+
+                <div class="d-flex justify-content-center">
+                    <div *ngIf="element.isUsed">
+                      Yes
+                        <!--<input class="form-check-input" type="checkbox" [(ngModel)]="element.isUsed"
+                                (change)="toggleCheckbox(element.id)"/>-->
+                    </div>
+                    <div *ngIf="!element.isUsed">
+                        No
+                    </div>
+
                 </div>
             </td>
             <td scope="col" class="text-right">
