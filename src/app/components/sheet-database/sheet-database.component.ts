@@ -2,7 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {Category, Course, Exercise, Sheet, SheetApiService, SheetDto} from 'build/openapi';
 import {AuthService} from '../../services/auth.service';
 import {DataService} from "../../services/data.service";
-import {FormArray, FormBuilder, FormGroup} from '@angular/forms'
+import {ViewportScroller} from "@angular/common";
+import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 
 @Component({
     selector: 'app-sheet-database',
@@ -36,6 +37,7 @@ export class SheetDatabaseComponent implements OnInit {
     constructor(private authService: AuthService,
                 private dataService: DataService,
                 private sheetApiService: SheetApiService,
+                private viewportScroller: ViewportScroller,
                 private fb: FormBuilder) {
 
         this.filterForm = this.fb.group({name: '', filters: this.fb.array([])});
@@ -47,16 +49,6 @@ export class SheetDatabaseComponent implements OnInit {
 
     get isProfessor(): boolean {
         return this.authService.isProfessor;
-    }
-
-    public displayAlert(message: string, error: string): void {
-        this.alertMessage = message;
-        this.showAlert = true;
-        console.log(error);
-    }
-
-    public closeAlert(): void {
-        this.showAlert = false;
     }
 
     public filters(): FormArray {
@@ -160,6 +152,10 @@ export class SheetDatabaseComponent implements OnInit {
         });
     }
 
+    public viewSheetPdf(id: string): void {
+        window.open("sheet/" + id + "/pdf");
+    }
+
     public removeSheet(id: string) {
         const confirm = window.confirm("Are you sure you want to delete this sheet?");
         if (confirm) {
@@ -169,7 +165,7 @@ export class SheetDatabaseComponent implements OnInit {
                     this.refreshSheets();
                 },
                 error: error => {
-                    this.displayAlert("Error while trying to delete a sheet.", error);
+                    this.displayAlert("Error while deleting sheet.", error);
                 }
             });
         }
@@ -207,12 +203,19 @@ export class SheetDatabaseComponent implements OnInit {
         return exercisesStringArray;
     }
 
+    public displayAlert(message: string, error: string): void {
+        this.alertMessage = message;
+        this.showAlert = true;
+        console.log(error);
+        this.viewportScroller.scrollToPosition([0, 0]);
+    }
+
+    public closeAlert(): void {
+        this.showAlert = false;
+    }
+
     public setPageSize(event: Event): void {
         this.pageSize = Number(event);
         this.dataService.savePageSize(this.pageSize);
-    }
-
-    public viewSheetPdf(id: string): void {
-        window.open("sheet/" + id + "/pdf");
     }
 }
