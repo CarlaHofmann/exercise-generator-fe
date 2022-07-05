@@ -24,6 +24,15 @@ export class SheetDatabaseComponent implements OnInit {
     private categoriesFilter: string[] = [];
     private coursesFilter: string[] = [];
 
+    private orderMap = [{key: "Title", dir: "asc"},
+                        {key: "Course", dir: "asc"},
+                        {key: "Category", dir: "asc"},
+                        {key: "Author", dir: "asc"},
+                        {key: "Exercises", dir: "asc"},
+                        {key: "Updated At", dir: "asc"},
+                        {key: "Published At", dir: "asc"},
+                        {key: "Published", dir: "asc"}];
+
     public page = 1;
     public pageSize = this.dataService.getPageSize();
 
@@ -45,6 +54,7 @@ export class SheetDatabaseComponent implements OnInit {
 
     public ngOnInit(): void {
         this.loadSheets();
+        this.viewportScroller.scrollToPosition([0, 0]);
     }
 
     get isProfessor(): boolean {
@@ -184,6 +194,38 @@ export class SheetDatabaseComponent implements OnInit {
             sheet.isPublished = false;
             this.updateSheet(sheet);
         });
+    }
+
+    public sortTable(header: string): void {
+        let headerIndex = this.orderMap.findIndex(x => x.key == header);
+        let direction = this.orderMap[headerIndex].dir;
+        let dir: number;
+
+        if (direction === "asc") {
+            dir = 1;
+            this.orderMap[headerIndex] = {...this.orderMap[headerIndex], dir: "desc"}
+        } else {
+            dir = -1;
+            this.orderMap[headerIndex] = {...this.orderMap[headerIndex], dir: "asc"}
+        }
+
+        if (header === "Title") {
+            this.filteredSheets = this.filteredSheets.sort((a, b) => (a.title < b.title) ? dir : dir * (-1));
+        } else if (header === "Course") {
+            this.filteredSheets = this.filteredSheets.sort((a, b) => (this.coursesToString(a.courses) < this.coursesToString(b.courses)) ? dir : dir * (-1));
+        }else if (header === "Category") {
+            this.filteredSheets = this.filteredSheets.sort((a, b) => (this.categoriesToString(a.categories) < this.categoriesToString(b.categories)) ? dir : dir * (-1));
+        }else if (header === "Author") {
+            this.filteredSheets = this.filteredSheets.sort((a, b) => (a.author < b.author) ? dir : dir * (-1));
+        }else if (header === "Exercises") {
+            this.filteredSheets = this.filteredSheets.sort((a, b) => (a.exercises.length < b.exercises.length) ? dir : dir * (-1));
+        }else if (header === "Updated At") {
+            this.filteredSheets = this.filteredSheets.sort((a, b) => (a.updatedAt < b.updatedAt) ? dir : dir * (-1));
+        }else if (header === "Published At") {
+            this.filteredSheets = this.filteredSheets.sort((a, b) => (a.publishedAt < b.publishedAt) ? dir : dir * (-1));
+        }else if (header === "Published") {
+            this.filteredSheets = this.filteredSheets.sort((a, b) => (a.isPublished < b.isPublished) ? dir : dir * (-1));
+        }
     }
 
     public coursesToString(courses: Course[]): string {
