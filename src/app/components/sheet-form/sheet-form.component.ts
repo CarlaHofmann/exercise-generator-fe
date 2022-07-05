@@ -42,6 +42,17 @@ export class SheetFormComponent implements OnInit, OnDestroy {
     private coursesFilter: string[] = [];
     private searchString: string = '';
 
+    private orderMap = [{key: "Select", dir: "asc"},
+                        {key: "Title", dir: "asc"},
+                        {key: "Course", dir: "asc"},
+                        {key: "Category", dir: "asc"},
+                        {key: "Author", dir: "asc"},
+                        {key: "Short Description", dir: "asc"},
+                        {key: "Notes", dir: "asc"},
+                        {key: "Updated At", dir: "asc"},
+                        {key: "Published", dir: "asc"},
+                        {key: "Used", dir: "asc"}];
+
     public pdfUrl = "";
 
     public isLoaded = false;
@@ -103,6 +114,7 @@ export class SheetFormComponent implements OnInit, OnDestroy {
         }
 
         this.loadExercises();
+        this.viewportScroller.scrollToPosition([0, 0]);
     }
 
     ngOnDestroy() {
@@ -371,6 +383,42 @@ export class SheetFormComponent implements OnInit, OnDestroy {
         }
          else {
             this.dataService.existUnsavedChanges = Boolean(this.sheetForm.controls["title"].value.length);
+        }
+    }
+
+    public sortTable(header: string): void {
+        let headerIndex = this.orderMap.findIndex(x => x.key == header);
+        let direction = this.orderMap[headerIndex].dir;
+        let dir: number;
+
+        if (direction === "asc") {
+            dir = 1;
+            this.orderMap[headerIndex] = {...this.orderMap[headerIndex], dir: "desc"}
+        } else {
+            dir = -1;
+            this.orderMap[headerIndex] = {...this.orderMap[headerIndex], dir: "asc"}
+        }
+
+        if (header === "Select") {
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (this.sheetExercises.includes(a) < this.sheetExercises.includes(b)) ? dir : dir * (-1));
+        } else if (header === "Title") {
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (a.title < b.title) ? dir : dir * (-1));
+        } else if (header === "Course") {
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (this.coursesToString(a.courses) < this.coursesToString(b.courses)) ? dir : dir * (-1));
+        }else if (header === "Category") {
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (this.categoriesToString(a.categories) < this.categoriesToString(b.categories)) ? dir : dir * (-1));
+        }else if (header === "Author") {
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (a.author < b.author) ? dir : dir * (-1));
+        }else if (header === "Short Description") {
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (a.shortDescription < b.shortDescription) ? dir : dir * (-1));
+        }else if (header === "Notes") {
+//             this.filteredExercises = this.filteredExercises.sort((a, b) => (a.note < b.note) ? dir : dir * (-1));
+        }else if (header === "Updated At") {
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (a.updatedAt < b.updatedAt) ? dir : dir * (-1));
+        }else if (header === "Published") {
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (a.isPublished < b.isPublished) ? dir : dir * (-1));
+        }else if (header === "Used") {
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (a.isUsed < b.isUsed) ? dir : dir * (-1));
         }
     }
 

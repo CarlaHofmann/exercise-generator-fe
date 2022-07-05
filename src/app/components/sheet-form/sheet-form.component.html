@@ -149,16 +149,16 @@
             <table *ngIf="isLoaded" class="table table-striped">
                 <thead>
                 <tr>
-                    <th scope="col" class="col-1"> Select</th>
-                    <th scope="col" class="col-2"> Title</th>
-                    <th scope="col" class="col-2"> Course</th>
-                    <th scope="col" class="col-2"> Category</th>
-                    <th *ngIf="!isProfessor" scope="col" class="col-1"> Author</th>
-                    <th scope="col" class="col-2"> Short Description</th>
-                    <th scope="col" class="col-2" *ngIf="isProfessor"> Notes</th>
-                    <th scope="col" class="col-2"> Updated At</th>
-                    <th scope="col" class="col-1" *ngIf="isProfessor"> Published</th>
-                    <th scope="col" class="col-2" *ngIf="isProfessor"> Used</th>
+                    <th scope="col" class="col-1" (click)="sortTable('Select')"> Select</th>
+                    <th scope="col" class="col-2" (click)="sortTable('Title')"> Title</th>
+                    <th scope="col" class="col-2" (click)="sortTable('Course')"> Course</th>
+                    <th scope="col" class="col-2" (click)="sortTable('Category')"> Category</th>
+                    <th *ngIf="!isProfessor" scope="col" class="col-1" (click)="sortTable('Author')"> Author</th>
+                    <th scope="col" class="col-2" (click)="sortTable('Short Description')"> Short Description</th>
+                    <th scope="col" class="col-2" *ngIf="isProfessor" (click)="sortTable('Notes')"> Notes</th>
+                    <th scope="col" class="col-2" (click)="sortTable('Updated At')"> Updated At</th>
+                    <th scope="col" class="col-1" *ngIf="isProfessor" (click)="sortTable('Published')"> Published</th>
+                    <th scope="col" class="col-2" *ngIf="isProfessor" (click)="sortTable('Used')"> Used</th>
                     <th scope="col" class="col-1"></th>
                 </tr>
                 </thead>
@@ -273,7 +273,6 @@
     <div class="col pt-3 pe-5 d-flex" *ngIf="pdfUrl.length && isPdfLoaded && isProfessor">
         <object [data]="getSanitizedUrl(pdfUrl)"
                 type="application/pdf"
-                class="col"
                 height="1000rem">
         </object>
         <i class="bi bi-x col-auto" style="font-size: 3rem; margin-top: -1rem" title="Close PDF preview." (click)="pdfUrl = ''"></i>

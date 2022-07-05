@@ -80,17 +80,17 @@
 
 
 <div *ngIf="isLoaded && filteredSheets?.length" class="px-4">
-    <table class="table table-striped">
+    <table id="sheetTable" class="table table-striped">
         <thead>
         <tr>
-            <th scope="col" class="col-lg"> Title</th>
-            <th scope="col" class="col-lg"> Course</th>
-            <th scope="col" class="col-lg"> Category</th>
-            <th *ngIf="!isProfessor" scope="col" class="col-sm"> Author</th>
-            <th *ngIf="isProfessor" scope="col" class="col-sm"> Exercises</th>
-            <th scope="col" class="col-sm"> Updated At</th>
-            <th scope="col" class="col-sm"> Published At</th>
-            <th *ngIf="isProfessor" scope="col" class="col-sm"> Published</th>
+            <th scope="col" class="col-lg" (click)="sortTable('Title')"> Title</th>
+            <th scope="col" class="col-lg" (click)="sortTable('Course')"> Course</th>
+            <th scope="col" class="col-lg" (click)="sortTable('Category')"> Category</th>
+            <th *ngIf="!isProfessor" scope="col" class="col-sm" (click)="sortTable('Author')"> Author</th>
+            <th *ngIf="isProfessor" scope="col" class="col-sm" (click)="sortTable('Exercises')"> Exercises</th>
+            <th scope="col" class="col-sm" (click)="sortTable('Updated At')"> Updated At</th>
+            <th scope="col" class="col-sm" (click)="sortTable('Published At')"> Published At</th>
+            <th *ngIf="isProfessor" scope="col" class="col-sm" (click)="sortTable('Published')"> Published</th>
             <th scope="col" class="col"></th>
         </tr>
         </thead>
