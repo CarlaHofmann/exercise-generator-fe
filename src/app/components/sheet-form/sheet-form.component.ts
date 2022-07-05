@@ -197,8 +197,8 @@ export class SheetFormComponent implements OnInit, OnDestroy {
                 this.sheetExercises = this.sheet.exercises;
                 this.isLoaded = true;
             },
-            error: err => {
-                this.displayAlert("Sheet not found.", err);
+            error: error => {
+                this.displayAlert("Sheet not found.", error);
                 this.isLoaded = true;
             }
         });
@@ -228,8 +228,8 @@ export class SheetFormComponent implements OnInit, OnDestroy {
                 this.refreshExercises();
                 this.isLoaded = true;
             },
-            error: err => {
-                this.displayAlert("Error while loading exercises.", err);
+            error: error => {
+                this.displayAlert("Error while loading exercises.", error);
             }
         });
     }
@@ -298,8 +298,8 @@ export class SheetFormComponent implements OnInit, OnDestroy {
                 next: () => {
                     this.loadExercises();
                 },
-                error: err => {
-                    this.displayAlert('Error while trying to delete an exercise.', err);
+                error: error => {
+                    this.displayAlert('Error while deleting exercise.', error);
                 }
             });
         }
@@ -385,8 +385,8 @@ export class SheetFormComponent implements OnInit, OnDestroy {
                 this.isPdfLoaded = true;
                 this.viewportScroller.scrollToPosition([0, 0]);
             },
-            error: err => {
-                this.displayAlert("Error while trying to get PDF.", err);
+            error: error => {
+                this.displayAlert("Error while trying to get PDF.", error);
                 this.isPdfLoaded = true;
             }
         });
@@ -409,8 +409,8 @@ export class SheetFormComponent implements OnInit, OnDestroy {
                         this.location.back();
                     }
                 },
-                error: err => {
-                    this.displayAlert("Error while creating sheet.", err);
+                error: error => {
+                    this.displayAlert("Error while creating sheet.", error);
                 }
             });
         } else {
@@ -422,8 +422,8 @@ export class SheetFormComponent implements OnInit, OnDestroy {
                         this.location.back();
                     }
                 },
-                error: err => {
-                    this.displayAlert("Error while updating sheet.", err);
+                error: error => {
+                    this.displayAlert("Error while updating sheet.", error);
                 }
             });
         }
