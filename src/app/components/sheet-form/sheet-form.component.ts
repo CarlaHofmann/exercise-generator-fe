@@ -21,7 +21,8 @@ export class SheetFormComponent implements OnInit, OnDestroy {
     @Input()
     public isCloneSheet: boolean = false;
 
-    public isRandomizedSheet: Boolean = true;
+    @Input()
+    public isRandomizedSheet: Boolean = false;
 
     private sheetId: string = "";
     private sheet: Sheet;
@@ -118,10 +119,6 @@ export class SheetFormComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.dataService.existUnsavedChanges = false;
-    }
-
-    get isProfessor(): boolean {
-        return this.authService.isProfessor;
     }
 
     public selectSheetType(): void {
@@ -275,6 +272,7 @@ export class SheetFormComponent implements OnInit, OnDestroy {
         });
 
         this.sheetExercises = [...randomExercises].sort(() => 0.5 - Math.random()).slice(0, this.numberExercises);
+        this.onFormChange();
     }
 
     public selectExercise(exercise: Exercise) {
@@ -512,6 +510,10 @@ export class SheetFormComponent implements OnInit, OnDestroy {
 
     public getSanitizedUrl(url: string): SafeResourceUrl {
         return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    }
+
+    get isProfessor(): boolean {
+        return this.authService.isProfessor;
     }
 
     public displayAlert(message: string, error: string): void {
