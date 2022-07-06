@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
+import { ViewportScroller } from '@angular/common';
 import {CreateUserDto, User, UserApiService} from "../../../../build/openapi";
 import {DataService} from "../../services/data.service";
 import {AuthService} from "../../services/auth.service";
@@ -26,7 +27,8 @@ export class AdminConsoleComponent implements OnInit {
 
     constructor(private authService: AuthService,
                 private dataService: DataService,
-                private userApiService: UserApiService) {
+                private userApiService: UserApiService,
+                private viewportScroller: ViewportScroller) {
     }
 
     ngOnInit(): void {
@@ -70,6 +72,7 @@ export class AdminConsoleComponent implements OnInit {
         this.alertMessage = message;
         this.showAlert = true;
         console.log(error);
+        this.viewportScroller.scrollToPosition([0, 0]);
     }
 
     public closeAlert(): void {
