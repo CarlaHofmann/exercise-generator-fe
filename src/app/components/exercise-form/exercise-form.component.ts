@@ -59,7 +59,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
                 private courseApiService: CourseApiService,
                 private categoryApiService: CategoryApiService,
                 private dataService: DataService,
-                private sanitizer: DomSanitizer) {
+                private sanitizer: DomSanitizer,) {
     }
 
     ngOnInit(): void {
@@ -312,6 +312,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
         this.alertMessage = message;
         this.showAlert = true;
         console.log(error);
+        this.viewportScroller.scrollToPosition([0, 0]);
     }
 
     public closeAlert(): void {
