@@ -1,6 +1,6 @@
 import {Component, HostListener, OnInit} from '@angular/core';
-import {CanDeactivateComponent} from "../../guards/pending-changes-guard.service";
 import {Observable, of} from "rxjs";
+import {CanDeactivateComponent} from "../../guards/pending-changes-guard.service";
 import {DataService} from "../../services/data.service";
 
 @Component({
@@ -11,16 +11,10 @@ import {DataService} from "../../services/data.service";
 
 export class CreateSheetComponent implements OnInit, CanDeactivateComponent {
 
-    public randomizedSheet: Boolean = true;
-
     constructor(private dataService: DataService) {
     }
 
     ngOnInit(): void {
-    }
-
-    public selectSheetType(): void {
-        this.randomizedSheet = !this.randomizedSheet;
     }
 
     public canDeactivate(): Observable<boolean> | boolean {
@@ -32,9 +26,6 @@ export class CreateSheetComponent implements OnInit, CanDeactivateComponent {
 
     @HostListener('window:beforeunload', ['$event'])
     beforeUnloadHandler(event: BeforeUnloadEvent) {
-        if(this.dataService.existUnsavedChanges){
-            event.returnValue = true;
-        }
+        event.returnValue = this.dataService.existUnsavedChanges;
     }
-
 }

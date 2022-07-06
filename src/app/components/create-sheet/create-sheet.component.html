@@ -1,21 +1,5 @@
 <h1 class="p-4">Create Sheet</h1>
 
-<div class="d-flex row pt-4 px-4">
-    <div class="justify-content-start col">
-        <div class="toggle-switch">
-            <label class="toggle-switch-light">
-                <input type="checkbox" (change)="selectSheetType()">
-                <span>
-                    <span>Randomized Sheet</span>
-                    <span>Customized Sheet</span>
-                </span>
-                <a class="btn btn-secondary"></a>
-            </label>
-        </div>
-    </div>
-</div>
-
-<app-sheet-form *ngIf="randomizedSheet" [isCreateSheet]="true" [isRandomizedSheet]="true"></app-sheet-form>
-<app-sheet-form *ngIf="!randomizedSheet" [isCreateSheet]="true" [isRandomizedSheet]="false"></app-sheet-form>
+<app-sheet-form [isCreateSheet]="true"></app-sheet-form>
 
 
