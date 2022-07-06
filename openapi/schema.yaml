@@ -612,6 +612,17 @@ components:
                 name:
                     type: string
 
+        Image:
+            required:
+                - reference
+                - content
+            type: object
+            properties:
+                reference:
+                    type: string
+                content:
+                    type: string
+
         Exercise:
             type: object
             required:
@@ -667,7 +678,7 @@ components:
                 images:
                     type: array
                     items:
-                        type: string
+                        $ref: "#/components/schemas/Image"
 
         SheetDto:
             required:
@@ -728,6 +739,17 @@ components:
                 name:
                     type: string
 
+        ImageDto:
+            required:
+                - reference
+                - content
+            type: object
+            properties:
+                reference:
+                    type: string
+                content:
+                    type: string
+
         ExerciseDto:
             required:
                 - title
@@ -766,4 +788,4 @@ components:
                 images:
                     type: array
                     items:
-                        type: string
+                        $ref: "#/components/schemas/ImageDto"
