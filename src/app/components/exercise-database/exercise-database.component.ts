@@ -30,6 +30,16 @@ export class ExerciseDatabaseComponent implements OnInit {
     public isLoaded = false;
     public showLoading = true;
 
+    private orderMap = [{key: "Title", dir: "asc"},
+                        {key: "Course", dir: "asc"},
+                        {key: "Category", dir: "asc"},
+                        {key: "Author", dir: "asc"},
+                        {key: "ShortDescription", dir: "asc"},
+                        {key: "Notes", dir: "asc"},
+                        {key: "updatedAt", dir: "asc"},
+                        {key: "Published", dir: "asc"},
+                        {key: "Used", dir: "asc"}];
+
     // filter form
     filterForm: FormGroup;
 
@@ -128,6 +138,45 @@ export class ExerciseDatabaseComponent implements OnInit {
         this.exercises.sort(function(a, b) { return new Date(a.updatedAt!) > new Date(b.updatedAt!) ? -1 : new Date(a.updatedAt!) < new Date(b.updatedAt!) ? 1 : 0;} )
 
     }
+
+    public sortTable(header: string): void {
+        let headerIndex = this.orderMap.findIndex(x => x.key == header);
+        let direction = this.orderMap[headerIndex].dir;
+        let dir: number;
+
+        if (direction === "asc") {
+            dir = 1;
+            this.orderMap[headerIndex] = {...this.orderMap[headerIndex], dir: "desc"}
+        } else {
+            dir = -1;
+            this.orderMap[headerIndex] = {...this.orderMap[headerIndex], dir: "asc"}
+        }
+
+        if (header === "Title") {
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (a.title.toUpperCase() < b.title.toUpperCase()) ? dir : dir * (-1));
+        } else if (header === "Course") {
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (this.coursesToString(a.courses).toUpperCase() < this.coursesToString(b.courses).toUpperCase()) ? dir : dir * (-1));
+        }else if (header === "Category") {
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (this.categoriesToString(a.categories).toUpperCase() < this.categoriesToString(b.categories).toUpperCase()) ? dir : dir * (-1));
+        }else if (header === "Author") {
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (a.author.username.toUpperCase() < b.author.username.toUpperCase()) ? dir : dir * (-1));
+        }else if (header === "ShortDescription") {
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (a.shortDescription.toUpperCase() < b.shortDescription.toUpperCase()) ? dir : dir * (-1));
+        }else if (header === "Notes") {
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (a.note!.toUpperCase() < b.note!.toUpperCase()) ? dir : dir * (-1));
+        }else if (header === "updatedAt") {
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (new Date(a.updatedAt) < new Date(b.updatedAt)) ? dir : dir * (-1));
+        }else if (header === "Published") {
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (a.isPublished < b.isPublished) ? dir : dir * (-1));
+        }else if (header === "Used") {
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (a.isUsed < b.isUsed) ? dir : dir * (-1));
+        }
+    }
+
+    public coursesToString(courses: Course[]): string {
+        return courses.map(course => course.name).join(", ");
+    }
+
     get isProfessor(): boolean {
         return this.authService.isProfessor;
     }

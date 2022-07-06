@@ -94,11 +94,7 @@
     </div>
        <div *ngIf="isLoaded && isProfessor" class="text-end col" style="margin-top: 15px">
         <div class="btn-group" role="group" aria-label="group">
-            <button title="Press to uncheck all the isUsed flags." style="border: 1px white solid"
-                    class="btn btn-danger" (click)="uncheckAll()">
-                <i class="bi bi-trash3 text-white"></i>
-                Reset Used
-            </button>
+
             <button class="btn btn-primary" style="border: 1px white solid" routerLink="/exercise/create">
                 <i class="bi bi-plus-circle"></i>
                 Create Exercise
@@ -121,15 +117,15 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th scope="col" class="col-2" sortable="title"> Title</th>
-            <th scope="col" class="col-2"> Course</th>
-            <th scope="col" class="col-2"> Category</th>
-            <th *ngIf="!isProfessor" scope="col" class="col-sm"> Author</th>
-            <th scope="col" class="col-2"> Short Description</th>
-            <th scope="col" class="col-2" *ngIf="isProfessor"> Notes</th>
-            <th  scope="col" class="col-1 justify-content-center"> Updated At</th>
-            <th *ngIf="isProfessor" scope="col" class="col-sm justify-content-center">Published</th>
-            <th scope="col" class="col-1" *ngIf="isProfessor">
+            <th scope="col" class="col-2" (click)="sortTable('Title')" sortable="title"> Title</th>
+            <th scope="col" class="col-2" (click)="sortTable('Course')"> Course</th>
+            <th scope="col" class="col-2" (click)="sortTable('Category')"> Category</th>
+            <th *ngIf="!isProfessor" scope="col" class="col-sm" (click)="sortTable('Author')"> Author</th>
+            <th scope="col" class="col-2" (click)="sortTable('ShortDescription')"> Short Description</th>
+            <th scope="col" class="col-2" *ngIf="isProfessor" (click)="sortTable('Notes')"> Notes</th>
+            <th  scope="col" class="col-1 justify-content-center" (click)="sortTable('updatedAt')"> Updated At</th>
+            <th *ngIf="isProfessor" scope="col" class="col-sm justify-content-center" (click)="sortTable('Published')">Published</th>
+            <th scope="col" class="col-1" *ngIf="isProfessor" (click)="sortTable('Used')">
                 <div class="d-flex justify-content-center">
                     <div>Used
 
@@ -145,7 +141,7 @@
         <tr *ngFor="let element of filteredExercises | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
 
             <td scope="col">{{ element.title }}</td>
-            <td scope="col" [innerText]="categoriesToString(element.courses)"></td>
+            <td scope="col" [innerText]="coursesToString(element.courses)"></td>
             <td scope="col" [innerText]="categoriesToString(element.categories)"></td>
             <td *ngIf="!isProfessor" scope="row">{{ element.author.username }}</td>
                 <td scope="col">{{ element.shortDescription }}</td>
