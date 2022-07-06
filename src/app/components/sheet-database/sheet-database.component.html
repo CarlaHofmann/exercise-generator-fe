@@ -1,86 +1,103 @@
 <h1 class="p-4">Sheet Database</h1>
 
-<div class="d-flex row px-4">
-    <p *ngIf="showAlert">
-        <ngb-alert type="danger" (closed)="closeAlert()">{{alertMessage}}</ngb-alert>
-    </p>
-</div>
+
+<p *ngIf="showAlert" class="pt-4 px-4">
+    <ngb-alert type="danger" (closed)="closeAlert()">{{alertMessage}}</ngb-alert>
+</p>
 
 
-<div *ngIf="isLoaded" class="d-flex row px-4">
-    <div *ngIf="filteredSheets?.length"class="col text-right" style="margin-top:15px">
-        <button type="button" style="width:100px" (click)="addFilter()" *ngIf="this.filterForm.value.filters.length==0" class="btn btn-primary" title="Add an additional filter condition. The conditions are connected with logical AND.">Add filter</button>
-    </div>
-
-    <div class="text-end col" style="margin-top: 15px">
-        <div class="btn-group" role="group" aria-label="group">
-            <button *ngIf="isProfessor && filteredSheets?.length" title="Press to uncheck all the published flags."
-                    style="border: 1px white solid;"
-                    class="btn btn-danger" (click)="uncheckAll()">
-                <i class="bi bi-trash3 text-white"></i>
-                Reset Published
-            </button>
-            <button class="btn btn-primary" style="border: 1px white solid;" routerLink="/sheet/create">
-                <i class="bi bi-plus-circle"></i>
-                Create Sheet
-            </button>
-        </div>
-    </div>
-</div>
-
-
-<form  *ngIf="isLoaded && filteredSheets?.length" [formGroup]="filterForm" style="margin-right:15px;margin-left:15px;" (ngSubmit)="applyFilters()">
-
+<form *ngIf="isLoaded && filteredSheets?.length" [formGroup]="filterForm" (ngSubmit)="applyFilters()">
     <table class="table borderless" formArrayName="filters">
-        <tbody >
-        <tr scope="row" style="border: 1px,gray; border-top: 1px, gray;" *ngFor="let filter of filters().controls; let i=index" [formGroupName]="i">
-            <td  scope="col" class="col-2 align-middle">
-                <select class="browser-default custom-select form-control" formControlName="choice" placeholder="Filter by...">
+        <tbody>
+        <tr scope="row" *ngFor="let filter of filters().controls; let i=index" [formGroupName]="i">
+            <td scope="col" class="col-2 align-middle">
+                <select class="browser-default custom-select form-control" formControlName="choice"
+                        placeholder="Filter by...">
                     <option [ngValue]="undefined" hidden>Filter by...</option>
-                    <option value="Title" >Title</option>
+                    <option value="Title">Title</option>
                     <option value="Course">Course</option>
                     <option value="Category">Category</option>
                     <option *ngIf="!isProfessor" value="Author">Author</option>
                 </select>
             </td>
-            <td  scope="col" class="col-9 align-middle">
 
-                <input *ngIf="this.filterForm.value.filters.at(i).choice=='Title'" type="text"  class="form-control" id="search"
-                       placeholder="Search by title" formControlName="value"  (input)="applyFilters()"/>
-                <ng-select *ngIf="this.filterForm.value.filters.at(i).choice=='Course'" [clearSearchOnAdd]="true"  [clearable]="false"
+            <td scope="col" class="col-9 align-middle">
+
+                <input *ngIf="this.filterForm.value.filters.at(i).choice=='Title'" type="text" class="form-control"
+                       id="search"
+                       placeholder="Search by title" formControlName="value" (input)="applyFilters()"/>
+                <ng-select *ngIf="this.filterForm.value.filters.at(i).choice=='Course'" [clearSearchOnAdd]="true"
+                           [clearable]="false"
                            [items]="courses" [multiple]="true" bindLabel="courses"
-                           placeholder="Filter by course" formControlName="value"  (change)="applyFilters()">
+                           placeholder="Filter by course" formControlName="value" (change)="applyFilters()">
                 </ng-select>
-                <ng-select *ngIf="this.filterForm.value.filters.at(i).choice=='Category'" [clearSearchOnAdd]="true" [clearable]="false"
+                <ng-select *ngIf="this.filterForm.value.filters.at(i).choice=='Category'" [clearSearchOnAdd]="true"
+                           [clearable]="false"
                            [items]="categories" [multiple]="true" bindLabel="categories"
-                           placeholder="Filter by category" formControlName="value"  (change)="applyFilters()">
+                           placeholder="Filter by category" formControlName="value" (change)="applyFilters()">
                 </ng-select>
-                <ng-select *ngIf="this.filterForm.value.filters.at(i).choice=='Author' && !isProfessor" [clearSearchOnAdd]="true" [clearable]="false"
+                <ng-select *ngIf="this.filterForm.value.filters.at(i).choice=='Author' && !isProfessor"
+                           [clearSearchOnAdd]="true" [clearable]="false"
                            [items]="authors" [multiple]="true" bindLabel="authors"
-                           placeholder="Filter by author" formControlName="value"  (change)="applyFilters()">
+                           placeholder="Filter by author" formControlName="value" (change)="applyFilters()">
                 </ng-select>
-
             </td>
+
             <td scope="col" class="col-1 align-middle" class="text-right">
                 <div class="d-flex justify-content-end">
-                    <button (click)="removeFilter(i)" class="btn btn-danger" title="Remove filter">  <i class="bi bi-trash3 text-white"></i> </button>
+                    <button (click)="removeFilter(i)" class="btn btn-danger" title="Remove filter"><i
+                        class="bi bi-trash3 text-white"></i></button>
                 </div>
-
             </td>
+
         </tr>
         </tbody>
     </table>
+
+
     <div class=" d-flex justify-content-around">
         <div class="btn-group" role="group" aria-label="filter actions">
-            <button type="button" style="width:100px" (click)="addFilter()" *ngIf="this.filterForm.value.filters.length>0" class="btn btn-primary" title="Add an additional filter condition. The conditions are connected with logical AND.">Add filter</button>
-            <button type="button" style="width:100px" (click)="removeAllFilters()" *ngIf="this.filterForm.value.filters.length>0" class="btn btn-danger" title="Clear all the filters.">Clear</button>
+            <button type="button" (click)="addFilter()" *ngIf="this.filterForm.value.filters.length>0"
+                    class="btn btn-primary width-100 btn-white-border"
+                    title="Add an additional filter condition. The conditions are connected with logical AND.">Add
+                filter
+            </button>
+            <button type="button" (click)="removeAllFilters()" *ngIf="this.filterForm.value.filters.length>0"
+                    class="btn btn-danger width-100 btn-white-border" title="Clear all the filters.">Clear
+            </button>
         </div>
     </div>
 </form>
 
 
+<div  *ngIf="isLoaded && filteredSheets?.length" class="d-flex row px-4">
+
+    <div class="col text-right">
+        <button type="button" (click)="addFilter()" *ngIf="this.filterForm.value.filters.length==0"
+                class="btn btn-primary width-100"
+                title="Add an additional filter condition. The conditions are connected with logical AND.">Add filter
+        </button>
+    </div>
+
+    <div *ngIf="isProfessor" class="text-end col">
+        <div class="btn-group" role="group" aria-label="group">
+            <button title="Press to uncheck all the published flags."
+                    class="btn btn-danger btn-white-border" (click)="uncheckAll()">
+                <i class="bi bi-trash3 text-white"></i>
+                Reset Published
+            </button>
+            <button class="btn btn-primary btn-white-border" routerLink="/sheet/create">
+                <i class="bi bi-plus-circle"></i>
+                Create Sheet
+            </button>
+        </div>
+    </div>
+
+</div>
+
+
 <div *ngIf="isLoaded && filteredSheets?.length" class="px-4">
-    <table id="sheetTable" class="table table-striped">
+    <table class="table table-striped">
         <thead>
         <tr>
             <th scope="col" class="col-2" (click)="sortTable('Title')"> Title</th>
@@ -88,8 +105,8 @@
             <th scope="col" class="col-3" (click)="sortTable('Category')"> Category</th>
             <th *ngIf="!isProfessor" scope="col" class="col-2" (click)="sortTable('Author')"> Author</th>
             <th *ngIf="isProfessor" scope="col" class="col-1" (click)="sortTable('Exercises')"> Exercises</th>
-            <th scope="col" class="col-2" (click)="sortTable('Updated At')"> Updated At</th>
-            <th scope="col" class="col-2" (click)="sortTable('Published At')"> Published At</th>
+            <th scope="col" class="col-1" (click)="sortTable('Updated At')"> Updated At</th>
+            <th scope="col" class="col-1" (click)="sortTable('Published At')"> Published At</th>
             <th *ngIf="isProfessor" scope="col" class="col-1" (click)="sortTable('Published')"> Published</th>
             <th scope="col" class="col"></th>
         </tr>
@@ -107,28 +124,29 @@
             <td *ngIf="isProfessor" scope="row">{{ sheet.exercises.length }}</td>
             <td scope="row">{{ sheet.updatedAt | date:'dd.MM.YYYY' }}</td>
             <td scope="row">{{ sheet.publishedAt | date:'dd.MM.YYYY' }}</td>
-            <td *ngIf="isProfessor" scope="row"><input class="form-check-input" type="checkbox" [(ngModel)]="sheet.isPublished"
+            <td *ngIf="isProfessor" scope="row"><input class="form-check-input" type="checkbox"
+                                                       [(ngModel)]="sheet.isPublished"
                                                        (change)="toggleCheckbox(sheet.id)"/>
             </td>
-            <td scope="col" class="text-right">
+            <td scope="row" class="text-right">
                 <div class="d-flex justify-content-end">
                     <div class="btn-group" role="group" aria-label="group">
-                        <button type="button" class="btn btn-success btn-table"
+                        <button type="button" class="btn btn-success btn-white-border"
                                 title="View the sheet as pdf" (click)="viewSheetPdf(sheet.id)">
                             <i class="bi bi-eye text-white"></i>
                         </button>
 
-                        <button *ngIf="isProfessor" type="button" class="btn btn-warning btn-table"
+                        <button *ngIf="isProfessor" type="button" class="btn btn-warning btn-white-border"
                                 title="Edit the sheet" routerLink="{{ '/sheet/'+sheet.id+'/edit' }}">
                             <i class="bi bi-pencil text-white"></i>
                         </button>
 
-                        <button *ngIf="isProfessor" type="button" class="btn btn-warning btn-table"
+                        <button *ngIf="isProfessor" type="button" class="btn btn-warning btn-white-border"
                                 title="Clone the sheet" routerLink="{{ '/sheet/'+sheet.id+'/clone' }}">
                             <i class="bi bi-files text-white"></i>
                         </button>
 
-                        <button *ngIf="isProfessor" type="button" class="btn btn-danger btn-table"
+                        <button *ngIf="isProfessor" type="button" class="btn btn-danger btn-white-border"
                                 title="Delete the sheet from the database" (click)="removeSheet(sheet.id);">
                             <i class="bi bi-trash3 text-white"></i>
                         </button>
@@ -142,7 +160,7 @@
 
     <div class="row ">
         <div class="col-4 ">
-            <select class="form-select" style="width:200px" [ngModel]="pageSize" (ngModelChange)="setPageSize($event)">
+            <select class="form-select width-200" [ngModel]="pageSize" (ngModelChange)="setPageSize($event)">
                 <option [ngValue]="5">5 items per page</option>
                 <option [ngValue]="10">10 items per page</option>
                 <option [ngValue]="25">25 items per page</option>
@@ -158,12 +176,12 @@
 </div>
 
 
-<div *ngIf="!filteredSheets?.length && isLoaded" class="px-4 center no-data-found-text">
+<div *ngIf="isLoaded && !filteredSheets?.length" class="px-4 center no-data-found-text">
     No sheets found.
 </div>
 
 
-<div *ngIf="showLoading" class="d-flex justify-content-center px-4">
+<div *ngIf="showLoading && !isLoaded" class="d-flex justify-content-center px-4">
     <div class="spinner-border text-primary" role="status">
         <span class="sr-only"></span>
     </div>

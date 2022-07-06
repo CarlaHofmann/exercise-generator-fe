@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
+import { ViewportScroller } from '@angular/common';
 import {FormControl, FormGroup} from "@angular/forms";
-import {AuthService} from "../../services/auth.service";
 import {Router} from "@angular/router";
+import {AuthService} from "../../services/auth.service";
 import {LoginApiService} from "../../../../build/openapi";
 import {DataService} from "../../services/data.service";
 
@@ -20,7 +21,8 @@ export class LoginComponent implements OnInit {
     constructor(private router: Router,
                 private authService: AuthService,
                 private dataService: DataService,
-                private loginApiService: LoginApiService) {
+                private loginApiService: LoginApiService,
+                private viewportScroller: ViewportScroller) {
     }
 
     ngOnInit(): void {
@@ -49,6 +51,7 @@ export class LoginComponent implements OnInit {
         this.alertMessage = message;
         this.showAlert = true;
         console.log(error);
+        this.viewportScroller.scrollToPosition([0, 0]);
     }
 
     public closeAlert(): void {

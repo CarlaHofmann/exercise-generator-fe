@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
+import {ViewportScroller} from "@angular/common";
+import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 import {Category, Course, Exercise, Sheet, SheetApiService, SheetDto} from 'build/openapi';
 import {AuthService} from '../../services/auth.service';
 import {DataService} from "../../services/data.service";
-import {ViewportScroller} from "@angular/common";
-import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 
 @Component({
     selector: 'app-sheet-database',
@@ -57,10 +57,6 @@ export class SheetDatabaseComponent implements OnInit {
         this.viewportScroller.scrollToPosition([0, 0]);
     }
 
-    get isProfessor(): boolean {
-        return this.authService.isProfessor;
-    }
-
     public filters(): FormArray {
         return this.filterForm.get("filters") as FormArray
     }
@@ -94,11 +90,7 @@ export class SheetDatabaseComponent implements OnInit {
     }
 
     public addFilter(): void {
-        this.filters().push(this.fb.group({
-            choice: '',
-            contains: true,
-            value: [],
-        }));
+        this.filters().push(this.fb.group({choice: '', contains: true, value: []}));
     }
 
     private refreshFilterData(): void {
@@ -123,12 +115,14 @@ export class SheetDatabaseComponent implements OnInit {
                 this.courses = Array.from(new Set(this.sheets.reduce((previous, next) => previous.concat(next.courses.map(course => course.name)), new Array<string>())).values());
                 this.categories = Array.from(new Set(this.sheets.reduce((previous, next) => previous.concat(next.categories.map(category => category.name)), new Array<string>())).values());
                 if (!this.isProfessor) this.authors = Array.from(new Set(this.sheets.map(sheet => sheet.author.username)).values());
+                if (!this.isProfessor) this.sortByPublishedAt();
+                if (this.isProfessor) this.sortByUpdatedAt();
                 this.refreshSheets();
                 this.isLoaded = true;
                 this.showLoading = false;
             },
-            error: error => {
-                this.displayAlert("Error loading from the database.", error);
+            error: err => {
+                this.displayAlert("Error loading from the database.", err);
                 this.showLoading = false;
             }
         });
@@ -174,8 +168,8 @@ export class SheetDatabaseComponent implements OnInit {
                     this.loadSheets();
                     this.refreshSheets();
                 },
-                error: error => {
-                    this.displayAlert("Error while deleting sheet.", error);
+                error: err => {
+                    this.displayAlert("Error while deleting sheet.", err);
                 }
             });
         }
@@ -194,6 +188,14 @@ export class SheetDatabaseComponent implements OnInit {
             sheet.isPublished = false;
             this.updateSheet(sheet);
         });
+    }
+
+    public sortByPublishedAt():void{
+        this.sheets.sort(function(a, b) { return new Date(a.publishedAt!) > new Date(b.publishedAt!) ? -1 : new Date(a.publishedAt!) < new Date(b.publishedAt!) ? 1 : 0;} )
+    }
+
+    public sortByUpdatedAt():void{
+        this.sheets.sort(function(a, b) { return new Date(a.updatedAt!) > new Date(b.updatedAt!) ? -1 : new Date(a.updatedAt!) < new Date(b.updatedAt!) ? 1 : 0;} )
     }
 
     public sortTable(header: string): void {
@@ -243,6 +245,10 @@ export class SheetDatabaseComponent implements OnInit {
         }
         console.log(exercisesStringArray);
         return exercisesStringArray;
+    }
+
+    get isProfessor(): boolean {
+        return this.authService.isProfessor;
     }
 
     public displayAlert(message: string, error: string): void {

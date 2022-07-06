@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {ExerciseApiService, SheetApiService} from "../../../../build/openapi";
+import { ViewportScroller } from '@angular/common';
 import {ActivatedRoute, Router} from "@angular/router";
 import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
+import {ExerciseApiService, SheetApiService} from "../../../../build/openapi";
 
 @Component({
     selector: 'app-pdf-viewer',
@@ -20,7 +21,8 @@ export class PdfViewerComponent implements OnInit {
                 private route: ActivatedRoute,
                 private sanitizer: DomSanitizer,
                 private exerciseApiService: ExerciseApiService,
-                private sheetApiService: SheetApiService) {
+                private sheetApiService: SheetApiService,
+                private viewportScroller: ViewportScroller) {
     }
 
     ngOnInit(): void {
@@ -75,6 +77,7 @@ export class PdfViewerComponent implements OnInit {
         this.alertMessage = message;
         this.showAlert = true;
         console.log(error);
+        this.viewportScroller.scrollToPosition([0, 0]);
     }
 
     public closeAlert(): void {
