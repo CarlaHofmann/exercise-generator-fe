@@ -249,12 +249,12 @@
         <div class="text-center pt-4">
             <div class="form-group text-center align-items-center">
                 <button *ngIf="!isProfessor" class="btn btn-primary me-3" [disabled]="sheetForm.invalid" (click)="viewSheetPdf()">
-                    Open Sheet
+                    Create Sheet
                     <span *ngIf="!isPdfLoaded" class="spinner-border spinner-border-sm" role="status"
                           aria-hidden="true"></span>
                 </button>
                 <button *ngIf="isProfessor" class="btn btn-primary me-3" [disabled]="sheetForm.invalid" (click)="viewSheetPdf()">
-                    Sheet Preview
+                    Preview
                     <span *ngIf="!isPdfLoaded" class="spinner-border spinner-border-sm" role="status"
                           aria-hidden="true"></span>
                 </button>
