@@ -3,6 +3,22 @@
 </p>
 
 
+<div *ngIf="isCreateSheet" class="d-flex row pt-4 px-4">
+    <div class="justify-content-start col">
+        <div class="toggle-switch">
+            <label class="btn toggle-switch-light">
+                <input type="checkbox" (change)="selectSheetType()">
+                <span>
+                    <span>Randomized Sheet</span>
+                    <span>Customized Sheet</span>
+                </span>
+                <a class="btn btn-secondary"></a>
+            </label>
+        </div>
+    </div>
+</div>
+
+
 <div class="d-flex row">
     <form class="px-5 pt-2 col" [formGroup]="sheetForm">
         <div class="form-group">
@@ -74,24 +90,25 @@
         </div>
 
 
-        <div *ngIf="isLoaded && filteredExercises?.length && !isRandomizedSheet" class="d-flex row px-4 col text-right" style="margin-top:15px">
-                <button type="button" style="width:100px" (click)="addFilter()"
-                        *ngIf="this.filterForm.value.filters.length==0" class="btn btn-primary"
-                        title="Add an additional filter condition. The conditions are connected with logical AND.">
-                    Add filter
-                </button>
+        <div *ngIf="isLoaded && filteredExercises?.length && !isRandomizedSheet" class="d-flex row px-4 col text-right">
+            <button type="button " (click)="addFilter()"
+                    *ngIf="this.filterForm.value.filters.length==0" class="btn btn-primary width-100 btn-white-border"
+                    title="Add an additional filter condition. The conditions are connected with logical AND.">
+                Add filter
+            </button>
         </div>
 
 
-        <form  *ngIf="!isRandomizedSheet" [formGroup]="filterForm" style="margin-right:15px;margin-left:15px;"
-               (ngSubmit)="applyFilters()">
+        <form *ngIf="!isRandomizedSheet" [formGroup]="filterForm"
+              (ngSubmit)="applyFilters()">
             <table class="table borderless" formArrayName="filters">
-                <tbody >
-                <tr scope="row" style="border: 1px,gray; border-top: 1px, gray;" *ngFor="let filter of filters().controls; let i=index" [formGroupName]="i">
-                    <td  scope="col" class="col-2 align-middle">
-                        <select class="browser-default custom-select form-control" formControlName="choice" placeholder="Filter by...">
+                <tbody>
+                <tr scope="row" *ngFor="let filter of filters().controls; let i=index" [formGroupName]="i">
+                    <td scope="col" class="col-2 align-middle">
+                        <select class="browser-default custom-select form-control" formControlName="choice"
+                                placeholder="Filter by...">
                             <option [ngValue]="undefined" hidden>Filter by...</option>
-                            <option value="Title" >Title</option>
+                            <option value="Title">Title</option>
                             <option value="Course">Course</option>
                             <option value="Category">Category</option>
                             <option value="Author" *ngIf="!isProfessor">Author</option>
@@ -99,36 +116,47 @@
                             <option value="Notes" *ngIf="isProfessor">Notes</option>
                         </select>
                     </td>
-                    <td  scope="col" class="col-9 align-middle">
-                        <input *ngIf="this.filterForm.value.filters.at(i).choice=='Title'" type="text"  class="form-control" id="search"
-                               placeholder="Search by title" formControlName="value"  (input)="applyFilters()"/>
-                        <ng-select *ngIf="this.filterForm.value.filters.at(i).choice=='Course'" [clearSearchOnAdd]="true"  [clearable]="false"
+                    <td scope="col" class="col-9 align-middle">
+                        <input *ngIf="this.filterForm.value.filters.at(i).choice=='Title'" type="text"
+                               class="form-control"
+                               placeholder="Search by title" formControlName="value" (input)="applyFilters()"/>
+                        <ng-select *ngIf="this.filterForm.value.filters.at(i).choice=='Course'"
+                                   [clearSearchOnAdd]="true" [clearable]="false"
                                    [items]="courses" [multiple]="true" bindLabel="name"
-                                   placeholder="Filter by course" formControlName="value"  (change)="applyFilters()">
+                                   placeholder="Filter by course" formControlName="value" (change)="applyFilters()">
                         </ng-select>
-                        <ng-select *ngIf="this.filterForm.value.filters.at(i).choice=='Category'" [clearSearchOnAdd]="true" [clearable]="false"
+                        <ng-select *ngIf="this.filterForm.value.filters.at(i).choice=='Category'"
+                                   [clearSearchOnAdd]="true" [clearable]="false"
                                    [items]="categories" [multiple]="true" bindLabel="name"
-                                   placeholder="Filter by category" formControlName="value"  (change)="applyFilters()">
+                                   placeholder="Filter by category" formControlName="value" (change)="applyFilters()">
                         </ng-select>
-                        <ng-select *ngIf="this.filterForm.value.filters.at(i).choice=='Author' && !isProfessor" [clearSearchOnAdd]="true" [clearable]="false"
+                        <ng-select *ngIf="this.filterForm.value.filters.at(i).choice=='Author' && !isProfessor"
+                                   [clearSearchOnAdd]="true" [clearable]="false"
                                    [items]="authors" [multiple]="true" bindLabel="authors"
-                                   placeholder="Filter by author" formControlName="value"  (change)="applyFilters()">
+                                   placeholder="Filter by author" formControlName="value" (change)="applyFilters()">
                         </ng-select>
-                        <input *ngIf="this.filterForm.value.filters.at(i).choice=='ShortDescription'" type="text"  class="form-control" id="search"
-                               placeholder="Search by short description" formControlName="value" (input)="applyFilters()"/>
-                        <div *ngIf="this.filterForm.value.filters.at(i).choice=='Notes' && isProfessor" class="input-group  ">
+                        <input *ngIf="this.filterForm.value.filters.at(i).choice=='ShortDescription'" type="text"
+                               class="form-control"
+                               placeholder="Search by short description" formControlName="value"
+                               (input)="applyFilters()"/>
+                        <div *ngIf="this.filterForm.value.filters.at(i).choice=='Notes' && isProfessor"
+                             class="input-group  ">
                             <div class="input-group-prepend">
-                                <div class="input-group-text" title="If checked the search will include the given text. If unchecked, the search will return result NOT including the given text.">
-                                    <input type="checkbox" formControlName="contains"  (change)="applyFilters()"> &nbsp; contains
+                                <div class="input-group-text"
+                                     title="If checked the search will include the given text. If unchecked, the search will return result NOT including the given text.">
+                                    <input type="checkbox" formControlName="contains" (change)="applyFilters()"> &nbsp;
+                                    contains
                                 </div>
                             </div>
-                            <input type="text"  class="form-control" placeholder="Search in notes" formControlName="value" (input)="applyFilters()"/>
+                            <input type="text" class="form-control" placeholder="Search in notes"
+                                   formControlName="value" (input)="applyFilters()"/>
                         </div>
 
                     </td>
                     <td scope="col" class="col-1 align-middle" class="text-right">
                         <div class="d-flex justify-content-end">
-                            <button (click)="removeFilter(i)" class="btn btn-danger" title="Remove filter">  <i class="bi bi-trash3 text-white"></i> </button>
+                            <button (click)="removeFilter(i)" class="btn btn-danger" title="Remove filter">
+                                <i class="bi bi-trash3 text-white"></i></button>
                         </div>
 
                     </td>
@@ -137,13 +165,20 @@
             </table>
             <div class=" d-flex justify-content-around">
                 <div class="btn-group" role="group" aria-label="filter actions">
-                    <button type="button" style="width:100px" (click)="addFilter()" *ngIf="this.filterForm.value.filters.length>0" class="btn btn-primary" title="Add an additional filter condition. The conditions are connected with logical AND.">Add filter</button>
-                    <button type="button" style="width:100px" (click)="removeAllFilters()" *ngIf="this.filterForm.value.filters.length>0" class="btn btn-danger" title="Clear all the filters.">Clear</button>
+                    <button type="button" (click)="addFilter()" *ngIf="this.filterForm.value.filters.length>0"
+                            class="btn btn-primary width-100 btn-white-border"
+                            title="Add an additional filter condition. The conditions are connected with logical AND."
+                    >Add filter
+                    </button>
+                    <button type="button" (click)="removeAllFilters()" *ngIf="this.filterForm.value.filters.length>0"
+                            class="btn btn-danger width-100 btn-white-border" title="Clear all the filters."
+                    >Clear
+                    </button>
                 </div>
             </div>
         </form>
 
-        <div *ngIf="!isRandomizedSheet" style="margin-top: 15px" class="form-group">
+        <div *ngIf="!isRandomizedSheet" class="form-group">
             <label>Select Exercises</label>
             <i class="bi bi-info-circle mx-4" title="Choose exercises for the sheet."></i>
             <table *ngIf="isLoaded" class="table table-striped">
@@ -168,34 +203,36 @@
                     <td scope="row"><input class="form-check-input" type="checkbox"
                                            (change)="selectExercise(exercise)"/></td>
                     <td scope="row">{{ exercise.title }}</td>
-                    <td scope="row">{{ coursesToString(exercise.courses) }} </td>
-                    <td scope="row">{{ categoriesToString(exercise.categories) }} </td>
+                    <td scope="row">{{ coursesToString(exercise.courses) }}</td>
+                    <td scope="row">{{ categoriesToString(exercise.categories) }}</td>
                     <td *ngIf="!isProfessor" scope="row">{{ exercise.author.username }}</td>
-                    <td scope="row">{{ exercise.shortDescription }} </td>
-                    <td *ngIf="isProfessor" scope="row">{{ exercise.note }} </td>
-                    <td scope="row">{{ exercise.updatedAt | date:'dd.MM.YYYY' }} </td>
-                    <td *ngIf="isProfessor" scope="row">{{ booleanToString(exercise.isPublished) }} </td>
-                    <td *ngIf="isProfessor"scope="row">{{ booleanToString(exercise.isUsed) }} </td>
+                    <td scope="row">{{ exercise.shortDescription }}</td>
+                    <td *ngIf="isProfessor" scope="row">{{ exercise.note }}</td>
+                    <td scope="row">{{ exercise.updatedAt | date:'dd.MM.YYYY' }}</td>
+                    <td *ngIf="isProfessor" scope="row">{{ booleanToString(exercise.isPublished) }}</td>
+                    <td *ngIf="isProfessor" scope="row">{{ booleanToString(exercise.isUsed) }}</td>
                     <td scope="col" class="text-right">
                         <div class="d-flex justify-content-end">
                             <div class="btn-group" role="group" aria-label="group">
-                                <button type="button" class="btn btn-success btn-table"
+                                <button type="button" class="btn btn-success btn-white-border"
                                         title="View the exercise as pdf." (click)="viewExercisePdf(exercise.id)">
                                     <i class="bi bi-eye text-white"></i>
                                 </button>
 
-                                <button *ngIf="isProfessor" type="button" class="btn btn-warning btn-table"
+                                <button *ngIf="isProfessor" type="button" class="btn btn-warning btn-white-border"
                                         title="Edit the exercise." routerLink="{{ '/exercise/'+exercise.id+'/edit' }}">
                                     <i class="bi bi-pencil text-white"></i>
                                 </button>
 
-                                <button *ngIf="isProfessor" type="button" class="btn btn-warning btn-table"
-                                        title="Clone the exercise." routerLink="{{ '/exercise/'+exercise.id+'/clone' }}">
+                                <button *ngIf="isProfessor" type="button" class="btn btn-warning btn-white-border"
+                                        title="Clone the exercise."
+                                        routerLink="{{ '/exercise/'+exercise.id+'/clone' }}">
                                     <i class="bi bi-files text-white"></i>
                                 </button>
 
-                                <button *ngIf="isProfessor" type="button" class="btn btn-danger btn-table"
-                                        title="Delete the exercise from the database." (click)="removeExercise(exercise.id);">
+                                <button *ngIf="isProfessor" type="button" class="btn btn-danger btn-white-border"
+                                        title="Delete the exercise from the database."
+                                        (click)="removeExercise(exercise.id);">
                                     <i class="bi bi-trash3 text-white"></i>
                                 </button>
                             </div>
@@ -204,9 +241,11 @@
                 </tr>
                 </tbody>
             </table>
+
+
             <div *ngIf="isLoaded" class="row ">
                 <div class="col-4 ">
-                    <select class="form-select" style="width:200px" formControlName="pageSize"
+                    <select class="form-select width-200" formControlName="pageSize"
                             (ngModelChange)="setPageSize($event)">
                         <option [ngValue]="5">5 items per page</option>
                         <option [ngValue]="10">10 items per page</option>
@@ -248,12 +287,14 @@
 
         <div class="text-center pt-4">
             <div class="form-group text-center align-items-center">
-                <button *ngIf="!isProfessor" class="btn btn-primary me-3" [disabled]="sheetForm.invalid" (click)="viewSheetPdf()">
+                <button *ngIf="!isProfessor" class="btn btn-primary me-3" [disabled]="sheetForm.invalid"
+                        (click)="viewSheetPdf()">
                     Create Sheet
                     <span *ngIf="!isPdfLoaded" class="spinner-border spinner-border-sm" role="status"
                           aria-hidden="true"></span>
                 </button>
-                <button *ngIf="isProfessor" class="btn btn-primary me-3" [disabled]="sheetForm.invalid" (click)="viewSheetPdf()">
+                <button *ngIf="isProfessor" class="btn btn-primary me-3" [disabled]="sheetForm.invalid"
+                        (click)="viewSheetPdf()">
                     Preview
                     <span *ngIf="!isPdfLoaded" class="spinner-border spinner-border-sm" role="status"
                           aria-hidden="true"></span>
@@ -262,7 +303,8 @@
                         [disabled]="sheetForm.invalid">
                     Save
                 </button>
-                <button *ngIf="isProfessor && isCreateSheet" type="submit" class="btn btn-primary me-3" (click)="onSubmit(false)"
+                <button *ngIf="isProfessor && isCreateSheet" type="submit" class="btn btn-primary me-3"
+                        (click)="onSubmit(false)"
                         [disabled]="sheetForm.invalid">
                     Save and Create New Sheet
                 </button>
@@ -276,7 +318,7 @@
                 class="col"
                 height="1000rem">
         </object>
-        <i class="bi bi-x col-auto" style="font-size: 3rem; margin-top: -1rem" title="Close PDF preview." (click)="pdfUrl = ''"></i>
+        <i class="bi bi-x col-auto close-pdf" title="Close PDF preview." (click)="pdfUrl = ''"></i>
     </div>
 
 </div>

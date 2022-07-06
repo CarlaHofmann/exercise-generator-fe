@@ -19,10 +19,9 @@ export class SheetFormComponent implements OnInit, OnDestroy {
     public isCreateSheet: boolean = false;
 
     @Input()
-    public isRandomizedSheet: boolean = false;
-
-    @Input()
     public isCloneSheet: boolean = false;
+
+    public isRandomizedSheet: Boolean = true;
 
     private sheetId: string = "";
     private sheet: Sheet;
@@ -125,6 +124,10 @@ export class SheetFormComponent implements OnInit, OnDestroy {
         return this.authService.isProfessor;
     }
 
+    public selectSheetType(): void {
+        this.isRandomizedSheet = !this.isRandomizedSheet;
+    }
+
     public filters() : FormArray {
         return this.filterForm.get("filters") as FormArray
     }
@@ -209,8 +212,8 @@ export class SheetFormComponent implements OnInit, OnDestroy {
                 this.sheetExercises = this.sheet.exercises;
                 this.isLoaded = true;
             },
-            error: error => {
-                this.displayAlert("Sheet not found.", error);
+            error: err => {
+                this.displayAlert("Sheet not found.", err);
                 this.isLoaded = true;
             }
         });
@@ -238,8 +241,8 @@ export class SheetFormComponent implements OnInit, OnDestroy {
                 this.refreshExercises();
                 this.isLoaded = true;
             },
-            error: error => {
-                this.displayAlert("Error while loading exercises.", error);
+            error: err => {
+                this.displayAlert("Error while loading exercises.", err);
             }
         });
     }
@@ -308,8 +311,8 @@ export class SheetFormComponent implements OnInit, OnDestroy {
                 next: () => {
                     this.loadExercises();
                 },
-                error: error => {
-                    this.displayAlert('Error while deleting exercise.', error);
+                error: err => {
+                    this.displayAlert('Error while deleting exercise.', err);
                 }
             });
         }
@@ -372,7 +375,7 @@ export class SheetFormComponent implements OnInit, OnDestroy {
     }
 
     private checkUnsavedChanges(): void {
-        if (this.isRandomizedSheet || !this.isCreateSheet) {
+        if (this.isRandomizedSheet) {
             this.dataService.existUnsavedChanges = Boolean(this.sheetForm.controls["title"].value.length ||
                 this.sheetForm.controls["courses"].value &&
                 this.sheetForm.controls["courses"].value.some((course: { name: string }) => course.name.length) ||
@@ -431,8 +434,8 @@ export class SheetFormComponent implements OnInit, OnDestroy {
                 this.isPdfLoaded = true;
                 this.viewportScroller.scrollToPosition([0, 0]);
             },
-            error: error => {
-                this.displayAlert("Error while trying to get PDF.", error);
+            error: err => {
+                this.displayAlert("Error while trying to get PDF.", err);
                 this.isPdfLoaded = true;
             }
         });
@@ -455,8 +458,8 @@ export class SheetFormComponent implements OnInit, OnDestroy {
                         this.location.back();
                     }
                 },
-                error: error => {
-                    this.displayAlert("Error while creating sheet.", error);
+                error: err => {
+                    this.displayAlert("Error while creating sheet.", err);
                 }
             });
         } else {
@@ -468,8 +471,8 @@ export class SheetFormComponent implements OnInit, OnDestroy {
                         this.location.back();
                     }
                 },
-                error: error => {
-                    this.displayAlert("Error while updating sheet.", error);
+                error: err => {
+                    this.displayAlert("Error while updating sheet.", err);
                 }
             });
         }

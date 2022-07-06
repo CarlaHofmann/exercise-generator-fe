@@ -1,0 +1,66 @@
+.toggle-switch {
+        border:1px solid #999999;
+}
+
+.toggle-switch span{
+        color: #000000;
+}
+
+.toggle-switch-light {
+        display: block;
+        height: 30px;
+        position: relative;
+        overflow: visible;
+        padding: 0px;
+        margin-left:0px;
+}
+
+.toggle-switch-light a {
+        display: block;
+        transition: all 0.3s ease-out 0s;
+        position: absolute;
+        right: 50%;
+        top: 0px;
+        z-index: 4;
+        width: 50%;
+        height: 100%;
+        padding: 0px;
+        color: #999999;
+}
+
+.toggle-switch-light > span {
+        line-height: 30px;
+        vertical-align: middle;
+        position: absolute;
+        left: -100px;
+        width: 100%;
+        margin: 0px;
+        padding-right: 100px;
+        text-align: left;
+}
+
+.toggle-switch-light > span span {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        z-index: 5;
+        display: block;
+        width: 50%;
+        margin-left: 100px;
+        text-align: center;
+}
+
+.toggle-switch-light > span span:last-child {
+        left: 50%;
+}
+
+.toggle-switch-light input {
+        position: absolute;
+        opacity: 0;
+        z-index: 5;
+}
+
+.toggle-switch-light input:checked ~ a {
+        right: 0%;
+        color: #faf7f7;
+}
