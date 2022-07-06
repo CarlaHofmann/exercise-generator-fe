@@ -173,7 +173,7 @@
                     <td *ngIf="!isProfessor" scope="row">{{ exercise.author.username }}</td>
                     <td scope="row">{{ exercise.shortDescription }} </td>
                     <td *ngIf="isProfessor" scope="row">{{ exercise.note }} </td>
-                    <td scope="row">{{ exercise.updatedAt }} </td>
+                    <td scope="row">{{ exercise.updatedAt | date:'dd.MM.YYYY' }} </td>
                     <td *ngIf="isProfessor" scope="row">{{ booleanToString(exercise.isPublished) }} </td>
                     <td *ngIf="isProfessor"scope="row">{{ booleanToString(exercise.isUsed) }} </td>
                     <td scope="col" class="text-right">
