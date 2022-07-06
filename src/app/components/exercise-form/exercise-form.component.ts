@@ -127,7 +127,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
 
     private loadCourses(): void {
         this.courseApiService.getAllCourses().subscribe({
-            next: response => this.courses = response,
+            next: response => this.courses = response.sort((a, b) => (a.name < b.name) ? -1 : 1),
             error: error => {
                 this.displayAlert("Error while loading courses.", error);
             }
@@ -136,7 +136,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
 
     private loadCategories(): void {
         this.categoryApiService.getAllCategories().subscribe({
-            next: response => this.categories = response,
+            next: response => this.categories = response.sort((a, b) => (a.name < b.name) ? -1 : 1),
             error: error => {
                 this.displayAlert("Error while loading categories.", error);
             }

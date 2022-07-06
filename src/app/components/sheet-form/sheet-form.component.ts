@@ -178,8 +178,8 @@ export class SheetFormComponent implements OnInit, OnDestroy {
     }
 
     private refreshFilterData(): void {
-        this.categories = Array.from(new Set(this.filteredExercises.reduce((previous, next) => previous.concat(next.categories.map(el => el.name)), new Array<string>())).values());
-        this.courses = Array.from(new Set(this.filteredExercises.reduce((previous, next) => previous.concat(next.courses.map(el => el.name)), new Array<string>())).values());
+        this.categories = Array.from(new Set(this.filteredExercises.reduce((previous, next) => previous.concat(next.categories.map(el => el.name)).sort((a, b) => (a < b) ? -1 : 1), new Array<string>())).values());
+        this.courses = Array.from(new Set(this.filteredExercises.reduce((previous, next) => previous.concat(next.courses.map(el => el.name)).sort((a, b) => (a < b) ? -1 : 1), new Array<string>())).values());
     }
 
     public removeFilter(index : number): void{
@@ -219,23 +219,21 @@ export class SheetFormComponent implements OnInit, OnDestroy {
     get sheetCourses(): string {
         this.onFormChange();
         return this.sheetDto.courses.length ?
-                this.sheetDto.courses.map((course: Course) => course.name).join(', ')
-                : "-";
+                this.sheetDto.courses.map((course: Course) => course.name).join(', ') : "-";
     }
 
     get sheetCategories(): string {
         this.onFormChange();
         return this.sheetDto.categories.length ?
-                this.sheetDto.categories.map((category: Category) => category.name).join(', ')
-                : "-";
+                this.sheetDto.categories.map((category: Category) => category.name).join(', ') : "-";
     }
 
     private loadExercises(): void {
         this.exerciseApiService.getAllExercises().subscribe({
             next: response => {
                 this.exercises = response;
-                this.categories = Array.from(new Set(this.exercises.reduce((previous, next) => previous.concat(next.categories.map(el => el.name)), new Array<string>())).values());
-                this.courses = Array.from(new Set(this.exercises.reduce((previous, next) => previous.concat(next.courses.map(el => el.name)), new Array<string>())).values());
+                this.categories = Array.from(new Set(this.exercises.reduce((previous, next) => previous.concat(next.categories.map(el => el.name)).sort((a, b) => (a < b) ? -1 : 1), new Array<string>())).values());
+                this.courses = Array.from(new Set(this.exercises.reduce((previous, next) => previous.concat(next.courses.map(el => el.name)).sort((a, b) => (a < b) ? -1 : 1), new Array<string>())).values());
                 if (!this.isProfessor) this.authors = Array.from(new Set(this.exercises.map((elem) => elem.author.username)).values());
                 this.refreshExercises();
                 this.isLoaded = true;
