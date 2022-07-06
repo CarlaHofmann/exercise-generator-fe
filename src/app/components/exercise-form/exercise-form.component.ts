@@ -8,7 +8,8 @@ import {
     CreateCourseDto,
     Exercise,
     ExerciseApiService,
-    ExerciseDto
+    ExerciseDto,
+    ImageDto
 } from "../../../../build/openapi";
 import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -114,6 +115,22 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
                 this.exercise.texts.forEach(text => this.texts.push(new FormControl(text, [Validators.required, Validators.minLength(1)])));
                 this.exercise.solutions.forEach(solution => this.solutions.push(new FormControl(solution, [Validators.required, Validators.minLength(1)])));
 
+                const images = response.images;
+                if (images) {
+                    for (let i = 0; i < images.length; i++) {
+                        fetch(images[i].content).then(imageUrl =>
+                            imageUrl.blob().then(blob => {
+                                    const fileType = blob.type;
+                                    const fileName = `Image-${i}` + "." + fileType.split("/")[1];
+
+                                    const imageFile = new File([blob], fileName, {type: fileType});
+                                    this.images.push({image: imageFile, url: images[i].content})
+                                }
+                            )
+                        );
+                    }
+                }
+
                 this.isLoaded = true;
             },
             error: err => {
@@ -156,19 +173,18 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
 
         let courses: CreateCourseDto[] = [];
         if (this.exerciseForm.controls["courses"].value?.length) {
-            courses = this.exerciseForm.controls["courses"].value.map((course: any) => {
-                const newCourse: CreateCourseDto = {name: course.name};
-                return newCourse;
-            });
+            courses = this.exerciseForm.controls["courses"].value
+                .filter((course: {name: string}) => course.name.trim().length);
         }
 
         let categories: CreateCategoryDto[] = [];
         if (this.exerciseForm.controls["categories"].value?.length) {
-            categories = this.exerciseForm.controls["categories"].value.map((category: any) => {
-                const newCategory: CreateCategoryDto = {name: category.name};
-                return newCategory;
-            });
+            categories = this.exerciseForm.controls["categories"].value
+                .filter((category: {name: string}) => category.name.trim().length);
         }
+
+        console.log(courses)
+        console.log(categories)
 
         this.exerciseDto = {
             isUsed: false,
@@ -179,7 +195,8 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
             note: this.exerciseForm.controls["note"].value,
             texts: this.exerciseForm.controls["texts"].value,
             solutions: this.exerciseForm.controls["solutions"].value,
-            isPublished: this.exerciseDto?.isPublished ? this.exerciseDto.isPublished : false
+            isPublished: this.exerciseDto?.isPublished,
+            images: this.exerciseDto.images
         }
 
         this.checkUnsavedChanges();
@@ -227,17 +244,25 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
             reader.onload = () => {
                 if (typeof reader.result === "string") {
                     imageData.url = reader.result;
+
+                    const image: ImageDto = {
+                        content: this.images[this.images.length - 1].url,
+                        reference: `#-#${this.images.length - 1}`
+                    };
+                    this.exerciseDto.images?.push(image);
+
+                    this.onFormChange();
                 }
             }
         }
 
-        this.checkUnsavedChanges();
         event.target.value = null;
     }
 
     public deleteImage(imageIndex: number): void {
         this.images.splice(imageIndex, 1);
-        this.checkUnsavedChanges();
+        this.exerciseDto.images?.splice(imageIndex, 1);
+        this.onFormChange();
     }
 
     private resetForm(): void {
@@ -304,7 +329,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
         });
     }
 
-    public getSanitizedUrl(url: string): SafeResourceUrl{
+    public getSanitizedUrl(url: string): SafeResourceUrl {
         return this.sanitizer.bypassSecurityTrustResourceUrl(url);
     }
 
