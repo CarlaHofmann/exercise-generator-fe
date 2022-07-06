@@ -273,6 +273,7 @@
     <div class="col pt-3 pe-5 d-flex" *ngIf="pdfUrl.length && isPdfLoaded && isProfessor">
         <object [data]="getSanitizedUrl(pdfUrl)"
                 type="application/pdf"
+                class="col"
                 height="1000rem">
         </object>
         <i class="bi bi-x col-auto" style="font-size: 3rem; margin-top: -1rem" title="Close PDF preview." (click)="pdfUrl = ''"></i>
