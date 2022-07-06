@@ -480,8 +480,11 @@ export class SheetFormComponent implements OnInit, OnDestroy {
     }
 
     private resetForm(): void {
+        const originalPageSize = this.dataService.getPageSize();
         this.sheetForm?.reset();
         this.dataService.existUnsavedChanges = false;
+        this.pageSize = originalPageSize;
+        this.dataService.savePageSize(originalPageSize);
     }
 
     public coursesToString(courses: Course[]): string {
