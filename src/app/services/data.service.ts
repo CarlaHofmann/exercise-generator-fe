@@ -15,6 +15,15 @@ export class DataService {
         this.existUnsavedChanges = false;
     }
 
+    public saveAccessToken(refreshToken: string): void {
+        localStorage.setItem("accessToken", refreshToken);
+    }
+
+    public getAccessToken(): string {
+        const refreshToken = localStorage.getItem("accessToken");
+        return refreshToken ? refreshToken : "";
+    }
+
     public saveRefreshToken(refreshToken: string): void {
         localStorage.setItem("refreshToken", refreshToken);
     }

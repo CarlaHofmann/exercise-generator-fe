@@ -37,10 +37,11 @@ export class AuthService {
 
     set accessToken(accessToken: string) {
         this._accessToken = accessToken;
+        this.dataService.saveAccessToken(accessToken);
     }
 
     get accessToken(): string {
-        return this._accessToken;
+        return this.dataService.getAccessToken();
     }
 
     set refreshToken(refreshToken: string) {
