@@ -183,9 +183,6 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
                 .filter((category: {name: string}) => category.name.trim().length);
         }
 
-        console.log(courses)
-        console.log(categories)
-
         this.exerciseDto = {
             isUsed: false,
             title: this.exerciseForm.controls["title"].value,
