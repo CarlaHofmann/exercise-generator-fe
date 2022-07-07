@@ -34,7 +34,9 @@ export class DataService {
     }
 
     public savePageSize(pageSize: number): void {
-        localStorage.setItem("pageSize", pageSize.toString(10));
+        if(pageSize > 0){
+            localStorage.setItem("pageSize", pageSize.toString(10));
+        }
     }
 
     public getPageSize(): number {

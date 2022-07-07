@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import { ViewportScroller } from '@angular/common';
+import {ViewportScroller} from '@angular/common';
 import {FormControl, FormGroup} from "@angular/forms";
 import {Router} from "@angular/router";
 import {AuthService} from "../../services/auth.service";
 import {LoginApiService} from "../../../../build/openapi";
 import {DataService} from "../../services/data.service";
+import {MessageService} from "../../services/message.service";
 
 @Component({
     selector: 'app-login',
@@ -19,10 +20,11 @@ export class LoginComponent implements OnInit {
     public alertMessage = "";
 
     constructor(private router: Router,
+                private viewportScroller: ViewportScroller,
                 private authService: AuthService,
                 private dataService: DataService,
-                private loginApiService: LoginApiService,
-                private viewportScroller: ViewportScroller) {
+                private messageService: MessageService,
+                private loginApiService: LoginApiService) {
     }
 
     ngOnInit(): void {
@@ -40,6 +42,7 @@ export class LoginComponent implements OnInit {
             next: response => {
                 this.authService.authenticate(response.accessToken, response.refreshToken);
                 this.router.navigate([""]);
+                this.messageService.closeAlert();
             },
             error: err => {
                 this.displayAlert("Login failed. Username or Password wrong.", err);

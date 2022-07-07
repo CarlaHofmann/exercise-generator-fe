@@ -65,7 +65,7 @@ export class AuthService {
         this.roles = [];
     }
 
-    public authenticate(accessToken: string, refreshToken: string) {
+    public authenticate(accessToken: string, refreshToken: string): void {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
 
