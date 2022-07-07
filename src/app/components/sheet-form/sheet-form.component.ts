@@ -255,7 +255,8 @@ export class SheetFormComponent implements OnInit, OnDestroy {
             .filter(exercise => (this.categoriesFilter.length == 0 || this.categoriesFilter.some(x => exercise.categories.map(el => el.name).includes(x))))
             .filter(exercise => (this.coursesFilter.length == 0 || this.coursesFilter.some(x => exercise.courses.map(el => el.name).includes(x))))
             .filter(exercise => (this.searchString.length == 0 || exercise.note?.toLowerCase().includes(this.searchString)));
-        if (!this.isCreateSheet) this.filteredExercises = this.filteredExercises.sort((a, b) => (this.isSheetExercise(a) < this.isSheetExercise(b)) ? 1 : -1)
+        if (this.isCreateSheet) this.filteredExercises = this.filteredExercises.sort((a, b) => (a.updatedAt < b.updatedAt) ? 1 : -1);
+        if (!this.isCreateSheet) this.filteredExercises = this.filteredExercises.sort((a, b) => (this.isSheetExercise(a) < this.isSheetExercise(b)) ? 1 : -1);
         this.refreshFilterData();
     }
 
