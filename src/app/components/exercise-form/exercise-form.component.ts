@@ -193,7 +193,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
             texts: this.exerciseForm.controls["texts"].value,
             solutions: this.exerciseForm.controls["solutions"].value,
             isPublished: this.exerciseDto?.isPublished,
-            images: this.exerciseDto.images
+            images: this.exerciseDto?.images
         }
 
         this.checkUnsavedChanges();
