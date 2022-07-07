@@ -1,12 +1,21 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {Category, CategoryApiService, Course, CourseApiService, CreateCategoryDto, CreateCourseDto, Exercise,
-ExerciseApiService, Sheet, SheetApiService, SheetDto} from "../../../../build/openapi";
+import {
+    Category,
+    Course,
+    CreateCategoryDto,
+    CreateCourseDto,
+    Exercise,
+    ExerciseApiService,
+    Sheet,
+    SheetApiService,
+    SheetDto
+} from "../../../../build/openapi";
 import {FormControl, FormGroup, FormArray, FormBuilder, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Location, ViewportScroller} from "@angular/common";
+import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
 import {DataService} from "../../services/data.service";
 import {AuthService} from "../../services/auth.service";
-import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
 
 @Component({
     selector: 'app-sheet-form',
@@ -70,8 +79,6 @@ export class SheetFormComponent implements OnInit, OnDestroy {
                 private location: Location,
                 private viewportScroller: ViewportScroller,
                 private sheetApiService: SheetApiService,
-                private courseApiService: CourseApiService,
-                private categoryApiService: CategoryApiService,
                 private exerciseApiService: ExerciseApiService,
                 private dataService: DataService,
                 private authService: AuthService,
@@ -96,7 +103,6 @@ export class SheetFormComponent implements OnInit, OnDestroy {
             this.sheetForm.addControl("courses", new FormControl("", [Validators.required, Validators.minLength(1)]));
             this.sheetForm.addControl("categories", new FormControl("", [Validators.required, Validators.minLength(1)]));
             this.sheetForm.addControl("numberExercises", new FormControl(1));
-        } else if (this.isCreateSheet){
             this.sheetForm.addControl("pageSize", new FormControl(this.dataService.getPageSize()));
         } else {
             this.sheetForm.addControl("courses", new FormControl("", [Validators.required, Validators.minLength(1)]));
@@ -249,6 +255,7 @@ export class SheetFormComponent implements OnInit, OnDestroy {
             .filter(exercise => (this.categoriesFilter.length == 0 || this.categoriesFilter.some(x => exercise.categories.map(el => el.name).includes(x))))
             .filter(exercise => (this.coursesFilter.length == 0 || this.coursesFilter.some(x => exercise.courses.map(el => el.name).includes(x))))
             .filter(exercise => (this.searchString.length == 0 || exercise.note?.toLowerCase().includes(this.searchString)));
+        if (!this.isCreateSheet) this.filteredExercises = this.filteredExercises.sort((a, b) => (this.isSheetExercise(a) < this.isSheetExercise(b)) ? 1 : -1)
         this.refreshFilterData();
     }
 
@@ -376,9 +383,9 @@ export class SheetFormComponent implements OnInit, OnDestroy {
         if (this.isRandomizedSheet) {
             this.dataService.existUnsavedChanges = Boolean(this.sheetForm.controls["title"].value.length ||
                 this.sheetForm.controls["courses"].value &&
-                this.sheetForm.controls["courses"].value.some((course: { name: string }) => course.name.length) ||
+                this.sheetForm.controls["courses"].value.length ||
                 this.sheetForm.controls["categories"].value &&
-                this.sheetForm.controls["categories"].value.some((category: { name: string }) => category.name.length));
+                this.sheetForm.controls["categories"].value.length);
         }
          else {
             this.dataService.existUnsavedChanges = Boolean(this.sheetForm.controls["title"].value.length);
@@ -399,7 +406,7 @@ export class SheetFormComponent implements OnInit, OnDestroy {
         }
 
         if (header === "Select") {
-            this.filteredExercises = this.filteredExercises.sort((a, b) => (this.sheetExercises.includes(a) < this.sheetExercises.includes(b)) ? dir : dir * (-1));
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (this.isSheetExercise(a) < this.isSheetExercise(b)) ? dir : dir * (-1));
         } else if (header === "Title") {
             this.filteredExercises = this.filteredExercises.sort((a, b) => (a.title < b.title) ? dir : dir * (-1));
         } else if (header === "Course") {
@@ -506,6 +513,10 @@ export class SheetFormComponent implements OnInit, OnDestroy {
             exercisesStringArray.push(exercises[i]["id"])
         }
         return exercisesStringArray;
+    }
+
+    public isSheetExercise(exercise: Exercise) {
+        return this.sheetExercises.some(elem => elem.id === exercise.id);
     }
 
     public getSanitizedUrl(url: string): SafeResourceUrl {
