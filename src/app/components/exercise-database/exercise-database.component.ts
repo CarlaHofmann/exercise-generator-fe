@@ -211,7 +211,7 @@ export class ExerciseDatabaseComponent implements OnInit {
     }
 
     public toggleCheckbox(id: string) {
-        const exercise = this.filteredExercises.find(sheet => sheet.id === id);
+        const exercise = this.filteredExercises.find(ex => ex.id === id);
         if (!exercise) {
             return;
         }

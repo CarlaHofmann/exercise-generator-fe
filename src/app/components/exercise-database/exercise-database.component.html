@@ -135,7 +135,10 @@
             <td scope="row">{{ element.shortDescription }}</td>
             <td *ngIf="isProfessor" scope="row">{{ element.note }}</td>
             <td scope="row">{{ element.updatedAt | date:'dd.MM.YYYY' }}</td>
-            <td *ngIf="isProfessor" scope="row">{{ booleanToString(element.isPublished) }}</td>
+            <td *ngIf="isProfessor" scope="row"><input class="form-check-input" type="checkbox"
+                [(ngModel)]="element.isPublished"
+                (change)="toggleCheckbox(element.id)"/>
+            </td>
             <td *ngIf="isProfessor" scope="row">{{ booleanToString(element.isUsed) }}</td>
             <td scope="row" class="text-right">
                 <div class="d-flex justify-content-end">
