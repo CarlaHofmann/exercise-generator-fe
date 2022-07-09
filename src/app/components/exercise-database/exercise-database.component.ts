@@ -243,17 +243,17 @@ export class ExerciseDatabaseComponent implements OnInit {
         }
 
         if (header === "Title") {
-            this.filteredExercises = this.filteredExercises.sort((a, b) => (a.title < b.title) ? dir : dir * (-1));
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (a.title.toLowerCase() < b.title.toLowerCase()) ? dir : dir * (-1));
         } else if (header === "Course") {
-            this.filteredExercises = this.filteredExercises.sort((a, b) => (this.coursesToString(a.courses) < this.coursesToString(b.courses)) ? dir : dir * (-1));
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (this.coursesToString(a.courses).toLowerCase() < this.coursesToString(b.courses).toLowerCase()) ? dir : dir * (-1));
         }else if (header === "Category") {
-            this.filteredExercises = this.filteredExercises.sort((a, b) => (this.categoriesToString(a.categories) < this.categoriesToString(b.categories)) ? dir : dir * (-1));
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (this.categoriesToString(a.categories).toLowerCase() < this.categoriesToString(b.categories).toLowerCase()) ? dir : dir * (-1));
         }else if (header === "Author") {
-            this.filteredExercises = this.filteredExercises.sort((a, b) => (a.author < b.author) ? dir : dir * (-1));
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (a.author.username.toLowerCase() < b.author.username.toLowerCase()) ? dir : dir * (-1));
         }else if (header === "Short Description") {
-            this.filteredExercises = this.filteredExercises.sort((a, b) => (a.shortDescription < b.shortDescription) ? dir : dir * (-1));
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (a.shortDescription.toLowerCase() < b.shortDescription.toLowerCase()) ? dir : dir * (-1));
         }else if (header === "Notes") {
-//             this.filteredExercises = this.filteredExercises.sort((a, b) => (a.note < b.note) ? dir : dir * (-1));
+             this.filteredExercises = this.filteredExercises.sort((a, b) => (a.note!.toLowerCase() < b.note!.toLowerCase()) ? dir : dir * (-1));
         }else if (header === "Updated At") {
             this.filteredExercises = this.filteredExercises.sort((a, b) => (a.updatedAt < b.updatedAt) ? dir : dir * (-1));
         }else if (header === "Published") {
