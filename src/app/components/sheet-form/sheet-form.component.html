@@ -309,11 +309,15 @@
                 <button *ngIf="isProfessor" type="submit" class="btn btn-primary me-3" (click)="onSubmit(true)"
                         [disabled]="sheetForm.invalid">
                     Save
+                    <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm" role="status"
+                          aria-hidden="true"></span>
                 </button>
                 <button *ngIf="isProfessor && isCreateSheet" type="submit" class="btn btn-primary me-3"
                         (click)="onSubmit(false)"
                         [disabled]="sheetForm.invalid">
-                    Save and Create New Sheet
+                    Save and create new sheet
+                    <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm" role="status"
+                          aria-hidden="true"></span>
                 </button>
             </div>
         </div>
