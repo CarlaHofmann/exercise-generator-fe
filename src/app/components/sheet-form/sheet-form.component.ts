@@ -16,7 +16,6 @@ import {Location, ViewportScroller} from "@angular/common";
 import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
 import {DataService} from "../../services/data.service";
 import {AuthService} from "../../services/auth.service";
-import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
 
 @Component({
     selector: 'app-sheet-form',
@@ -382,7 +381,7 @@ export class SheetFormComponent implements OnInit, OnDestroy {
                 this.sheetForm.controls["courses"].value &&
                 this.sheetForm.controls["courses"].value.length ||
                 this.sheetForm.controls["categories"].value &&
-                this.sheetForm.controls["categories"].value..length);
+                this.sheetForm.controls["categories"].value.length);
         }
          else {
             this.dataService.existUnsavedChanges = Boolean(this.sheetForm.controls["title"].value.length);
