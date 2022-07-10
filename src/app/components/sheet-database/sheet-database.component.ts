@@ -40,7 +40,6 @@ export class SheetDatabaseComponent implements OnInit {
     public alertMessage = "";
 
     public isLoaded = false;
-    public showLoading = true;
 
 
     constructor(private authService: AuthService,
@@ -119,11 +118,10 @@ export class SheetDatabaseComponent implements OnInit {
                 if (this.isProfessor) this.sortByUpdatedAt();
                 this.refreshSheets();
                 this.isLoaded = true;
-                this.showLoading = false;
             },
             error: err => {
                 this.displayAlert("Error loading from the database.", err);
-                this.showLoading = false;
+                this.isLoaded = true;
             }
         });
     }
