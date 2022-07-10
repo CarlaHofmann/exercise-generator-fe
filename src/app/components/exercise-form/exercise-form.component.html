@@ -176,11 +176,15 @@
                 <button type="submit" class="btn btn-primary me-3" (click)="onSubmit(true)"
                         [disabled]="exerciseForm.invalid">
                     Save
+                    <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm" role="status"
+                          aria-hidden="true"></span>
                 </button>
                 <button type="submit" class="btn btn-primary me-3" (click)="onSubmit(false)"
                         [disabled]="exerciseForm.invalid"
                         *ngIf="isAddExercise">
-                    Save and add new exercise
+                    Save and create new exercise
+                    <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm" role="status"
+                          aria-hidden="true"></span>
                 </button>
             </div>
         </div>

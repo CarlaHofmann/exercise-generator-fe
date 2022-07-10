@@ -67,7 +67,7 @@ export class SheetFormComponent implements OnInit, OnDestroy {
     public isSheetLoaded = false;
     public isExerciseLoaded = false;
     public isPdfLoaded = true;
-    private isSubmitted = false;
+    public isSubmitting = false;
 
     public showAlert = false;
     public alertMessage = "";
@@ -331,10 +331,6 @@ export class SheetFormComponent implements OnInit, OnDestroy {
         let categories: CreateCategoryDto[] = [];
         let exercises: string[] = [];
 
-        if (this.isSubmitted) {
-            return;
-        }
-
         if (this.isRandomizedSheet) {
             if (this.sheetForm.controls["courses"].value?.length) {
                 courses = this.sheetForm.controls["courses"].value.map((courseName: any) => {
@@ -454,13 +450,15 @@ export class SheetFormComponent implements OnInit, OnDestroy {
     }
 
     public onSubmit(goBack: boolean): void {
+        this.isSubmitting = true;
+
         if (this.isCreateSheet || this.isCloneSheet) {
             if (this.isRandomizedSheet) {
                 this.randomizedExercises();
             }
             this.sheetApiService.createSheet(this.sheetDto).subscribe({
                 next: () => {
-                    this.isSubmitted = true;
+                    this.isSubmitting = false;
                     this.resetForm();
                     if (goBack) {
                         this.location.back();
@@ -468,12 +466,13 @@ export class SheetFormComponent implements OnInit, OnDestroy {
                 },
                 error: err => {
                     this.displayAlert("Error while creating sheet.", err);
+                    this.isSubmitting = false;
                 }
             });
         } else {
             this.sheetApiService.updateSheet(this.sheetId, this.sheetDto).subscribe({
                 next: () => {
-                    this.isSubmitted = true;
+                    this.isSubmitting = false;
                     this.resetForm();
                     if (goBack) {
                         this.location.back();
@@ -481,6 +480,7 @@ export class SheetFormComponent implements OnInit, OnDestroy {
                 },
                 error: err => {
                     this.displayAlert("Error while updating sheet.", err);
+                    this.isSubmitting = false;
                 }
             });
         }

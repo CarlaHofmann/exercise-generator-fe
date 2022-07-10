@@ -47,7 +47,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
 
     public isLoaded = false;
     public isPdfLoaded = true;
-    private isSubmitted = false;
+    public isSubmitting = false;
 
     public showAlert = false;
     public alertMessage = "";
@@ -176,10 +176,6 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
     }
 
     public onFormChange(event?: Event): void {
-        if (this.isSubmitted) {
-            return;
-        }
-
         let courses: CreateCourseDto[] = [];
         if (this.exerciseForm.controls["courses"].value?.length) {
             courses = this.exerciseForm.controls["courses"].value
@@ -284,10 +280,12 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
     }
 
     public onSubmit(goBack: boolean): void {
+        this.isSubmitting = true;
+
         if (this.isAddExercise || this.isCloneExercise) {
             this.exerciseApiService.createExercise(this.exerciseDto).subscribe({
                 next: () => {
-                    this.isSubmitted = true;
+                    this.isSubmitting = false;
                     this.resetForm();
                     if (goBack) {
                         this.location.back();
@@ -300,7 +298,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
         } else {
             this.exerciseApiService.updateExercise(this.exerciseId, this.exerciseDto).subscribe({
                 next: () => {
-                    this.isSubmitted = true;
+                    this.isSubmitting = false;
                     this.resetForm();
                     if (goBack) {
                         this.location.back();
