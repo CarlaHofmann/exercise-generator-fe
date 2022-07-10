@@ -3,22 +3,6 @@
 </p>
 
 
-<div *ngIf="isCreateSheet" class="d-flex row pt-4 px-4">
-    <div class="justify-content-start col">
-        <div class="toggle-switch">
-            <label class="btn toggle-switch-light">
-                <input type="checkbox" (change)="selectSheetType()">
-                <span>
-                    <span>Randomized Sheet</span>
-                    <span>Customized Sheet</span>
-                </span>
-                <a class="btn btn-secondary"></a>
-            </label>
-        </div>
-    </div>
-</div>
-
-
 <div class="d-flex row" *ngIf="isSheetLoaded">
     <form class="px-5 pt-2 col" [formGroup]="sheetForm">
         <div class="form-group">
