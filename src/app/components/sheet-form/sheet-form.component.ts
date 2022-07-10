@@ -1,9 +1,9 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {
-    Category,
     Course,
-    CreateCategoryDto,
     CreateCourseDto,
+    Category,
+    CreateCategoryDto,
     Exercise,
     ExerciseApiService,
     Sheet,
@@ -16,6 +16,7 @@ import {Location, ViewportScroller} from "@angular/common";
 import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
 import {DataService} from "../../services/data.service";
 import {AuthService} from "../../services/auth.service";
+import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
 
 @Component({
     selector: 'app-sheet-form',
@@ -28,10 +29,10 @@ export class SheetFormComponent implements OnInit, OnDestroy {
     public isCreateSheet: boolean = false;
 
     @Input()
-    public isCloneSheet: boolean = false;
+    public isRandomizedSheet: boolean = false;
 
     @Input()
-    public isRandomizedSheet: Boolean = false;
+    public isCloneSheet: boolean = false;
 
     private sheetId: string = "";
     private sheet: Sheet;
@@ -104,6 +105,7 @@ export class SheetFormComponent implements OnInit, OnDestroy {
             this.sheetForm.addControl("courses", new FormControl("", [Validators.required, Validators.minLength(1)]));
             this.sheetForm.addControl("categories", new FormControl("", [Validators.required, Validators.minLength(1)]));
             this.sheetForm.addControl("numberExercises", new FormControl(1));
+        } else if (this.isCreateSheet){
             this.sheetForm.addControl("pageSize", new FormControl(this.dataService.getPageSize()));
         } else {
             this.sheetForm.addControl("courses", new FormControl("", [Validators.required, Validators.minLength(1)]));
@@ -126,10 +128,6 @@ export class SheetFormComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.dataService.existUnsavedChanges = false;
-    }
-
-    public selectSheetType(): void {
-        this.isRandomizedSheet = !this.isRandomizedSheet;
     }
 
     public filters() : FormArray {
@@ -384,7 +382,7 @@ export class SheetFormComponent implements OnInit, OnDestroy {
                 this.sheetForm.controls["courses"].value &&
                 this.sheetForm.controls["courses"].value.length ||
                 this.sheetForm.controls["categories"].value &&
-                this.sheetForm.controls["categories"].value.length);
+                this.sheetForm.controls["categories"].value..length);
         }
          else {
             this.dataService.existUnsavedChanges = Boolean(this.sheetForm.controls["title"].value.length);
@@ -407,17 +405,17 @@ export class SheetFormComponent implements OnInit, OnDestroy {
         if (header === "Select") {
             this.filteredExercises = this.filteredExercises.sort((a, b) => (this.isSheetExercise(a) < this.isSheetExercise(b)) ? dir : dir * (-1));
         } else if (header === "Title") {
-            this.filteredExercises = this.filteredExercises.sort((a, b) => (a.title < b.title) ? dir : dir * (-1));
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (a.title.toLowerCase() < b.title.toLowerCase()) ? dir : dir * (-1));
         } else if (header === "Course") {
-            this.filteredExercises = this.filteredExercises.sort((a, b) => (this.coursesToString(a.courses) < this.coursesToString(b.courses)) ? dir : dir * (-1));
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (this.coursesToString(a.courses).toLowerCase() < this.coursesToString(b.courses).toLowerCase()) ? dir : dir * (-1));
         }else if (header === "Category") {
-            this.filteredExercises = this.filteredExercises.sort((a, b) => (this.categoriesToString(a.categories) < this.categoriesToString(b.categories)) ? dir : dir * (-1));
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (this.categoriesToString(a.categories).toLowerCase() < this.categoriesToString(b.categories).toLowerCase()) ? dir : dir * (-1));
         }else if (header === "Author") {
-            this.filteredExercises = this.filteredExercises.sort((a, b) => (a.author < b.author) ? dir : dir * (-1));
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (a.author.username.toLowerCase() < b.author.username.toLowerCase()) ? dir : dir * (-1));
         }else if (header === "Short Description") {
-            this.filteredExercises = this.filteredExercises.sort((a, b) => (a.shortDescription < b.shortDescription) ? dir : dir * (-1));
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (a.shortDescription.toLowerCase() < b.shortDescription.toLowerCase()) ? dir : dir * (-1));
         }else if (header === "Notes") {
-//             this.filteredExercises = this.filteredExercises.sort((a, b) => (a.note < b.note) ? dir : dir * (-1));
+            this.filteredExercises = this.filteredExercises.sort((a, b) => (a.note!.toLowerCase() < b.note!.toLowerCase()) ? dir : dir * (-1));
         }else if (header === "Updated At") {
             this.filteredExercises = this.filteredExercises.sort((a, b) => (a.updatedAt < b.updatedAt) ? dir : dir * (-1));
         }else if (header === "Published") {
