@@ -80,6 +80,15 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
 
         if (this.isAddExercise) {
             this.isLoaded = true;
+            this.exerciseDto = {
+                title: "",
+                courses: [],
+                categories: [],
+                shortDescription: "",
+                texts: [],
+                solutions: [],
+                images: []
+            };
         } else {
             this.route.params.subscribe(params => {
                 this.exerciseId = params["id"];
