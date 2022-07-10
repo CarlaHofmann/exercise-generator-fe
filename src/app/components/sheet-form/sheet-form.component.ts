@@ -10,7 +10,7 @@ import {
     SheetApiService,
     SheetDto
 } from "../../../../build/openapi";
-import {FormControl, FormGroup, FormArray, FormBuilder, Validators} from "@angular/forms";
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Location, ViewportScroller} from "@angular/common";
 import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
@@ -64,7 +64,8 @@ export class SheetFormComponent implements OnInit, OnDestroy {
 
     public pdfUrl = "";
 
-    public isLoaded = false;
+    public isSheetLoaded = false;
+    public isExerciseLoaded = false;
     public isPdfLoaded = true;
     private isSubmitted = false;
 
@@ -111,7 +112,7 @@ export class SheetFormComponent implements OnInit, OnDestroy {
         }
 
         if (this.isCreateSheet) {
-            this.isLoaded = true;
+            this.isSheetLoaded = true;
         } else {
             this.route.params.subscribe(params => {
                 this.sheetId = params["id"];
@@ -213,11 +214,11 @@ export class SheetFormComponent implements OnInit, OnDestroy {
                 });
 
                 this.sheetExercises = this.sheet.exercises;
-                this.isLoaded = true;
+                this.isSheetLoaded = true;
             },
             error: err => {
                 this.displayAlert("Sheet not found.", err);
-                this.isLoaded = true;
+                this.isSheetLoaded = true;
             }
         });
     }
@@ -242,10 +243,11 @@ export class SheetFormComponent implements OnInit, OnDestroy {
                 this.courses = Array.from(new Set(this.exercises.reduce((previous, next) => previous.concat(next.courses.map(el => el.name)).sort((a, b) => (a < b) ? -1 : 1), new Array<string>())).values());
                 if (!this.isProfessor) this.authors = Array.from(new Set(this.exercises.map((elem) => elem.author.username)).values());
                 this.refreshExercises();
-                this.isLoaded = true;
+                this.isExerciseLoaded = true;
             },
             error: err => {
                 this.displayAlert("Error while loading exercises.", err);
+                this.isExerciseLoaded = true;
             }
         });
     }

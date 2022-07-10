@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup} from '@angular/forms'
-import { ViewportScroller } from '@angular/common';
+import {ViewportScroller} from '@angular/common';
 import {Category, Course, Exercise, ExerciseApiService, ExerciseDto} from 'build/openapi';
 import {AuthService} from "../../services/auth.service";
 import {DataService} from "../../services/data.service";
@@ -43,8 +43,6 @@ export class ExerciseDatabaseComponent implements OnInit {
     public alertMessage = "";
 
     public isLoaded = false;
-    public showLoading = true;
-
 
     constructor(private authService: AuthService,
                 private dataService: DataService,
@@ -148,11 +146,10 @@ export class ExerciseDatabaseComponent implements OnInit {
                 this.sortByUpdatedAt();
                 this.refreshExercises();
                 this.isLoaded = true;
-                this.showLoading = false;
             },
             error: err => {
                 this.displayAlert("Error loading from the database.", err);
-                this.showLoading = false;
+                this.isLoaded = true;
             }
         });
     }
