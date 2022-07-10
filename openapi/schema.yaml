@@ -755,6 +755,7 @@ components:
                 - title
                 - courses
                 - categories
+                - shortDescription
                 - texts
                 - solutions
             type: object
