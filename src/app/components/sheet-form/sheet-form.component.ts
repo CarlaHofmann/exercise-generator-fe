@@ -206,6 +206,8 @@ export class SheetFormComponent implements OnInit, OnDestroy {
                     courses: new FormControl(this.sheet.courses, [Validators.required, Validators.minLength(1)]),
                     categories: new FormControl(this.sheet.categories, [Validators.required, Validators.minLength(1)]),
                     exercises: new FormControl(this.sheet.exercises, [Validators.required, Validators.minLength(1)]),
+                    useNumericTitles: new FormControl(this.sheet.useNumericTitles),
+                    showSolutions: new FormControl(this.sheet.showSolutions),
                     isPublished: new FormControl(this.sheet.isPublished),
                     pageSize: new FormControl(this.dataService.getPageSize())
                 });
@@ -494,6 +496,7 @@ export class SheetFormComponent implements OnInit, OnDestroy {
         const originalPageSize = this.dataService.getPageSize();
         this.sheetForm?.reset();
         this.dataService.existUnsavedChanges = false;
+        this.sheetExercises = [];
         this.pageSize = originalPageSize;
         this.dataService.savePageSize(originalPageSize);
     }
