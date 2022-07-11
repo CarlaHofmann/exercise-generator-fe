@@ -6,7 +6,7 @@
 </p>
 
 
-<form *ngIf="isLoaded && filteredSheets?.length" [formGroup]="filterForm" (ngSubmit)="applyFilters()">
+<form *ngIf="isLoaded && sheets?.length" [formGroup]="filterForm" (ngSubmit)="applyFilters()">
     <table class="table borderless" formArrayName="filters">
         <tbody>
         <tr scope="row" *ngFor="let filter of filters().controls; let i=index" [formGroupName]="i">
@@ -168,7 +168,7 @@
             </select>
         </div>
         <div class="col-4  d-flex justify-content-around">
-            <ngb-pagination [collectionSize]="sheets.length" [(page)]="page" [pageSize]="pageSize"
+            <ngb-pagination [collectionSize]="filteredSheets.length" [(page)]="page" [pageSize]="pageSize"
                             [boundaryLinks]="true" [maxSize]="5" [ellipses]="true">
             </ngb-pagination>
         </div>
