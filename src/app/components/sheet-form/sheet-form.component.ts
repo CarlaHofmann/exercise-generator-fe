@@ -370,6 +370,9 @@ export class SheetFormComponent implements OnInit, OnDestroy {
             courses: courses,
             categories: categories,
             exercises: exercises,
+            useNumericTitles: this.sheetDto?.useNumericTitles,
+            showSolutions: this.sheetDto?.showSolutions,
+            isPublished: this.sheetDto?.isPublished
         }
 
         this.checkUnsavedChanges();
@@ -384,7 +387,7 @@ export class SheetFormComponent implements OnInit, OnDestroy {
                 this.sheetForm.controls["categories"].value.length);
         }
          else {
-            this.dataService.existUnsavedChanges = Boolean(this.sheetForm.controls["title"].value.length);
+            this.dataService.existUnsavedChanges = Boolean(this.sheetForm.controls["title"].value);
         }
     }
 
