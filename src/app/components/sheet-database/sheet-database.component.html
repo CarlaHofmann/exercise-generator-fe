@@ -79,9 +79,9 @@
         </button>
     </div>
 
-    <div *ngIf="isProfessor" class="text-end col">
+    <div class="text-end col">
         <div class="btn-group" role="group" aria-label="group">
-            <button title="Press to uncheck all the published flags."
+            <button *ngIf="isProfessor" title="Press to uncheck all the published flags."
                     class="btn btn-danger btn-white-border" (click)="uncheckAll()">
                 <i class="bi bi-trash3 text-white"></i>
                 Reset Published
