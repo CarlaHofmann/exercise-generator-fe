@@ -70,9 +70,9 @@
 </form>
 
 
-<div  *ngIf="isLoaded && filteredSheets?.length" class="d-flex row px-4">
+<div  *ngIf="isLoaded" class="d-flex row px-4">
 
-    <div class="col text-right">
+    <div class="col text-right" *ngIf = "filteredSheets?.length">
         <button type="button" (click)="addFilter()" *ngIf="this.filterForm.value.filters.length==0"
                 class="btn btn-primary width-100"
                 title="Add an additional filter condition. The conditions are connected with logical AND.">Add filter
@@ -81,7 +81,7 @@
 
     <div class="text-end col">
         <div class="btn-group" role="group" aria-label="group">
-            <button *ngIf="isProfessor" title="Press to uncheck all the published flags."
+            <button *ngIf = "filteredSheets?.length && isProfessor" title="Press to uncheck all the published flags."
                     class="btn btn-danger btn-white-border" (click)="uncheckAll()">
                 <i class="bi bi-trash3 text-white"></i>
                 Reset Published

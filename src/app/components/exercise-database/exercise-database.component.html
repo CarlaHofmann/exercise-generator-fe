@@ -83,9 +83,9 @@
 </form>
 
 
-<div  *ngIf="isLoaded && filteredExercises?.length" class="d-flex row px-4">
+<div  *ngIf="isLoaded" class="d-flex row px-4">
 
-    <div class="col text-right">
+    <div class="col text-right" *ngIf = "filteredExercises?.length">
         <button type="button" (click)="addFilter()" *ngIf="this.filterForm.value.filters.length==0"
                 class="btn btn-primary width-100"
                 title="Add an additional filter condition. The conditions are connected with logical AND.">Add filter

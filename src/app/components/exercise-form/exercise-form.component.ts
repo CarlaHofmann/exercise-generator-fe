@@ -286,6 +286,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
             this.exerciseApiService.createExercise(this.exerciseDto).subscribe({
                 next: () => {
                     this.isSubmitting = false;
+                    this.pdfUrl = "";
                     this.resetForm();
                     if (goBack) {
                         this.location.back();
