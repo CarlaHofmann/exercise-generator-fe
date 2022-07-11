@@ -241,7 +241,6 @@ export class SheetDatabaseComponent implements OnInit {
         for (let i = 0; i < exercises.length; i++) {
             exercisesStringArray.push(exercises[i]["id"])
         }
-        console.log(exercisesStringArray);
         return exercisesStringArray;
     }
 
