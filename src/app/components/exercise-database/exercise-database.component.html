@@ -6,7 +6,7 @@
 </p>
 
 
-<form *ngIf="isLoaded && filteredExercises?.length" [formGroup]="filterForm" (ngSubmit)="applyFilters()">
+<form *ngIf="isLoaded && exercises?.length" [formGroup]="filterForm" (ngSubmit)="applyFilters()">
     <table class="table borderless" formArrayName="filters">
         <tbody>
             <tr scope="row" *ngFor="let filter of filters().controls; let i=index" [formGroupName]="i">
