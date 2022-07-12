@@ -213,6 +213,16 @@ export class SheetFormComponent implements OnInit, OnDestroy {
                 });
 
                 this.sheetExercises = this.sheet.exercises;
+                this.sheetDto = {
+                    title: this.sheet.title,
+                    courses: this.sheet.courses,
+                    categories: this.sheet.categories,
+                    exercises: this.exercisesToStringArray(this.sheet.exercises),
+                    useNumericTitles: this.sheet.useNumericTitles,
+                    showSolutions: this.sheet.showSolutions,
+                    isPublished: this.sheet.isPublished
+                }
+
                 this.isSheetLoaded = true;
             },
             error: err => {
@@ -285,7 +295,7 @@ export class SheetFormComponent implements OnInit, OnDestroy {
     }
 
     public selectExercise(exercise: Exercise) {
-        if (!this.sheetExercises.includes(exercise)) {
+        if (!this.isSheetExercise(exercise)) {
             this.sheetExercises.push(exercise);
         } else {
             const indexOfExercise = this.sheetExercises.findIndex((e) => {
