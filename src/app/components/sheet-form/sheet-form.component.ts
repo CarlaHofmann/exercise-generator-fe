@@ -441,6 +441,9 @@ export class SheetFormComponent implements OnInit, OnDestroy {
 
     public viewSheetPdf(): void {
         this.isPdfLoaded = false;
+        if (this.isRandomizedSheet && !this.sheetExercises.length) {
+            this.randomizedExercises();
+        }
 
         this.sheetApiService.previewSheetDto(this.sheetDto).subscribe({
             next: response => {
@@ -465,7 +468,7 @@ export class SheetFormComponent implements OnInit, OnDestroy {
         this.isSubmitting = true;
 
         if (this.isCreateSheet || this.isCloneSheet) {
-            if (this.isRandomizedSheet) {
+            if (this.isRandomizedSheet && !this.sheetExercises.length) {
                 this.randomizedExercises();
             }
             this.sheetApiService.createSheet(this.sheetDto).subscribe({
