@@ -219,18 +219,22 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
 
     public addText(): void {
         this.texts.push(new FormControl("", [Validators.required, Validators.minLength(1)]));
+        this.onFormChange();
     }
 
     public deleteText(textIndex: number): void {
         this.texts.removeAt(textIndex);
+        this.onFormChange();
     }
 
     public addSolution(): void {
         this.solutions.push(new FormControl("", [Validators.required, Validators.minLength(1)]));
+        this.onFormChange();
     }
 
     public deleteSolution(solutionIndex: number): void {
         this.solutions.removeAt(solutionIndex);
+        this.onFormChange();
     }
 
     public onImageChange(event: any): void {

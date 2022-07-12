@@ -28,7 +28,12 @@ export class AuthInterceptor implements HttpInterceptor {
         return next.handle(request).pipe(
             catchError(err => {
                 if (err.status === 401) {
+                    if(request.url.includes("login")){
+                        const error = err.error.message || err.statusText;
+                        return throwError(error)
+                    }
                     return this.handle401Error(request, next, refreshToken);
+
                 }else if (err.status === 403) {
                     this.messageService.displayAlert("Session has expired. You have been logged out.", "Session has expired.");
                     this.authService.logout();
